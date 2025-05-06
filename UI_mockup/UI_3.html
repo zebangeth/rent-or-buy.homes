@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buy vs. Rent | Decision Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://unpkg.com/phosphor-icons"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              night: {
+                900: "#0F0E17",
+                800: "#1A1926",
+                700: "#26243D",
+                600: "#312E56",
+                500: "#3D3A6B",
+              },
+              accent: {
+                yellow: "#FFD166",
+                coral: "#FF6B6B",
+                teal: "#06D6A0",
+                blue: "#118AB2",
+                purple: "#9381FF",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "DM Sans", sans-serif;
+        background-color: #0f0e17;
+        color: #fffffe;
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: "Space Grotesk", sans-serif;
+      }
+      .browser-frame {
+        border: 1px solid #26243d;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 20px 80px rgba(0, 0, 0, 0.3);
+        background: #0f0e17;
+      }
+      .browser-header {
+        height: 50px;
+        background: #1a1926;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        border-bottom: 1px solid #26243d;
+      }
+      .browser-btn {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+      .browser-address {
+        background: #26243d;
+        border-radius: 8px;
+        height: 32px;
+        flex-grow: 1;
+        margin: 0 16px;
+        border: 1px solid #3d3a6b;
+      }
+      .glow {
+        box-shadow: 0 0 30px rgba(255, 209, 102, 0.2);
+      }
+      .glow-coral {
+        box-shadow: 0 0 30px rgba(255, 107, 107, 0.2);
+      }
+      .glow-teal {
+        box-shadow: 0 0 30px rgba(6, 214, 160, 0.2);
+      }
+      .section-line {
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          #ff6b6b,
+          #ffd166,
+          #06d6a0,
+          #118ab2,
+          #9381ff
+        );
+        border-radius: 5px;
+      }
+      .progress-bar {
+        height: 6px;
+        background: #1a1926;
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        transition: width 1s ease;
+      }
+      .step {
+        position: relative;
+        cursor: pointer;
+      }
+      .step::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #1a1926;
+        border: 3px solid #3d3a6b;
+        z-index: 10;
+        transition: all 0.3s ease;
+      }
+      .step.active::before {
+        background: #9381ff;
+        border-color: rgba(147, 129, 255, 0.5);
+      }
+      .step.completed::before {
+        background: #06d6a0;
+        border-color: rgba(6, 214, 160, 0.5);
+      }
+      .path-line {
+        position: absolute;
+        top: 5px;
+        left: calc(50% + 15px);
+        right: calc(50% - 15px);
+        height: 3px;
+        background: #3d3a6b;
+        z-index: 0;
+      }
+      input[type="range"] {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 6px;
+        background: #1a1926;
+        border-radius: 8px;
+        outline: none;
+        overflow: hidden;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #ffd166;
+        cursor: pointer;
+        border: 3px solid #0f0e17;
+        box-shadow: 0 0 15px rgba(255, 209, 102, 0.5);
+        position: relative;
+      }
+      .tooltip {
+        position: relative;
+        display: inline-flex;
+        cursor: pointer;
+      }
+      .tooltip .tooltip-text {
+        visibility: hidden;
+        background-color: #26243d;
+        color: #fffffe;
+        text-align: center;
+        border-radius: 8px;
+        padding: 8px 12px;
+        position: absolute;
+        z-index: 1;
+        bottom: 150%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.3s, visibility 0.3s;
+        width: max-content;
+        max-width: 250px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        border: 1px solid #3d3a6b;
+        font-size: 12px;
+      }
+      .tooltip:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+      }
+      .input-field {
+        background: #1a1926;
+        border: 1px solid #3d3a6b;
+        color: #fffffe;
+        padding: 10px 16px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        outline: none;
+      }
+      .input-field:focus {
+        border-color: #9381ff;
+        box-shadow: 0 0 0 3px rgba(147, 129, 255, 0.2);
+      }
+      .fancy-checkbox {
+        width: 48px;
+        height: 24px;
+        background: #1a1926;
+        border-radius: 24px;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .fancy-checkbox.active {
+        background: #06d6a0;
+      }
+      .fancy-checkbox::after {
+        content: "";
+        position: absolute;
+        left: 3px;
+        top: 3px;
+        width: 18px;
+        height: 18px;
+        background: #fffffe;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+      }
+      .fancy-checkbox.active::after {
+        left: calc(100% - 21px);
+      }
+      .btn-accent {
+        background: linear-gradient(45deg, #9381ff, #ff6b6b);
+        color: #fffffe;
+        font-weight: 600;
+        padding: 12px 24px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(147, 129, 255, 0.3);
+      }
+      .btn-accent::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, #ff6b6b, #9381ff);
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .btn-accent:hover::before {
+        opacity: 1;
+      }
+      .btn-outline {
+        background: transparent;
+        color: #fffffe;
+        font-weight: 500;
+        padding: 10px 20px;
+        border: 2px solid #3d3a6b;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+      }
+      .btn-outline:hover {
+        border-color: #9381ff;
+        background: rgba(147, 129, 255, 0.1);
+      }
+      .result-number {
+        background: linear-gradient(45deg, #ffd166, #ff6b6b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .result-number-alt {
+        background: linear-gradient(45deg, #06d6a0, #118ab2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .dot-pattern {
+        background-image: radial-gradient(#3d3a6b 1px, transparent 1px);
+        background-size: 20px 20px;
+      }
+      .glass-panel {
+        background: rgba(26, 25, 38, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(61, 58, 107, 0.5);
+        border-radius: 16px;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen p-4">
+    <!-- Browser Window Frame -->
+    <div class="browser-frame max-w-6xl mx-auto">
+      <!-- Browser Navigation Bar -->
+      <div class="browser-header">
+        <div class="browser-btn bg-red-500"></div>
+        <div class="browser-btn bg-yellow-500"></div>
+        <div class="browser-btn bg-green-500"></div>
+        <div class="browser-address"></div>
+      </div>
+
+      <!-- App Content -->
+      <div class="bg-night-900 p-0">
+        <!-- Header with Path Navigation -->
+        <div class="relative">
+          <div class="section-line mb-12"></div>
+          <div class="absolute inset-x-0 top-12 px-10">
+            <div class="relative flex justify-between items-center">
+              <div class="step completed w-1/3 text-center">
+                <div class="path-line"></div>
+                <h3 class="mt-8 text-sm font-medium text-accent-teal">
+                  Define Property
+                </h3>
+              </div>
+              <div class="step active w-1/3 text-center">
+                <div class="path-line"></div>
+                <h3 class="mt-8 text-sm font-medium text-accent-purple">
+                  Set Investment
+                </h3>
+              </div>
+              <div class="step w-1/3 text-center">
+                <h3 class="mt-8 text-sm font-medium text-gray-500">
+                  View Results
+                </h3>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="max-w-5xl mx-auto px-8 pb-16 pt-8">
+          <!-- Page Title -->
+          <div class="flex justify-between items-center mb-10">
+            <div>
+              <h1 class="text-4xl font-bold mb-2">
+                Buy <span class="text-accent-coral">vs</span> Rent
+              </h1>
+              <p class="text-gray-400">
+                Financial decision tool with 10-year projection
+              </p>
+            </div>
+            <button class="btn-outline flex items-center space-x-2">
+              <i data-phosphor="info"></i>
+              <span>How it works</span>
+            </button>
+          </div>
+
+          <!-- Two Column Layout -->
+          <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Left Column: Wizard Form -->
+            <div class="w-full lg:w-7/12 space-y-8">
+              <!-- Current Step Title -->
+              <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold">Investment Strategy</h2>
+                <span class="text-sm text-gray-400">Step 2 of 3</span>
+              </div>
+
+              <!-- Input Form -->
+              <div class="space-y-6 glass-panel p-8">
+                <div class="grid grid-cols-2 gap-6">
+                  <!-- Monthly Rent -->
+                  <div class="col-span-2 md:col-span-1">
+                    <div class="flex justify-between items-center mb-2">
+                      <label class="text-sm font-medium flex items-center">
+                        Monthly Rent
+                        <div class="tooltip ml-1">
+                          <i
+                            class="text-accent-yellow"
+                            data-phosphor="question"
+                          ></i>
+                          <span class="tooltip-text"
+                            >Your current monthly rent payment</span
+                          >
+                        </div>
+                      </label>
+                      <div class="text-sm font-medium text-accent-yellow">
+                        $6,000
+                      </div>
+                    </div>
+                    <input
+                      type="range"
+                      min="2000"
+                      max="15000"
+                      value="6000"
+                      step="100"
+                      class="w-full"
+                    />
+                    <div
+                      class="flex justify-between text-xs text-gray-500 mt-1"
+                    >
+                      <span>$2,000</span>
+                      <span>$15,000</span>
+                    </div>
+                  </div>
+
+                  <!-- Annual Rent Increase -->
+                  <div class="col-span-2 md:col-span-1">
+                    <div class="flex justify-between items-center mb-2">
+                      <label class="text-sm font-medium flex items-center">
+                        Annual Rent Increase
+                        <div class="tooltip ml-1">
+                          <i
+                            class="text-accent-yellow"
+                            data-phosphor="question"
+                          ></i>
+                          <span class="tooltip-text"
+                            >Expected yearly percentage increase in rent</span
+                          >
+                        </div>
+                      </label>
+                      <div class="text-sm font-medium text-accent-yellow">
+                        5.0%
+                      </div>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="10"
+                      value="5"
+                      step="0.5"
+                      class="w-full"
+                    />
+                    <div
+                      class="flex justify-between text-xs text-gray-500 mt-1"
+                    >
+                      <span>0%</span>
+                      <span>10%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Investment Selector -->
+                <div>
+                  <label class="text-sm font-medium block mb-2"
+                    >Investment Vehicle</label
+                  >
+                  <div class="grid grid-cols-3 gap-3">
+                    <div
+                      class="flex flex-col items-center bg-night-800 rounded-lg p-4 border-2 border-accent-blue cursor-pointer"
+                    >
+                      <div
+                        class="h-12 w-12 rounded-full bg-night-700 flex items-center justify-center mb-2"
+                      >
+                        <i
+                          class="text-accent-blue text-xl"
+                          data-phosphor="chart-line-up"
+                        ></i>
+                      </div>
+                      <span class="text-sm font-medium">SPY</span>
+                      <span class="text-xs text-gray-400">9.25% avg</span>
+                    </div>
+                    <div
+                      class="flex flex-col items-center bg-night-800 rounded-lg p-4 border border-night-600 cursor-pointer"
+                    >
+                      <div
+                        class="h-12 w-12 rounded-full bg-night-700 flex items-center justify-center mb-2"
+                      >
+                        <i
+                          class="text-accent-purple text-xl"
+                          data-phosphor="trend-up"
+                        ></i>
+                      </div>
+                      <span class="text-sm font-medium">QQQ</span>
+                      <span class="text-xs text-gray-400">15.2% avg</span>
+                    </div>
+                    <div
+                      class="flex flex-col items-center bg-night-800 rounded-lg p-4 border border-night-600 cursor-pointer"
+                    >
+                      <div
+                        class="h-12 w-12 rounded-full bg-night-700 flex items-center justify-center mb-2"
+                      >
+                        <i
+                          class="text-accent-coral text-xl"
+                          data-phosphor="graph"
+                        ></i>
+                      </div>
+                      <span class="text-sm font-medium">GOOG</span>
+                      <span class="text-xs text-gray-400">17.22% avg</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Custom Growth Rate -->
+                <div>
+                  <div class="flex justify-between items-center mb-2">
+                    <label class="text-sm font-medium flex items-center">
+                      Custom Growth Rate
+                      <div class="tooltip ml-1">
+                        <i
+                          class="text-accent-yellow"
+                          data-phosphor="question"
+                        ></i>
+                        <span class="tooltip-text"
+                          >Set your own annual return rate for investments</span
+                        >
+                      </div>
+                    </label>
+                    <div class="text-sm font-medium text-accent-yellow">
+                      9.25%
+                    </div>
+                  </div>
+                  <input
+                    type="range"
+                    min="1"
+                    max="25"
+                    value="9.25"
+                    step="0.25"
+                    class="w-full"
+                  />
+                  <div class="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>1%</span>
+                    <span>25%</span>
+                  </div>
+                </div>
+
+                <!-- Advanced Options Toggle -->
+                <div class="pt-2 border-t border-night-700">
+                  <button
+                    class="flex w-full items-center justify-between text-gray-300 hover:text-accent-purple transition group"
+                  >
+                    <span class="font-medium">Tax Considerations</span>
+                    <i
+                      class="transition-transform group-hover:rotate-180"
+                      data-phosphor="caret-down"
+                    ></i>
+                  </button>
+
+                  <!-- Advanced Options -->
+                  <div class="mt-4 space-y-4 pt-4 border-t border-night-700">
+                    <div class="flex justify-between items-center">
+                      <label class="text-sm flex items-center">
+                        Capital Gains Tax Rate
+                        <div class="tooltip ml-1">
+                          <i
+                            class="text-accent-yellow"
+                            data-phosphor="question"
+                          ></i>
+                          <span class="tooltip-text"
+                            >Tax rate applied to investment gains</span
+                          >
+                        </div>
+                      </label>
+                      <div class="flex space-x-4 items-center">
+                        <select
+                          class="input-field text-sm py-1 px-3 w-24 appearance-none bg-night-800"
+                        >
+                          <option value="15">15%</option>
+                          <option value="20">20%</option>
+                          <option value="24" selected>24%</option>
+                          <option value="32">32%</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <label class="text-sm flex items-center">
+                        Mortgage Interest Deduction
+                        <div class="tooltip ml-1">
+                          <i
+                            class="text-accent-yellow"
+                            data-phosphor="question"
+                          ></i>
+                          <span class="tooltip-text"
+                            >Allow tax deduction for mortgage interest</span
+                          >
+                        </div>
+                      </label>
+                      <div class="fancy-checkbox active"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Navigation Buttons -->
+              <div class="flex justify-between items-center">
+                <button class="btn-outline flex items-center space-x-2">
+                  <i data-phosphor="arrow-left"></i>
+                  <span>Previous Step</span>
+                </button>
+                <button class="btn-accent flex items-center space-x-2">
+                  <span>View Results</span>
+                  <i data-phosphor="arrow-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Right Column: Live Preview -->
+            <div class="w-full lg:w-5/12">
+              <div class="sticky top-8 space-y-6">
+                <h2 class="text-2xl font-bold">Live Preview</h2>
+
+                <!-- Preview Display -->
+                <div class="glass-panel p-8 dot-pattern">
+                  <h3 class="text-lg font-medium mb-4 text-gray-300">
+                    10-Year Net Worth Projection
+                  </h3>
+
+                  <!-- Initial Parameters Recap -->
+                  <div class="grid grid-cols-2 gap-3 mb-6">
+                    <div
+                      class="col-span-2 md:col-span-1 bg-night-800 p-3 rounded-lg border border-night-600"
+                    >
+                      <span class="block text-xs text-gray-500"
+                        >Home Price</span
+                      >
+                      <span class="text-sm font-semibold">$2,500,000</span>
+                    </div>
+                    <div
+                      class="col-span-2 md:col-span-1 bg-night-800 p-3 rounded-lg border border-night-600"
+                    >
+                      <span class="block text-xs text-gray-500"
+                        >Down Payment</span
+                      >
+                      <span class="text-sm font-semibold">$625,000 (25%)</span>
+                    </div>
+                  </div>
+
+                  <!-- Head to Head Comparison -->
+                  <div
+                    class="border border-night-600 rounded-xl mb-6 overflow-hidden"
+                  >
+                    <div class="grid grid-cols-2">
+                      <!-- Buy Side -->
+                      <div class="p-4 border-r border-night-600 relative">
+                        <span
+                          class="absolute -top-3 left-4 bg-accent-coral text-xs font-bold px-2 py-1 rounded-full"
+                          >BUY</span
+                        >
+                        <div class="pt-2">
+                          <h4 class="text-4xl font-bold result-number mt-2">
+                            $3.12M
+                          </h4>
+                          <div class="flex items-center mt-1 mb-3">
+                            <i
+                              class="text-accent-teal mr-1"
+                              data-phosphor="arrow-up-right"
+                            ></i>
+                            <span class="text-xs text-accent-teal font-medium"
+                              >+24.9% growth</span
+                            >
+                          </div>
+                          <div class="progress-bar">
+                            <div
+                              class="progress-fill bg-accent-coral"
+                              style="width: 52.4%"
+                            ></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Rent Side -->
+                      <div class="p-4 relative">
+                        <span
+                          class="absolute -top-3 left-4 bg-accent-blue text-xs font-bold px-2 py-1 rounded-full"
+                          >RENT+INVEST</span
+                        >
+                        <div class="pt-2">
+                          <h4 class="text-4xl font-bold result-number-alt mt-2">
+                            $2.85M
+                          </h4>
+                          <div class="flex items-center mt-1 mb-3">
+                            <i
+                              class="text-accent-teal mr-1"
+                              data-phosphor="arrow-up-right"
+                            ></i>
+                            <span class="text-xs text-accent-teal font-medium"
+                              >+13.8% growth</span
+                            >
+                          </div>
+                          <div class="progress-bar">
+                            <div
+                              class="progress-fill bg-accent-blue"
+                              style="width: 47.6%"
+                            ></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Bottom Stats -->
+                    <div
+                      class="p-4 border-t border-night-600 flex justify-between"
+                    >
+                      <div class="text-center">
+                        <span class="text-xs text-gray-500 block"
+                          >Difference</span
+                        >
+                        <span class="text-sm font-bold text-accent-yellow"
+                          >+$279,480</span
+                        >
+                      </div>
+                      <div class="text-center">
+                        <span class="text-xs text-gray-500 block"
+                          >Buy Advantage</span
+                        >
+                        <span class="text-sm font-bold text-accent-yellow"
+                          >+4.8%</span
+                        >
+                      </div>
+                      <div class="text-center">
+                        <span class="text-xs text-gray-500 block"
+                          >Break-even</span
+                        >
+                        <span class="text-sm font-bold text-accent-yellow"
+                          >Year 6</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Mini Chart -->
+                  <div class="h-40 mb-6 graph-container">
+                    <!-- D3 will render chart here -->
+                  </div>
+
+                  <!-- Quick Stats -->
+                  <div class="text-xs text-center mt-4 text-gray-400">
+                    Values updated in real-time as you adjust parameters
+                  </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="flex space-x-3">
+                  <button
+                    class="btn-outline flex-1 py-3 flex items-center justify-center space-x-2"
+                  >
+                    <i data-phosphor="bookmark-simple"></i>
+                    <span>Save Scenario</span>
+                  </button>
+                  <button
+                    class="btn-outline flex-1 py-3 flex items-center justify-center space-x-2"
+                  >
+                    <i data-phosphor="share-network"></i>
+                    <span>Share Results</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="border-t border-night-700 p-8 text-center">
+          <div class="flex justify-center space-x-4 mb-4">
+            <a
+              href="#"
+              class="text-gray-500 hover:text-accent-yellow transition text-sm"
+              >About</a
+            >
+            <a
+              href="#"
+              class="text-gray-500 hover:text-accent-yellow transition text-sm"
+              >Methodology</a
+            >
+            <a
+              href="#"
+              class="text-gray-500 hover:text-accent-yellow transition text-sm"
+              >Privacy</a
+            >
+            <a
+              href="#"
+              class="text-gray-500 hover:text-accent-yellow transition text-sm"
+              >Terms</a
+            >
+          </div>
+          <p class="text-xs text-gray-600">
+            Based on historical market trends (2015-2024). Results are
+            projections only and not guaranteed.
+          </p>
+          <div class="mt-4 flex justify-center space-x-4">
+            <a
+              href="#"
+              class="text-gray-500 hover:text-accent-yellow transition"
+            >
+              <i class="text-lg" data-phosphor="twitter-logo"></i>
+            </a>
+            <a
+              href="#"
+              class="text-gray-500 hover:text-accent-yellow transition"
+            >
+              <i class="text-lg" data-phosphor="github-logo"></i>
+            </a>
+            <a
+              href="#"
+              class="text-gray-500 hover:text-accent-yellow transition"
+            >
+              <i class="text-lg" data-phosphor="discord-logo"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Initialize phosphor icons
+        phosphorIcons.replace();
+
+        // Simulate toggle for fancy checkbox
+        document.querySelectorAll(".fancy-checkbox").forEach((checkbox) => {
+          checkbox.addEventListener("click", () => {
+            checkbox.classList.toggle("active");
+          });
+        });
+
+        // D3 chart setup (simplified)
+        const width = document.querySelector(".graph-container").clientWidth;
+        const height = document.querySelector(".graph-container").clientHeight;
+        const margin = { top: 10, right: 10, bottom: 30, left: 40 };
+
+        // Sample data
+        const buyData = [
+          { year: 0, value: 625000 },
+          { year: 2, value: 890000 },
+          { year: 4, value: 1200000 },
+          { year: 6, value: 1610000 },
+          { year: 8, value: 2190000 },
+          { year: 10, value: 3124680 },
+        ];
+
+        const rentData = [
+          { year: 0, value: 625000 },
+          { year: 2, value: 820000 },
+          { year: 4, value: 1090000 },
+          { year: 6, value: 1510000 },
+          { year: 8, value: 2090000 },
+          { year: 10, value: 2845200 },
+        ];
+
+        // Create SVG
+        const svg = d3
+          .select(".graph-container")
+          .append("svg")
+          .attr("width", width)
+          .attr("height", height)
+          .append("g")
+          .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // X scale
+        const x = d3
+          .scaleLinear()
+          .domain([0, 10])
+          .range([0, width - margin.left - margin.right]);
+
+        // Y scale
+        const y = d3
+          .scaleLinear()
+          .domain([600000, 3200000])
+          .range([height - margin.top - margin.bottom, 0]);
+
+        // Add X axis
+        svg
+          .append("g")
+          .attr(
+            "transform",
+            `translate(0,${height - margin.top - margin.bottom})`
+          )
+          .call(d3.axisBottom(x).ticks(5))
+          .call((g) => g.select(".domain").remove())
+          .selectAll("text")
+          .style("font-size", "10px")
+          .style("fill", "#64748b");
+
+        // Add Y axis
+        svg
+          .append("g")
+          .call(
+            d3
+              .axisLeft(y)
+              .ticks(3)
+              .tickFormat((d) => `$${d / 1000000}M`)
+          )
+          .call((g) => g.select(".domain").remove())
+          .selectAll("text")
+          .style("font-size", "10px")
+          .style("fill", "#64748b");
+
+        // Add grid lines
+        svg
+          .append("g")
+          .attr("class", "grid")
+          .selectAll("line")
+          .data(y.ticks(3))
+          .enter()
+          .append("line")
+          .attr("x1", 0)
+          .attr("x2", width - margin.left - margin.right)
+          .attr("y1", (d) => y(d))
+          .attr("y2", (d) => y(d))
+          .attr("stroke", "#26243D")
+          .attr("stroke-width", 1);
+
+        // Line generators
+        const lineBuy = d3
+          .line()
+          .x((d) => x(d.year))
+          .y((d) => y(d.value))
+          .curve(d3.curveCardinal);
+
+        const lineRent = d3
+          .line()
+          .x((d) => x(d.year))
+          .y((d) => y(d.value))
+          .curve(d3.curveCardinal);
+
+        // Add buy line
+        svg
+          .append("path")
+          .datum(buyData)
+          .attr("fill", "none")
+          .attr("stroke", "#FF6B6B")
+          .attr("stroke-width", 3)
+          .attr("d", lineBuy);
+
+        // Add rent line
+        svg
+          .append("path")
+          .datum(rentData)
+          .attr("fill", "none")
+          .attr("stroke", "#118AB2")
+          .attr("stroke-width", 3)
+          .attr("d", lineRent);
+
+        // Add dots
+        svg
+          .selectAll(".dot-buy")
+          .data(buyData)
+          .enter()
+          .append("circle")
+          .attr("class", "dot-buy")
+          .attr("cx", (d) => x(d.year))
+          .attr("cy", (d) => y(d.value))
+          .attr("r", 4)
+          .attr("fill", "#FF6B6B");
+
+        svg
+          .selectAll(".dot-rent")
+          .data(rentData)
+          .enter()
+          .append("circle")
+          .attr("class", "dot-rent")
+          .attr("cx", (d) => x(d.year))
+          .attr("cy", (d) => y(d.value))
+          .attr("r", 4)
+          .attr("fill", "#118AB2");
+      });
+    </script>
+  </body>
+</html>

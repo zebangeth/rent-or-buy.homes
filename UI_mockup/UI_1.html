@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buy vs. Rent Calculator - Alternative Design</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#f5f3ff",
+                100: "#ede9fe",
+                200: "#ddd6fe",
+                300: "#c4b5fd",
+                400: "#a78bfa",
+                500: "#8b5cf6",
+                600: "#7c3aed",
+                700: "#6d28d9",
+                800: "#5b21b6",
+                900: "#4c1d95",
+              },
+              secondary: {
+                50: "#ecfdf5",
+                100: "#d1fae5",
+                200: "#a7f3d0",
+                300: "#6ee7b7",
+                400: "#34d399",
+                500: "#10b981",
+                600: "#059669",
+                700: "#047857",
+                800: "#065f46",
+                900: "#064e3b",
+              },
+              dark: {
+                50: "#f8fafc",
+                100: "#f1f5f9",
+                200: "#e2e8f0",
+                300: "#cbd5e1",
+                400: "#94a3b8",
+                500: "#64748b",
+                600: "#475569",
+                700: "#334155",
+                800: "#1e293b",
+                900: "#0f172a",
+                950: "#030712",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Montserrat", sans-serif;
+        background-color: #f3f4f6;
+      }
+      .browser-frame {
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        background: #020617;
+      }
+      .browser-header {
+        height: 48px;
+        background: #1a1c25;
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        border-bottom: 1px solid #2d3748;
+      }
+      .browser-btn {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+      .browser-address {
+        background: #232631;
+        border-radius: 8px;
+        height: 32px;
+        flex-grow: 1;
+        margin: 0 16px;
+        border: 1px solid #394050;
+      }
+
+      /* Custom slider styles */
+      input[type="range"] {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 6px;
+        border-radius: 10px;
+        background: #e5e7eb;
+        outline: none;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #8b5cf6;
+        cursor: pointer;
+        border: 2px solid white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+      }
+      .card {
+        border-radius: 16px;
+        background: white;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      }
+      .glow-primary {
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+      }
+      .glow-secondary {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+      }
+      .tab-active {
+        position: relative;
+      }
+      .tab-active::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: #8b5cf6;
+        border-radius: 3px;
+      }
+
+      /* Toggle Switch Styles */
+      input:checked ~ .dot {
+        transform: translateX(1rem);
+        background-color: #8b5cf6; /* primary-500 */
+      }
+      input:checked ~ .block {
+        background-color: #c4b5fd; /* primary-300 */
+      }
+
+      /* Notification Animation */
+      .animate-fade-in-out {
+        animation: fadeInOut 3.5s ease-in-out;
+        transition: opacity 0.5s ease;
+      }
+
+      @keyframes fadeInOut {
+        0% {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        10% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 min-h-screen p-4">
+    <!-- Browser Window Frame -->
+    <div class="browser-frame w-full max-w-6xl mx-auto">
+      <!-- Browser Navigation Bar -->
+      <div class="browser-header">
+        <div class="browser-btn bg-red-500"></div>
+        <div class="browser-btn bg-yellow-500"></div>
+        <div class="browser-btn bg-green-500"></div>
+        <div class="browser-address"></div>
+      </div>
+
+      <!-- App Content -->
+      <div class="p-8 bg-white">
+        <!-- Header -->
+        <header class="mb-10 border-b border-gray-200 pb-6">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h1 class="text-4xl font-bold text-dark-800 inline-block">
+                <span class="text-primary-600">Buy</span> vs
+                <span class="text-secondary-600">Rent</span>
+              </h1>
+              <span class="ml-2 px-3 py-1 bg-dark-100 text-dark-600 text-xs font-medium rounded-full">Pro Edition</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <button
+                class="bg-primary-100 text-primary-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-primary-200 transition"
+              >
+                <i class="fas fa-save mr-1"></i> Save
+              </button>
+              <button
+                class="bg-primary-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-primary-700 transition"
+              >
+                Share Results
+              </button>
+            </div>
+          </div>
+          <p class="text-dark-500 max-w-2xl">
+            Financial decision tool to compare the long-term impact of buying a home versus renting and investing the
+            difference. Customizable model based on historical market data.
+          </p>
+        </header>
+
+        <!-- Hero Section -->
+        <div class="mb-10">
+          <div
+            class="card bg-gradient-to-r from-primary-50 to-secondary-50 p-8 border border-gray-200 relative overflow-hidden"
+          >
+            <!-- Winner Banner -->
+            <div class="absolute top-0 right-0 bg-primary-600 text-white px-6 py-2 rounded-bl-xl shadow-md">
+              <div class="flex items-center font-bold">
+                <i class="fas fa-trophy mr-2"></i>
+                <span>Buying Wins Financially</span>
+              </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="flex flex-col lg:flex-row gap-8 pt-6">
+              <!-- Explanation Section -->
+              <div class="flex-1">
+                <p class="text-xl md:text-2xl leading-relaxed text-dark-800 mb-5 font-medium">
+                  If you buy a <span class="font-bold text-primary-700">$2.5M home</span> today and it grows to $3.5M in
+                  10 years, your net worth would be
+                  <span class="font-bold text-primary-700 border-b-2 border-primary-300">$3.12M</span>. If you rent for
+                  <span class="font-bold text-secondary-700">$6,000/month</span> and invest the difference, your net
+                  worth would be
+                  <span class="font-bold text-secondary-700 border-b-2 border-secondary-300">$2.85M</span>.
+                </p>
+                <div class="text-sm text-dark-500 bg-white bg-opacity-60 rounded-lg p-3">
+                  <div class="font-medium mb-2">Key Assumptions:</div>
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+                    <div class="flex items-center">
+                      <i class="fas fa-home text-primary-500 mr-2"></i>
+                      <span>Home value: <span class="font-medium">$2,500,000</span></span>
+                    </div>
+                    <div class="flex items-center">
+                      <i class="fas fa-key text-secondary-500 mr-2"></i>
+                      <span>Current rent: <span class="font-medium">$6,000/mo</span></span>
+                    </div>
+                    <div class="flex items-center">
+                      <i class="fas fa-percentage text-primary-500 mr-2"></i>
+                      <span>Down payment: <span class="font-medium">25%</span></span>
+                    </div>
+                    <div class="flex items-center">
+                      <i class="fas fa-chart-line text-secondary-500 mr-2"></i>
+                      <span>Stock returns: <span class="font-medium">9.25%/year</span></span>
+                    </div>
+                    <div class="flex items-center">
+                      <i class="fas fa-dollar-sign text-primary-500 mr-2"></i>
+                      <span>Mortgage rate: <span class="font-medium">6.75%</span></span>
+                    </div>
+                    <div class="flex items-center">
+                      <i class="fas fa-arrow-up text-secondary-500 mr-2"></i>
+                      <span>Rent increase: <span class="font-medium">5%/year</span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Summary Stats & CTA -->
+              <div class="lg:w-1/3 flex flex-col">
+                <div class="bg-white rounded-xl p-4 shadow-sm mb-4">
+                  <div class="flex justify-between items-center mb-3">
+                    <div class="font-medium text-dark-700">10-Year Advantage</div>
+                    <div class="text-lg font-bold text-primary-600">$279,480</div>
+                  </div>
+                  <div class="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+                    <div class="h-full bg-primary-500 rounded-full" style="width: 9.8%"></div>
+                  </div>
+                  <div class="text-xs text-dark-400 mt-1 text-right">9.8% better outcome</div>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="space-y-3 mt-auto">
+                  <button
+                    id="edit-inputs-btn"
+                    class="w-full py-3 px-4 bg-dark-800 hover:bg-dark-700 text-white font-medium rounded-xl transition flex items-center justify-center"
+                  >
+                    <i class="fas fa-sliders-h mr-2"></i> Edit My Inputs
+                  </button>
+                  <button
+                    id="share-result-btn"
+                    class="w-full py-3 px-4 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-medium rounded-xl transition flex items-center justify-center"
+                  >
+                    <i class="fas fa-share-alt mr-2"></i> Share This Result
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="flex flex-col md:flex-row gap-6">
+          <!-- Left Section: Inputs -->
+          <div class="w-full md:w-1/3 space-y-6">
+            <!-- Input Card -->
+            <div class="card p-6 border border-gray-100">
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="text-lg font-semibold text-dark-800">
+                  <i class="fas fa-sliders-h text-primary-500 mr-2"></i>Parameters
+                </h2>
+                <div class="relative inline-block">
+                  <select
+                    id="cityDefaults"
+                    class="appearance-none text-xs font-medium text-primary-600 bg-primary-100 pl-7 pr-8 py-1 rounded-full cursor-pointer hover:bg-primary-200 transition focus:outline-none"
+                  >
+                    <option value="default">Smart Defaults</option>
+                    <option value="sunnyvale">Sunnyvale, CA</option>
+                    <option value="fremont">Fremont, CA</option>
+                    <option value="bayarea">Bay Area, CA</option>
+                    <option value="seattle">Seattle, WA</option>
+                    <option value="austin">Austin, TX</option>
+                    <option value="boston">Boston, MA</option>
+                    <option value="nyc">New York, NY</option>
+                    <option value="toronto">Toronto, ON</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
+                    <i class="fas fa-bolt text-primary-600"></i>
+                  </div>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                    <i class="fas fa-chevron-down text-xs text-primary-600"></i>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tabs for Input Categories -->
+              <div class="flex justify-between mb-8">
+                <button class="tab-active px-2 font-medium text-dark-800 text-sm">
+                  <i class="fas fa-home mr-1"></i> Buy
+                </button>
+                <button class="text-dark-400 px-2 font-medium text-sm">
+                  <i class="fas fa-key mr-1"></i><i class="fas fa-chart-line ml-1 mr-1"></i> Rent & Invest
+                </button>
+              </div>
+
+              <!-- House Purchase Inputs -->
+              <div class="space-y-6" id="buy-tab-content">
+                <!-- House Price -->
+                <div>
+                  <div class="flex justify-between mb-3">
+                    <label class="text-sm font-medium text-dark-700">House Price</label>
+                    <div class="px-3 py-1 bg-primary-100 text-primary-700 rounded-lg font-semibold text-sm">
+                      $2,500,000
+                    </div>
+                  </div>
+                  <input type="range" min="500000" max="5000000" value="2500000" step="50000" class="w-full" />
+                  <div class="flex justify-between text-xs text-dark-400 mt-1">
+                    <span>$500K</span>
+                    <span>$5M</span>
+                  </div>
+                </div>
+
+                <!-- Down Payment -->
+                <div>
+                  <div class="flex justify-between mb-3">
+                    <label class="text-sm font-medium text-dark-700">Down Payment</label>
+                    <div class="px-3 py-1 bg-primary-100 text-primary-700 rounded-lg font-semibold text-sm">25%</div>
+                  </div>
+                  <input type="range" min="5" max="50" value="25" step="1" class="w-full" />
+                  <div class="flex justify-between text-xs text-dark-400 mt-1">
+                    <span>5%</span>
+                    <span>50%</span>
+                  </div>
+                </div>
+
+                <!-- Interest Rate -->
+                <div>
+                  <div class="flex justify-between mb-3">
+                    <label class="text-sm font-medium text-dark-700">Interest Rate</label>
+                    <div class="px-3 py-1 bg-primary-100 text-primary-700 rounded-lg font-semibold text-sm">6.75%</div>
+                  </div>
+                  <input type="range" min="3" max="12" value="6.75" step="0.25" class="w-full" />
+                  <div class="flex justify-between text-xs text-dark-400 mt-1">
+                    <span>3%</span>
+                    <span>12%</span>
+                  </div>
+                </div>
+
+                <!-- Property Tax -->
+                <div>
+                  <div class="flex justify-between mb-3">
+                    <label class="text-sm font-medium text-dark-700">Property Tax</label>
+                    <div class="px-3 py-1 bg-primary-100 text-primary-700 rounded-lg font-semibold text-sm">1.2%</div>
+                  </div>
+                  <input type="range" min="0.5" max="2.5" value="1.2" step="0.1" class="w-full" />
+                  <div class="flex justify-between text-xs text-dark-400 mt-1">
+                    <span>0.5%</span>
+                    <span>2.5%</span>
+                  </div>
+                </div>
+
+                <!-- Advanced Toggle -->
+                <div class="mt-4 border-t border-gray-100 pt-4">
+                  <button
+                    class="flex w-full items-center justify-between text-dark-600 hover:text-primary-600 transition"
+                  >
+                    <span class="font-medium text-sm">Advanced Options</span>
+                    <i class="fas fa-chevron-down text-xs"></i>
+                  </button>
+
+                  <!-- Advanced Options (Initially Hidden) -->
+                  <div class="mt-4 space-y-3 bg-gray-50 p-4 rounded-xl">
+                    <div class="flex justify-between items-center">
+                      <label class="text-xs font-medium text-dark-600">Closing Cost</label>
+                      <div class="flex space-x-2 items-center">
+                        <input type="number" value="1" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
+                        <span class="text-xs text-dark-500">%</span>
+                      </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <label class="text-xs font-medium text-dark-600">Selling Cost</label>
+                      <div class="flex space-x-2 items-center">
+                        <input type="number" value="5" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
+                        <span class="text-xs text-dark-500">%</span>
+                      </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <label class="text-xs font-medium text-dark-600">Insurance & Maintenance</label>
+                      <div class="flex space-x-2 items-center">
+                        <span class="text-xs text-dark-500">$</span>
+                        <input type="number" value="3000" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
+                        <span class="text-xs text-dark-500">/year</span>
+                      </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <label class="text-xs font-medium text-dark-600">Property Appreciation</label>
+                      <div class="flex space-x-2 items-center">
+                        <input type="number" value="4.5" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
+                        <span class="text-xs text-dark-500">%</span>
+                      </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <label class="text-xs font-medium text-dark-600">Mortgage Interest Deduction</label>
+                      <div class="flex space-x-2 items-center">
+                        <select class="w-16 p-1.5 text-xs text-center border rounded-lg">
+                          <option value="yes" selected>Yes</option>
+                          <option value="no">No</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <label class="text-xs font-medium text-dark-600">Capital Gains Tax Rate</label>
+                      <div class="flex space-x-2 items-center">
+                        <input type="number" value="24" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
+                        <span class="text-xs text-dark-500">%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Calculate Button -->
+                <div class="pt-4">
+                  <button
+                    class="w-full py-3.5 px-4 text-white font-medium rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 transition duration-300 shadow-md"
+                  >
+                    <i class="fas fa-calculator mr-2"></i> Calculate Result
+                  </button>
+                </div>
+              </div>
+
+              <!-- Rent & Invest Inputs (Hidden by Default) -->
+              <div class="space-y-6 hidden" id="rent-invest-tab-content">
+                <!-- Monthly Rent -->
+                <div>
+                  <div class="flex justify-between mb-3">
+                    <label class="text-sm font-medium text-dark-700">Monthly Rent</label>
+                    <div class="px-3 py-1 bg-secondary-100 text-secondary-700 rounded-lg font-semibold text-sm">
+                      $6,000
+                    </div>
+                  </div>
+                  <input type="range" min="2000" max="15000" value="6000" step="100" class="w-full" />
+                  <div class="flex justify-between text-xs text-dark-400 mt-1">
+                    <span>$2K</span>
+                    <span>$15K</span>
+                  </div>
+                </div>
+
+                <!-- Rent Increase -->
+                <div>
+                  <div class="flex justify-between mb-3">
+                    <label class="text-sm font-medium text-dark-700">Annual Rent Increase</label>
+                    <div class="px-3 py-1 bg-secondary-100 text-secondary-700 rounded-lg font-semibold text-sm">5%</div>
+                  </div>
+                  <input type="range" min="1" max="10" value="5" step="0.5" class="w-full" />
+                  <div class="flex justify-between text-xs text-dark-400 mt-1">
+                    <span>1%</span>
+                    <span>10%</span>
+                  </div>
+                </div>
+
+                <!-- Investment Type -->
+                <div>
+                  <div class="flex justify-between mb-3">
+                    <label class="text-sm font-medium text-dark-700">Investment Type</label>
+                    <div class="px-3 py-1 bg-secondary-100 text-secondary-700 rounded-lg font-semibold text-sm">
+                      SPY
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-3 gap-2">
+                    <button class="bg-secondary-500 text-white p-2 rounded-lg text-sm font-medium">SPY</button>
+                    <button class="bg-gray-100 text-dark-500 p-2 rounded-lg text-sm font-medium">QQQ</button>
+                    <button class="bg-gray-100 text-dark-500 p-2 rounded-lg text-sm font-medium">GOOG</button>
+                  </div>
+                  <div class="flex justify-between items-center mt-3">
+                    <span class="text-xs text-dark-500">Annual Return Rate</span>
+                    <span class="text-xs font-medium text-secondary-700">9.25%</span>
+                  </div>
+                </div>
+
+                <!-- Advanced Toggle -->
+                <div class="mt-4 border-t border-gray-100 pt-4">
+                  <button
+                    class="flex w-full items-center justify-between text-dark-600 hover:text-secondary-600 transition"
+                  >
+                    <span class="font-medium text-sm">Advanced Options</span>
+                    <i class="fas fa-chevron-down text-xs"></i>
+                  </button>
+
+                  <!-- Advanced Options (Initially Hidden) -->
+                  <div class="mt-4 space-y-3 bg-gray-50 p-4 rounded-xl">
+                    <div class="flex justify-between items-center">
+                      <label class="text-xs font-medium text-dark-600">Custom Return Rate</label>
+                      <div class="flex space-x-2 items-center">
+                        <input type="number" value="9.25" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
+                        <span class="text-xs text-dark-500">%</span>
+                      </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <label class="text-xs font-medium text-dark-600">Capital Gains Tax Rate</label>
+                      <div class="flex space-x-2 items-center">
+                        <input type="number" value="24" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
+                        <span class="text-xs text-dark-500">%</span>
+                      </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <label class="text-xs font-medium text-dark-600">Monthly Additional Investment</label>
+                      <div class="flex space-x-2 items-center">
+                        <span class="text-xs text-dark-500">$</span>
+                        <input type="number" value="0" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
+                      </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <label class="text-xs font-medium text-dark-600">Initial Investment</label>
+                      <div class="flex space-x-2 items-center">
+                        <span class="text-xs text-dark-500">$</span>
+                        <input type="number" value="625000" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Calculate Button -->
+                <div class="pt-4">
+                  <button
+                    class="w-full py-3.5 px-4 text-white font-medium rounded-xl bg-gradient-to-r from-secondary-600 to-secondary-500 hover:from-secondary-700 hover:to-secondary-600 transition duration-300 shadow-md"
+                  >
+                    <i class="fas fa-calculator mr-2"></i> Calculate Result
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Section: Results -->
+          <div class="w-full md:w-2/3 space-y-6">
+            <!-- Summary Row -->
+            <div class="flex flex-col sm:flex-row gap-4">
+              <!-- Buy Card -->
+              <div class="card glow-primary p-6 flex-1 border-l-4 border-primary-600">
+                <div class="flex justify-between mb-2">
+                  <span class="text-xs font-semibold text-primary-600 bg-primary-50 px-2 py-1 rounded-full">
+                    <i class="fas fa-home mr-1"></i> Buy a Home
+                  </span>
+                  <span class="text-xs font-medium text-dark-500">10-Year Result</span>
+                </div>
+                <h3 class="text-3xl font-bold text-dark-800 mb-2" id="buyNetWorth">$3,124,680</h3>
+                <div class="flex items-center text-xs text-dark-500 mb-4">
+                  <span class="px-1.5 py-0.5 bg-primary-100 text-primary-700 rounded font-medium mr-1.5">+24.9%</span>
+                  <span>Net Worth Growth</span>
+                </div>
+              </div>
+
+              <!-- Rent Card -->
+              <div class="card glow-secondary p-6 flex-1 border-l-4 border-secondary-600">
+                <div class="flex justify-between mb-2">
+                  <span class="text-xs font-semibold text-secondary-600 bg-secondary-50 px-2 py-1 rounded-full">
+                    <i class="fas fa-chart-line mr-1"></i> Rent + Invest
+                  </span>
+                  <span class="text-xs font-medium text-dark-500">10-Year Result</span>
+                </div>
+                <h3 class="text-3xl font-bold text-dark-800 mb-2" id="rentNetWorth">$2,845,200</h3>
+                <div class="flex items-center text-xs text-dark-500 mb-4">
+                  <span class="px-1.5 py-0.5 bg-secondary-100 text-secondary-700 rounded font-medium mr-1.5"
+                    >+13.8%</span
+                  >
+                  <span>Net Worth Growth</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chart Card -->
+            <div class="card p-6">
+              <div class="flex justify-between items-center mb-6">
+                <div>
+                  <h3 class="font-semibold text-dark-800">Net Worth Projection</h3>
+                  <p class="text-xs text-dark-400">10-year projection based on current parameters</p>
+                </div>
+                <!-- Chart Cash Out Toggle -->
+                <div class="flex items-center space-x-1.5">
+                  <span class="text-xs text-primary-600">Cash Out</span>
+                  <label for="chartCashOutToggle" class="flex items-center cursor-pointer">
+                    <div class="relative">
+                      <input type="checkbox" id="chartCashOutToggle" class="sr-only" checked />
+                      <div class="block bg-indigo-200 w-8 h-4 rounded-full"></div>
+                      <div class="dot absolute left-0.5 top-0.5 bg-white w-3 h-3 rounded-full transition"></div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="h-80">
+                <div id="netWorthChart"></div>
+              </div>
+            </div>
+
+            <!-- Cash-Outflow Card -->
+            <div class="card p-6">
+              <div class="flex justify-between items-center mb-6">
+                <div>
+                  <h3 class="font-semibold text-dark-800">Cash Outflows</h3>
+                  <p class="text-xs text-dark-400">Compare money that actually leaves your pocket</p>
+                </div>
+
+                <!-- Toggle Total / Yearly -->
+                <div class="flex items-center space-x-3">
+                  <span class="text-xs text-primary-600">Total</span>
+                  <label for="cashModeToggle" class="flex items-center cursor-pointer">
+                    <div class="relative">
+                      <input type="checkbox" id="cashModeToggle" class="sr-only" />
+                      <div class="block bg-indigo-200 w-8 h-4 rounded-full"></div>
+                      <div class="dot absolute left-0.5 top-0.5 bg-white w-3 h-3 rounded-full transition"></div>
+                    </div>
+                  </label>
+                  <span class="text-xs text-primary-600">Yearly</span>
+                </div>
+              </div>
+
+              <div class="h-72">
+                <div id="cashOutChart"></div>
+              </div>
+            </div>
+
+            <!-- Key Insights Card -->
+            <div class="card p-6">
+              <h3 class="font-semibold text-dark-800 mb-4">10-Year Snapshot</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <!-- Net Worth -->
+                <div
+                  class="bg-gradient-to-br from-indigo-50 to-blue-50 p-4 rounded-xl border border-indigo-100 flex flex-col"
+                >
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center space-x-2">
+                      <i class="fas fa-wallet text-indigo-600"></i>
+                      <h4 class="text-sm font-medium text-indigo-700">Net Worth</h4>
+                    </div>
+                    <!-- Cash Out Toggle -->
+                    <div class="flex items-center space-x-1.5">
+                      <span class="text-xs text-indigo-600">Cash Out</span>
+                      <label for="cashOutToggle" class="flex items-center cursor-pointer">
+                        <div class="relative">
+                          <input type="checkbox" id="cashOutToggle" class="sr-only" checked />
+                          <div class="block bg-indigo-200 w-8 h-4 rounded-full"></div>
+                          <div class="dot absolute left-0.5 top-0.5 bg-white w-3 h-3 rounded-full transition"></div>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="space-y-2 flex-grow">
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs text-dark-500">Buy:</span>
+                      <span class="text-sm font-semibold text-dark-800">$1.65M</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs text-dark-500">Rent + Invest:</span>
+                      <span class="text-sm font-semibold text-dark-800">$4.55M</span>
+                    </div>
+                  </div>
+                  <p class="text-xs text-dark-400 mt-3" id="netWorthDescription">
+                    Net worth @ year 10 after selling house (5% fee) vs. cashing out investments (x% capital gains tax)
+                  </p>
+                </div>
+
+                <!-- Cash Outflows -->
+                <div
+                  class="bg-gradient-to-br from-rose-50 to-red-50 p-4 rounded-xl border border-rose-100 flex flex-col"
+                >
+                  <div class="flex items-center space-x-2 mb-2">
+                    <i class="fas fa-money-bill-wave text-rose-600"></i>
+                    <h4 class="text-sm font-medium text-rose-700">Cash Outflows</h4>
+                  </div>
+                  <div class="space-y-2 flex-grow">
+                    <div>
+                      <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-1">
+                          <span class="text-xs text-dark-500">Buy:</span>
+                          <div class="relative group">
+                            <i class="fas fa-info-circle text-rose-400 text-xs cursor-help"></i>
+                            <div
+                              class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-max p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"
+                            >
+                              mortgage + tax + upkeep + closing
+                            </div>
+                          </div>
+                        </div>
+                        <span class="text-sm font-semibold text-dark-800">$1.85M</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="flex justify-between items-center">
+                        <span class="text-xs text-dark-500">Rent:</span>
+                        <span class="text-sm font-semibold text-dark-800">$0.84M</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="text-xs text-dark-400 mt-3">Cumulative money that actually left your pocket</p>
+                </div>
+
+                <!-- Key Drivers -->
+                <div
+                  class="bg-gradient-to-br from-amber-50 to-orange-50 p-4 rounded-xl border border-amber-100 flex flex-col"
+                >
+                  <div class="flex items-center space-x-2 mb-2">
+                    <i class="fas fa-chart-line text-amber-600"></i>
+                    <h4 class="text-sm font-medium text-amber-700">Key Drivers</h4>
+                  </div>
+                  <div class="space-y-2 flex-grow">
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs text-dark-500">Stock CAGR:</span>
+                      <span class="text-sm font-semibold text-dark-800">15%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs text-dark-500">Home CAGR:</span>
+                      <span class="text-sm font-semibold text-dark-800">5%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs text-dark-500">Interest & property-tax:</span>
+                      <span class="text-sm font-semibold text-dark-800">$1.18M</span>
+                    </div>
+                  </div>
+                  <p class="text-xs text-dark-400 mt-2">Puts the result in context; explains why lines diverged</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-8 pt-6 border-t border-gray-200 text-center">
+          <div class="flex justify-center space-x-6 mb-4">
+            <button class="text-dark-400 hover:text-primary-600 text-sm transition">
+              <i class="fas fa-file-alt mr-1"></i> Assumptions
+            </button>
+            <button class="text-dark-400 hover:text-primary-600 text-sm transition">
+              <i class="fas fa-download mr-1"></i> Export Data
+            </button>
+            <button class="text-dark-400 hover:text-primary-600 text-sm transition">
+              <i class="fas fa-redo-alt mr-1"></i> Reset
+            </button>
+          </div>
+          <p class="text-xs text-dark-400">
+            Data based on historical market trends (2015-2025). Results are projections and not guaranteed.
+          </p>
+          <p class="text-xs text-dark-400 mt-1">
+            © 2025 Buy vs. Rent Financial Calculator |
+            <span class="text-primary-600">Privacy Policy</span>
+          </p>
+        </footer>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        var chart;
+
+        // City Defaults Data
+        const cityDefaults = {
+          sunnyvale: {
+            housePrice: 2350000,
+            downPayment: 20,
+            interestRate: 6.5,
+            propertyTax: 1.22,
+            monthlyRent: 5800,
+            rentIncrease: 5.2,
+          },
+          fremont: {
+            housePrice: 1850000,
+            downPayment: 20,
+            interestRate: 6.5,
+            propertyTax: 1.25,
+            monthlyRent: 4500,
+            rentIncrease: 4.8,
+          },
+          bayarea: {
+            housePrice: 2500000,
+            downPayment: 25,
+            interestRate: 6.75,
+            propertyTax: 1.2,
+            monthlyRent: 6000,
+            rentIncrease: 5,
+          },
+          seattle: {
+            housePrice: 1350000,
+            downPayment: 20,
+            interestRate: 6.25,
+            propertyTax: 0.92,
+            monthlyRent: 3800,
+            rentIncrease: 4.5,
+          },
+          austin: {
+            housePrice: 750000,
+            downPayment: 15,
+            interestRate: 6.1,
+            propertyTax: 1.8,
+            monthlyRent: 2800,
+            rentIncrease: 3.9,
+          },
+          boston: {
+            housePrice: 1250000,
+            downPayment: 20,
+            interestRate: 6.38,
+            propertyTax: 1.15,
+            monthlyRent: 3900,
+            rentIncrease: 4.2,
+          },
+          nyc: {
+            housePrice: 2100000,
+            downPayment: 20,
+            interestRate: 6.4,
+            propertyTax: 0.85,
+            monthlyRent: 5500,
+            rentIncrease: 5.5,
+          },
+          toronto: {
+            housePrice: 1450000,
+            downPayment: 20,
+            interestRate: 5.85,
+            propertyTax: 0.65,
+            monthlyRent: 3500,
+            rentIncrease: 4.0,
+          },
+          default: {
+            housePrice: 2500000,
+            downPayment: 25,
+            interestRate: 6.75,
+            propertyTax: 1.2,
+            monthlyRent: 6000,
+            rentIncrease: 5,
+          },
+        };
+
+        // City Defaults Handler
+        const cityDefaultsDropdown = document.getElementById("cityDefaults");
+        cityDefaultsDropdown.addEventListener("change", function () {
+          const selectedCity = this.value;
+          const cityData = cityDefaults[selectedCity];
+
+          // Update Buy parameters
+          updateRangeAndDisplay("housePrice", cityData.housePrice);
+          updateRangeAndDisplay("downPayment", cityData.downPayment);
+          updateRangeAndDisplay("interestRate", cityData.interestRate);
+          updateRangeAndDisplay("propertyTax", cityData.propertyTax);
+
+          // Update Rent parameters
+          updateRangeAndDisplay("monthlyRent", cityData.monthlyRent);
+          updateRangeAndDisplay("rentIncrease", cityData.rentIncrease);
+
+          // Show a notification
+          showNotification(
+            `Loaded defaults for ${
+              selectedCity === "default" ? "Smart Defaults" : this.options[this.selectedIndex].text
+            }`
+          );
+        });
+
+        // Helper function to update range inputs and their displays
+        function updateRangeAndDisplay(id, value) {
+          const rangeInput = document.querySelector(`input[type="range"][data-id="${id}"]`);
+          if (!rangeInput) return;
+
+          rangeInput.value = value;
+          const displayElement = rangeInput.parentElement.querySelector(".px-3.py-1");
+
+          if (displayElement) {
+            // Format the display based on the input type
+            if (id === "housePrice" || id === "monthlyRent") {
+              displayElement.textContent = `$${numberWithCommas(value)}`;
+            } else if (id === "downPayment" || id === "propertyTax" || id === "interestRate" || id === "rentIncrease") {
+              displayElement.textContent = `${value}%`;
+            } else {
+              displayElement.textContent = value;
+            }
+          }
+        }
+
+        // Helper function to format numbers with commas
+        function numberWithCommas(x) {
+          return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // Show a temporary notification
+        function showNotification(message) {
+          const notification = document.createElement("div");
+          notification.className =
+            "fixed top-4 right-4 bg-dark-800 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-fade-in-out";
+          notification.innerHTML = `<i class="fas fa-info-circle mr-2"></i>${message}`;
+          document.body.appendChild(notification);
+
+          setTimeout(() => {
+            notification.classList.add("opacity-0");
+            setTimeout(() => notification.remove(), 500);
+          }, 3000);
+        }
+
+        // Add data attributes to range inputs for identification
+        document.querySelectorAll('input[type="range"]').forEach((input) => {
+          const label = input.parentElement.querySelector("label");
+          if (label) {
+            const labelText = label.textContent.trim().toLowerCase();
+            if (labelText === "house price") input.setAttribute("data-id", "housePrice");
+            else if (labelText === "down payment") input.setAttribute("data-id", "downPayment");
+            else if (labelText === "interest rate") input.setAttribute("data-id", "interestRate");
+            else if (labelText === "property tax") input.setAttribute("data-id", "propertyTax");
+            else if (labelText === "monthly rent") input.setAttribute("data-id", "monthlyRent");
+            else if (labelText === "annual rent increase") input.setAttribute("data-id", "rentIncrease");
+          }
+        });
+
+        // Base Data
+        const baseCategories = [
+          "Year 0",
+          "Year 1",
+          "Year 2",
+          "Year 3",
+          "Year 4",
+          "Year 5",
+          "Year 6",
+          "Year 7",
+          "Year 8",
+          "Year 9",
+          "Year 10",
+        ];
+        const buyData = [
+          625000, 748000, 890000, 1040000, 1200000, 1390000, 1610000, 1870000, 2190000, 2580000, 3124680,
+        ];
+        const rentInvestData = [
+          625000, 710000, 820000, 945000, 1090000, 1280000, 1510000, 1770000, 2090000, 2420000, 2845200,
+        ];
+
+        // Estimated Cash Out Values (Year 10 - costs)
+        // Example: 5% selling cost for Buy, 24% capital gains for Rent+Invest diff
+        const buyCashOutValue = buyData[10] * (1 - 0.05);
+        const rentInvestCashOutValue =
+          rentInvestData[10] * (1 - 0.24 * ((rentInvestData[10] - rentInvestData[0]) / rentInvestData[10])); // Simplified CG tax
+
+        const updateChartData = (showCashOut) => {
+          let seriesData;
+          let categoriesData;
+
+          if (showCashOut) {
+            seriesData = [
+              { name: "Buy a Home", data: [...buyData, buyCashOutValue] },
+              { name: "Rent + Invest", data: [...rentInvestData, rentInvestCashOutValue] },
+            ];
+            categoriesData = [...baseCategories, "Cash Out"];
+          } else {
+            seriesData = [
+              { name: "Buy a Home", data: buyData },
+              { name: "Rent + Invest", data: rentInvestData },
+            ];
+            categoriesData = baseCategories;
+          }
+
+          const options = {
+            series: seriesData,
+            chart: {
+              height: 320,
+              type: "area",
+              fontFamily: "Montserrat, sans-serif",
+              toolbar: { show: false },
+              zoom: { enabled: false },
+            },
+            dataLabels: { enabled: false },
+            stroke: { curve: "smooth", width: 3 },
+            colors: ["#8b5cf6", "#10b981"],
+            fill: {
+              type: "gradient",
+              gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.1, stops: [0, 100] },
+            },
+            markers: { size: 5, strokeWidth: 2, hover: { size: 7 } },
+            xaxis: {
+              categories: categoriesData,
+              labels: { style: { colors: "#64748b", fontSize: "12px", fontWeight: 500 } },
+            },
+            yaxis: {
+              labels: {
+                formatter: function (value) {
+                  return new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  }).format(value);
+                },
+                style: { colors: "#64748b", fontSize: "12px", fontWeight: 500 },
+              },
+            },
+            tooltip: {
+              y: {
+                formatter: function (value) {
+                  return new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  }).format(value);
+                },
+              },
+            },
+            legend: {
+              position: "top",
+              horizontalAlign: "right",
+              fontSize: "13px",
+              fontWeight: 500,
+              markers: { width: 14, height: 14, radius: 100 },
+              itemMargin: { horizontal: 15 },
+            },
+          };
+
+          if (!chart) {
+            chart = new ApexCharts(document.querySelector("#netWorthChart"), options);
+            chart.render();
+          } else {
+            chart.updateOptions(options);
+          }
+
+          // Update the net worth cards based on cash out toggle
+          const buyNetWorth = document.getElementById("buyNetWorth");
+          const rentNetWorth = document.getElementById("rentNetWorth");
+
+          if (showCashOut) {
+            buyNetWorth.textContent = formatCurrency(buyCashOutValue);
+            rentNetWorth.textContent = formatCurrency(rentInvestCashOutValue);
+          } else {
+            buyNetWorth.textContent = formatCurrency(buyData[10]);
+            rentNetWorth.textContent = formatCurrency(rentInvestData[10]);
+          }
+        };
+
+        // Helper function to format currency
+        function formatCurrency(value) {
+          return new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+          }).format(value);
+        }
+
+        // Chart Toggle Functionality
+        const chartCashOutToggle = document.getElementById("chartCashOutToggle");
+        chartCashOutToggle.addEventListener("change", (event) => {
+          updateChartData(event.target.checked);
+        });
+
+        // Initial Chart Render
+        updateChartData(chartCashOutToggle.checked);
+
+        /* ---------- Cash-Outflow CHART ---------- */
+
+        // dummy yearly numbers – replace with your real model later
+        const buyCashAnnual = [625000, 145000, 148000, 150000, 152000, 154000, 156000, 158000, 160000, 162000];
+        const rentCashAnnual = [72000, 75600, 79380, 83349, 87516, 91891, 96486, 101410, 106681, 112315];
+
+        // helper to build cumulative series from annual
+        const cumSum = (arr) =>
+          arr.reduce((acc, v, i) => {
+            acc.push((acc[i - 1] || 0) + v);
+            return acc;
+          }, []);
+
+        const buyCashTotal = cumSum(buyCashAnnual);
+        const rentCashTotal = cumSum(rentCashAnnual);
+
+        let cashChart; // keeps the ApexCharts instance
+
+        function renderCashChart(showYearly) {
+          const categories = Array.from({ length: 10 }, (_, i) => `Year ${i + 1}`);
+          const series = showYearly
+            ? [
+                { name: "Buy (annual)", type: "column", data: buyCashAnnual },
+                { name: "Rent (annual)", type: "column", data: rentCashAnnual },
+                { name: "Invested diff", type: "column", data: buyCashAnnual.map((v, i) => v - rentCashAnnual[i]) },
+              ]
+            : [
+                { name: "Buy – cumulative", type: "area", data: buyCashTotal },
+                { name: "Rent – cumulative", type: "area", data: rentCashTotal },
+                { name: "Invested diff", type: "area", data: buyCashTotal.map((v, i) => v - rentCashTotal[i]) },
+              ];
+
+          const options = {
+            series,
+            chart: {
+              height: 300,
+              stacked: showYearly, // stacked bars for yearly mode
+              type: showYearly ? "bar" : "area",
+              fontFamily: "Montserrat, sans-serif",
+              toolbar: { show: false },
+              zoom: { enabled: false },
+            },
+            stroke: { curve: "smooth", width: showYearly ? 0 : 3 },
+            fill: { opacity: showYearly ? 1 : 0.15 },
+            colors: ["#8b5cf6", "#10b981", "#f59e0b"],
+            dataLabels: { enabled: false },
+            xaxis: { categories },
+            yaxis: {
+              labels: {
+                formatter: (v) =>
+                  v.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }),
+              },
+            },
+            tooltip: { shared: true, intersect: false },
+          };
+
+          if (!cashChart) {
+            cashChart = new ApexCharts(document.querySelector("#cashOutChart"), options);
+            cashChart.render();
+          } else {
+            cashChart.updateOptions(options);
+          }
+        }
+
+        // initial draw
+        const cashModeToggle = document.getElementById("cashModeToggle");
+        renderCashChart(cashModeToggle.checked);
+
+        // toggle handler
+        cashModeToggle.addEventListener("change", (e) => renderCashChart(e.target.checked));
+
+        // Tab switching functionality
+        const buyTab = document.querySelector("button:has(> i.fa-home)");
+        const rentInvestTab = document.querySelector("button:has(> i.fa-key)");
+        const buyTabContent = document.getElementById("buy-tab-content");
+        const rentInvestTabContent = document.getElementById("rent-invest-tab-content");
+
+        buyTab.addEventListener("click", () => {
+          buyTab.classList.add("tab-active");
+          rentInvestTab.classList.remove("tab-active");
+          buyTab.classList.remove("text-dark-400");
+          buyTab.classList.add("text-dark-800");
+          rentInvestTab.classList.remove("text-dark-800");
+          rentInvestTab.classList.add("text-dark-400");
+
+          buyTabContent.classList.remove("hidden");
+          rentInvestTabContent.classList.add("hidden");
+        });
+
+        rentInvestTab.addEventListener("click", () => {
+          rentInvestTab.classList.add("tab-active");
+          buyTab.classList.remove("tab-active");
+          rentInvestTab.classList.remove("text-dark-400");
+          rentInvestTab.classList.add("text-dark-800");
+          buyTab.classList.remove("text-dark-800");
+          buyTab.classList.add("text-dark-400");
+
+          rentInvestTabContent.classList.remove("hidden");
+          buyTabContent.classList.add("hidden");
+        });
+
+        // Toggle details section
+        document.getElementById("toggleDetails").addEventListener("click", function () {
+          const detailsSection = document.getElementById("detailsSection");
+          const detailsIcon = document.getElementById("detailsIcon");
+          const detailsText = document.getElementById("detailsText");
+
+          detailsSection.classList.toggle("hidden");
+
+          if (detailsSection.classList.contains("hidden")) {
+            detailsIcon.classList.remove("fa-chevron-up");
+            detailsIcon.classList.add("fa-chevron-down");
+            detailsText.textContent = "Show details";
+          } else {
+            detailsIcon.classList.remove("fa-chevron-down");
+            detailsIcon.classList.add("fa-chevron-up");
+            detailsText.textContent = "Hide details";
+          }
+        });
+
+        // Net Worth Card Toggle Functionality
+        const cashOutToggle = document.getElementById("cashOutToggle");
+        const netWorthDescription = document.getElementById("netWorthDescription");
+        const capitalGainsTaxRate = 24; // Example value, should be linked to input later
+
+        const updateDescription = () => {
+          if (cashOutToggle.checked) {
+            netWorthDescription.textContent = `Net worth @ year 10 after selling house (5% fee) vs. cashing out investments (${capitalGainsTaxRate}% capital gains tax)`;
+          } else {
+            netWorthDescription.textContent = `Net worth @ year 10 with property equity and investment portfolio value (no liquidation)`;
+          }
+        };
+
+        cashOutToggle.addEventListener("change", updateDescription);
+
+        // Initial description update
+        updateDescription();
+
+        // Hero section button handlers
+        document.getElementById("edit-inputs-btn").addEventListener("click", function () {
+          // Scroll to the parameters section smoothly
+          const parametersCard = document.querySelector(".card h2 i.fas.fa-sliders-h").closest(".card");
+          parametersCard.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        });
+
+        document.getElementById("share-result-btn").addEventListener("click", function () {
+          // Create a shareable URL
+          const url = window.location.href;
+
+          // Copy to clipboard
+          navigator.clipboard
+            .writeText(url)
+            .then(function () {
+              // Show success notification
+              showNotification("Result link copied to clipboard!");
+            })
+            .catch(function () {
+              // Fallback for browsers that don't support clipboard API
+              const textarea = document.createElement("textarea");
+              textarea.value = url;
+              textarea.style.position = "fixed";
+              document.body.appendChild(textarea);
+              textarea.focus();
+              textarea.select();
+
+              try {
+                document.execCommand("copy");
+                showNotification("Result link copied to clipboard!");
+              } catch (err) {
+                showNotification("Failed to copy link. Try again later.");
+              }
+
+              document.body.removeChild(textarea);
+            });
+        });
+      });
+    </script>
+  </body>
+</html>
