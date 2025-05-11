@@ -4,14 +4,14 @@
 
 买房基本数据：
 
-a. property_price                        | 购房价格      | Current Home Price          | example: $2M
+a. property_price                        | 购房价格      | Current House Price         | example: $2M
 b. down_payment_percentage               | 首付比例      | Down Payment %              | example: 25%
 c. mortgage_interest_rate_annual         | 贷款利率      | Mortgage Interest Rate      | example: 6.75%
 d. mortgage_term_years                   | 贷款期限      | Mortgage Term               | example: 30 years
 
 买入时交易一次性成本：
 
-e. closing_costs_percentage_buy          | 交易成本      | Closing Cost %              | example: 1% of loan amount
+e. closing_costs_percentage_buy          | 交易成本      | Closing Cost %              | example: 1% of home price
 
 持有成本：
 
@@ -21,7 +21,7 @@ h. hoa_fee_annual                        | HOA费        | HOA Fee              
 
 增值假设：
 
-i. home_appreciation_cagr                | 房价年增长率   | Home Appreciation (CAGR)    | example: 5%
+i. home_appreciation_cagr                | 房价年增长率   | House Appreciation (CAGR)   | example: 5%
 
 税收影响：
 
@@ -47,11 +47,49 @@ q. investment_options_list               | 投资标的选择   | Investment Opt
 r. investment_options_cagr_list          | 年均涨幅      | Investment Options CAGR     | example: 9.25%, 15.2%, 17.22%
 s. long_term_capital_gains_tax_rate      | 资本利得税率   | Capital Gains on Investment | example: 24%
 
+### Organized Inputs
+
+#### Buy Parameters
+
+Basic Options:
+
+- a. property_price
+- b. down_payment_percentage
+- c. mortgage_interest_rate_annual
+- d. mortgage_term_years
+- i. home_appreciation_cagr
+
+
+Advanced Options:
+
+Holding Costs:
+
+- e. closing_costs_percentage_buy
+- f. property_tax_rate_annual
+- g. insurance_and_maintenance_rate_annual
+- h. hoa_fee_annual
+
+Tax Impact:
+
+- j. marginal_tax_rate
+- k. mortgage_interest_deduction
+
+Selling Costs:
+
+- l. selling_costs_percentage_sell
+- m. long_term_capital_gains_tax_rate
+- n. tax_free_capital_gain_amount
+
+#### Rent and Invest Parameters
+
+Basic Options:
+
+- o. current_monthly_rent_amount
+- p. rent_growth_rate_annual
+- q. investment_options_list
+- r. investment_options_cagr_list
+- s. long_term_capital_gains_tax_rate
+
+
+
 ### Calculation Logic
-
-初始现金支出
-
-首付支出 = a. Current Home Price _ b. Down Payment %
-贷款金额 = a _ (1 - b)
-
-初始现金支出 = 首付支出 + a. Current Home Price _ e. Closing Cost % = a _ b + a \* e
