@@ -93,3 +93,132 @@ Basic Options:
 
 
 ### Calculation Logic
+
+**Core Principle:** We will calculate everything annually. For things like mortgages (paid monthly), we'll sum them up to an annual figure.
+
+**I. Preliminary Calculations (Done Once):**
+
+1. **Down Payment Amount:**
+   * `down_payment_amount = property_price (a) * down_payment_percentage (b)`
+2. **Loan Amount:**
+   * `loan_amount = property_price (a) - down_payment_amount`
+3. **Monthly Mortgage Payment:**
+   * This requires the standard mortgage payment formula:
+      `M = P [i(1 + i)^n] / [(1 + i)^n – 1]`
+      Where:
+      * `P = loan_amount`
+      * `i = mortgage_interest_rate_annual (c) / 12` (monthly interest rate)
+      * `n = mortgage_term_years (d) * 12` (total number of payments)
+   * Let's call this `monthly_mortgage_payment`.
+4. **Buying Closing Costs Amount:**
+   * `closing_costs_buy_amount = property_price (a) * closing_costs_percentage_buy (e)`
+
+**II. Annual Calculations (Loop from Year = 1 to N):**
+
+For each year, we'll calculate the metrics for both "Buy" and "Rent & Invest" scenarios.
+
+**A. BUY SCENARIO (for current `Year`)**
+
+1. **Current Property Value (`current_year_property_value`):**
+   * `current_year_property_value = property_price (a) * (1 + home_appreciation_cagr (i)) ^ Year`
+
+2. **Mortgage Details for the Year:**
+   * You'll need an amortization schedule (or a function that calculates it year by year). For the current `Year`:
+      * `annual_interest_paid_this_year`: Sum of interest portions of the 12 monthly payments in this `Year`.
+      * `annual_principal_paid_this_year`: Sum of principal portions of the 12 monthly payments in this `Year`.
+      * `remaining_mortgage_balance_end_of_year`: Loan balance after payments of this `Year`.
+
+3. **Annual Holding Costs:**
+   * `annual_property_tax = current_year_property_value * property_tax_rate_annual (f)`
+   * `annual_insurance_maintenance = current_year_property_value * insurance_and_maintenance_rate_annual (g)`
+   * `annual_hoa = hoa_fee_annual (h)` (Assuming this is a fixed annual amount as per the input. If it were to grow, we'd need a growth rate for it.)
+   * `total_annual_holding_costs = annual_property_tax + annual_insurance_maintenance + annual_hoa`
+
+4. **Cash Outflow (Buy Scenario - for current `Year`):**
+   * **If `Year == 1`:**
+      `cash_outflow_buy = down_payment_amount + closing_costs_buy_amount + (monthly_mortgage_payment * 12) + total_annual_holding_costs`
+   * **If `Year > 1`:**
+      `cash_outflow_buy = (monthly_mortgage_payment * 12) + total_annual_holding_costs`
+   * **Mortgage Interest Deduction Impact (if `k` is true):**
+      `tax_savings_from_deduction = annual_interest_paid_this_year * marginal_tax_rate (j)`
+      `adjusted_cash_outflow_buy = cash_outflow_buy - tax_savings_from_deduction`
+      *(Note: For simplicity, we are assuming the full interest is deductible and directly reduces cash outflow. In reality, it reduces taxable income, and its value depends on being able to itemize beyond the standard deduction.)*
+
+5.  **Net Asset Value (Buy Scenario - "Not Cash Out" - at end of current `Year`):**
+    *   `net_asset_value_buy_not_cash_out = current_year_property_value - remaining_mortgage_balance_end_of_year`
+    *   This is essentially the Home Equity.
+
+6.  **Net Asset Value (Buy Scenario - "Cash Out" - at end of current `Year`):**
+    *   `selling_price = current_year_property_value`
+    *   `selling_costs_amount = selling_price * selling_costs_percentage_sell (l)`
+    *   `proceeds_before_tax_and_loan_repayment = selling_price - selling_costs_amount`
+    *   `capital_gain_on_property = selling_price - property_price (a)` (Initial purchase price)
+    *   `taxable_gain_on_property = max(0, capital_gain_on_property - tax_free_capital_gain_amount (n))`
+    *   `tax_on_property_gain = taxable_gain_on_property * long_term_capital_gains_tax_rate_property (m)`
+    *   `net_asset_value_buy_cash_out = proceeds_before_tax_and_loan_repayment - remaining_mortgage_balance_end_of_year - tax_on_property_gain`
+
+**B. RENT & INVEST SCENARIO (for current `Year`)**
+
+*Let's assume one investment option is chosen from `q` and its corresponding CAGR from `r` is used. Let's call it `selected_investment_cagr`.*
+*Also, we need to track the `investment_portfolio_value` year over year, and `total_cash_invested_so_far` for capital gains tax calculation on investment.*
+
+1.  **Initial Investment (Done once before Year 1 loop, or as part of Year 1 setup):**
+    *   The money *not* spent on buying in Year 0 (or start of Year 1) is invested.
+    *   `initial_investment_amount = down_payment_amount + closing_costs_buy_amount`
+    *   Initialize `investment_portfolio_value = initial_investment_amount`
+    *   Initialize `total_cash_invested_so_far = initial_investment_amount`
+
+2.  **Annual Rent Cost:**
+    *   `current_year_monthly_rent = current_monthly_rent_amount (o) * (1 + rent_growth_rate_annual (p)) ^ (Year - 1)`
+    *   `annual_rent_cost = current_year_monthly_rent * 12`
+
+3.  **Cash Outflow (Rent Scenario - for current `Year`):**
+    *   `cash_outflow_rent = annual_rent_cost`
+
+4.  **Differential Cash Flow for Investment:**
+    *   This is the difference between the *adjusted* cash outflow of buying (considering tax savings) and renting for the current year. This amount is *added* to the investment portfolio.
+    *   `additional_investment_this_year = adjusted_cash_outflow_buy (from Buy Scenario, step A4) - cash_outflow_rent`
+    *   *(Important: If `additional_investment_this_year` is negative, it means renting was more expensive in terms of cash flow for that year than buying. For simplicity, we can assume in this case that no additional funds are withdrawn from the investment to cover this, but simply that no *new* money is added from this differential. Or, for a more advanced model, you could have it draw down from the investment if desired. For now, let's assume `additional_investment_this_year = max(0, additional_investment_this_year)` if we only want to add positive savings.)*
+        *A better approach is to always add this amount, even if negative, as it correctly reflects the funds available/needed relative to the buying scenario.*
+
+5.  **Investment Portfolio Growth:**
+    *   `portfolio_value_before_annual_growth = investment_portfolio_value (from end of last year, or initial amount if Year 1) + additional_investment_this_year`
+    *   `investment_return_this_year = portfolio_value_before_annual_growth * selected_investment_cagr`
+    *   `investment_portfolio_value_end_of_year = portfolio_value_before_annual_growth + investment_return_this_year`
+    *   Update `total_cash_invested_so_far = total_cash_invested_so_far + additional_investment_this_year` (only add the new cash, not returns)
+    *   Update `investment_portfolio_value` to `investment_portfolio_value_end_of_year` for the next iteration.
+
+6.  **Net Asset Value (Rent & Invest - "Not Cash Out" - at end of current `Year`):**
+    *   `net_asset_value_rent_not_cash_out = investment_portfolio_value_end_of_year`
+
+7.  **Net Asset Value (Rent & Invest - "Cash Out" - at end of current `Year`):**
+    *   `capital_gain_on_investment = investment_portfolio_value_end_of_year - total_cash_invested_so_far`
+    *   `taxable_gain_on_investment = max(0, capital_gain_on_investment)`
+    *   `tax_on_investment_gain = taxable_gain_on_investment * long_term_capital_gains_tax_rate_investment (s)`
+    *   `net_asset_value_rent_cash_out = investment_portfolio_value_end_of_year - tax_on_investment_gain`
+
+**III. Presentation of Data:**
+
+After running the loop from Year 1 to N, you will have the following data for each year:
+
+1.  **For Buy Scenario:**
+    *   `cash_outflow_buy` (or `adjusted_cash_outflow_buy`)
+    *   `net_asset_value_buy_not_cash_out`
+    *   `net_asset_value_buy_cash_out`
+2.  **For Rent & Invest Scenario:**
+    *   `cash_outflow_rent`
+    *   `additional_investment_this_year` (This is the *difference* in cash outflows, which gets invested)
+    *   `net_asset_value_rent_not_cash_out`
+    *   `net_asset_value_rent_cash_out`
+
+You can then present this in a table format, year by year:
+
+| Year | Buy: Cash Outflow | Rent: Cash Outflow | Invested Amount (Rent Diff) | Buy: Net Asset (Not Cashed) | Buy: Net Asset (Cashed) | Rent: Net Asset (Not Cashed) | Rent: Net Asset (Cashed) |
+| :--- | :---------------- | :----------------- | :-------------------------- | :-------------------------- | :---------------------- | :--------------------------- | :----------------------- |
+| 1    | ...               | ...                | ...                         | ...                         | ...                     | ...                          | ...                      |
+| 2    | ...               | ...                | ...                         | ...                         | ...                     | ...                          | ...                      |
+| ...  | ...               | ...                | ...                         | ...                         | ...                     | ...                          | ...                      |
+| N    | ...               | ...                | ...                         | ...                         | ...                     | ...                          | ...                      |
+
+This structure should allow you to calculate and present the key data points you're interested in. Remember to handle the "Year 1" cash outflows (which include upfront costs) separately from subsequent years.
+
