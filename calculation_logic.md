@@ -51,46 +51,119 @@ s. long_term_capital_gains_tax_rate      | 资本利得税率   | Capital Gains 
 
 #### Buy Parameters
 
-Basic Options:
+Essential (Visible by Default):
 
 - a. property_price
+    * **Label:** `Property Purchase Price`
+    * **Input Type:** Number input, formatted for currency, slider from 100k to 10M or number input for $.
+    * **Placeholder/Example:** `e.g., $750,000`
 - b. down_payment_percentage
+    * **Label:** `Down Payment`
+    * **Input Type:** Percentage input, slider from 0-100% or number input for %.
+    * **Dynamic Display:** Show the calculated dollar amount of the down payment next to it. (`$ [property_price * down_payment_percentage]`)
+    * **Default:** `25%`
 - c. mortgage_interest_rate_annual
+    * **Label:** `Mortgage Interest Rate`
+    * **Input Type:** Number input, formatted as a percentage (e.g., `6.75%`).
+    * **Placeholder/Example:** `e.g., 6.75%`
 - d. mortgage_term_years
+    * **Label:** `Mortgage Term`
+    * **Input Type:** radio buttons, `15 Years`, `20 Years`, `30 Years`.
+    * **Default:** `30 Years`
 - i. home_appreciation_cagr
+    * **Label:** `Expected Annual Home Appreciation`
+    * **Input Type:** Slider, from 0% to 10% or number input for %.
+    * **Default:** `3.5%` (Provide a tooltip explaining this is an estimate).
 
 
-Advanced Options:
+Advanced Options (Initially Collapsed - User clicks to expand "More Options" or "Advanced Options"):
+
+Buying/Selling Transaction Costs:
+
+- e. closing_costs_percentage_buy
+    * **Label:** `Closing Costs (Current Buy)`
+    * **Input Type:** Percentage input.
+    * **Tooltip:** "As a % of property price (e.g., loan origination, title, and other closing costs)."
+    * **Default:** `2%`
+
+- l. selling_costs_percentage_sell
+    * **Label:** `Selling Costs (Future Sale)`
+    * **Input Type:** Percentage input.
+    * **Tooltip:** "As a % of future sale price (e.g., agent commissions)."
+    * **Default:** `5%`
 
 Holding Costs:
 
-- e. closing_costs_percentage_buy
 - f. property_tax_rate_annual
-- g. insurance_and_maintenance_rate_annual
-- h. hoa_fee_annual
+    * **Label:** `Annual Property Tax Rate`
+    * **Input Type:** Percentage input.
+    * **Tooltip:** "As a % of the property's assessed value each year."
+    * **Default:** `1.1%`
 
-Tax Impact:
+- g. insurance_and_maintenance_rate_annual
+    * **Label:** `Annual Insurance & Maintenance`
+    * **Input Type:** Percentage input.
+    * **Tooltip:** "Combined estimate as a % of the property's value each year."
+    * **Default:** `1.0%`
+
+- h. hoa_fee_annual
+    * **Label:** `Annual HOA Fee`
+    * **Input Type:** Number input (currency).
+    * **Default:** `$0`
+
+Tax Implications:
 
 - j. marginal_tax_rate
+    * **Label:** `Your Marginal Income Tax Rate`
+    * **Input Type:** Percentage input.
+    * **Tooltip:** "Your combined federal and state rate. Used to estimate mortgage interest deduction benefits."
+    * **Default:** `24%`
+
 - k. mortgage_interest_deduction
+    * **Label:** `Claim Mortgage Interest Deduction?`
+    * **Input Type:** Toggle switch (Yes/No).
+    * **Tooltip:** "If you itemize deductions on your tax return, you can deduct the interest paid on your mortgage."
+    * **Default:** `Yes`
 
-Selling Costs:
-
-- l. selling_costs_percentage_sell
 - m. long_term_capital_gains_tax_rate
+    * **Label:** `Capital Gains Tax Rate (Property Sale)`
+    * **Input Type:** Percentage input.
+    * **Default:** `15%`
+
 - n. tax_free_capital_gain_amount
+    * **Label:** `Tax-Free Capital Gain Amount (Home Sale)`
+    * **Input Type:** Radio buttons, `Single`, `Married`, `Head of Household`.
+    * **Tooltip:** "$250,000 for single, $500,000 for married filing jointly in the US."
+    * **Default:** `Married`
+
 
 #### Rent and Invest Parameters
 
 Basic Options:
 
 - o. current_monthly_rent_amount
+    * **Label:** `Monthly Rent`
+    * **Input Type:** Number input (currency), slider from $1,000 to $10,000.
+    * **Placeholder/Example:** `e.g., $2,500`
+
 - p. rent_growth_rate_annual
+    * **Label:** `Expected Annual Rent Increase`
+    * **Input Type:** Percentage input, slider from 0% to 10% or number input for %.
+    * **Option:** A checkbox: "Same as home appreciation rate."
+    * **Default:** `3.5%`, checkbox checked.
+
 - q. investment_options_list
 - r. investment_options_cagr_list
+    * **Label:** `Expected Annual Investment Return`
+    * **Input Type:** Radio buttons to select from "QQQ", "SPY", or "Custom". If "Custom", a slider from 0% to 30% or number input for % is shown.
+    * **Tooltip:** "Your estimated average annual growth rate for investments."
+    * **Default:** `8%` (e.g., a blended or common index fund return).
+
 - s. long_term_capital_gains_tax_rate
-
-
+    * **Label:** `Capital Gains Tax Rate`
+    * **Input Type:** Percentage input.
+    * **Tooltip:** "Tax rate on profits when investments are sold. Assumes long-term capital gains tax rate."
+    * **Default:** `15%`
 
 ### Calculation Logic
 
