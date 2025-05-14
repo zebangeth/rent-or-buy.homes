@@ -725,16 +725,107 @@
                       <div class="relative group ml-1">
                         <i class="fas fa-info-circle text-secondary-400 text-xs"></i>
                         <div
-                          class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-60 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"
+                          class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-96 p-3 bg-dark-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 max-h-96 overflow-y-auto"
                         >
-                          Tax rate on profits when investments are sold. Assumes long-term capital gains tax rate.
+                          <p class="mb-2">
+                            Tax rate on profits when investments are sold. Based on your income and filing status:
+                          </p>
+                          <table class="w-full text-xs border-collapse">
+                            <thead class="bg-dark-700">
+                              <tr>
+                                <th class="p-1 text-left">Filing Status</th>
+                                <th class="p-1 text-left">Income Range</th>
+                                <th class="p-1 text-right">Rate</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr class="border-b border-dark-600">
+                                <td class="p-1 font-medium" rowspan="4">Single</td>
+                                <td class="p-1">$0 – $48,350</td>
+                                <td class="p-1 text-right">0%</td>
+                              </tr>
+                              <tr class="border-b border-dark-600">
+                                <td class="p-1">$48,351 – $200,000</td>
+                                <td class="p-1 text-right">15%</td>
+                              </tr>
+                              <tr class="border-b border-dark-600">
+                                <td class="p-1">$200,001 – $533,400</td>
+                                <td class="p-1 text-right">18.8%</td>
+                              </tr>
+                              <tr class="border-b border-dark-600">
+                                <td class="p-1">Over $533,400</td>
+                                <td class="p-1 text-right">23.8%</td>
+                              </tr>
+
+                              <tr class="border-b border-dark-600">
+                                <td class="p-1 font-medium" rowspan="4">Married Filing Jointly</td>
+                                <td class="p-1">$0 – $96,700</td>
+                                <td class="p-1 text-right">0%</td>
+                              </tr>
+                              <tr class="border-b border-dark-600">
+                                <td class="p-1">$96,701 – $250,000</td>
+                                <td class="p-1 text-right">15%</td>
+                              </tr>
+                              <tr class="border-b border-dark-600">
+                                <td class="p-1">$250,001 – $600,050</td>
+                                <td class="p-1 text-right">18.8%</td>
+                              </tr>
+                              <tr class="border-b border-dark-600">
+                                <td class="p-1">Over $600,050</td>
+                                <td class="p-1 text-right">23.8%</td>
+                              </tr>
+
+                              <tr class="border-b border-dark-600">
+                                <td class="p-1 font-medium" rowspan="4">Head of Household</td>
+                                <td class="p-1">$0 – $64,750</td>
+                                <td class="p-1 text-right">0%</td>
+                              </tr>
+                              <tr class="border-b border-dark-600">
+                                <td class="p-1">$64,751 – $200,000</td>
+                                <td class="p-1 text-right">15%</td>
+                              </tr>
+                              <tr class="border-b border-dark-600">
+                                <td class="p-1">$200,001 – $566,700</td>
+                                <td class="p-1 text-right">18.8%</td>
+                              </tr>
+                              <tr>
+                                <td class="p-1">Over $566,700</td>
+                                <td class="p-1 text-right">23.8%</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <p class="mt-2 text-xs">
+                            Includes Long-Term Capital Gains Tax + Net Investment Income Tax where applicable.
+                          </p>
                         </div>
                       </div>
                     </label>
-                    <div class="flex space-x-2 items-center">
-                      <input type="number" value="15" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
-                      <span class="text-xs text-dark-500">%</span>
-                    </div>
+                  </div>
+                  <div class="grid grid-cols-4 gap-2">
+                    <label
+                      class="bg-gray-100 hover:bg-gray-200 text-dark-600 text-center p-2 rounded-lg text-sm font-medium cursor-pointer flex items-center justify-center"
+                    >
+                      <input type="radio" name="capitalGainsTaxRate" value="0" class="hidden" />
+                      <span>0%</span>
+                    </label>
+                    <label
+                      class="bg-secondary-500 hover:bg-secondary-600 text-white text-center p-2 rounded-lg text-sm font-medium cursor-pointer flex items-center justify-center"
+                    >
+                      <input type="radio" name="capitalGainsTaxRate" value="15" checked class="hidden" />
+                      <span>15%</span>
+                    </label>
+                    <label
+                      class="bg-gray-100 hover:bg-gray-200 text-dark-600 text-center p-2 rounded-lg text-sm font-medium cursor-pointer flex items-center justify-center"
+                    >
+                      <input type="radio" name="capitalGainsTaxRate" value="18.8" class="hidden" />
+                      <span>18.8%</span>
+                    </label>
+                    <label
+                      class="bg-gray-100 hover:bg-gray-200 text-dark-600 text-center p-2 rounded-lg text-sm font-medium cursor-pointer flex items-center justify-center"
+                    >
+                      <input type="radio" name="capitalGainsTaxRate" value="23.8" class="hidden" />
+                      <span>23.8%</span>
+                    </label>
                   </div>
                 </div>
 
@@ -1057,6 +1148,80 @@
               }
             });
           }
+        }
+
+        // Capital Gains Tax Rate Radio Buttons
+        const capitalGainsTaxRateRadios = document.querySelectorAll('input[name="capitalGainsTaxRate"]');
+
+        if (capitalGainsTaxRateRadios.length > 0) {
+          capitalGainsTaxRateRadios.forEach((radio) => {
+            radio.addEventListener("change", function () {
+              // Reset all radio button labels
+              capitalGainsTaxRateRadios.forEach((r) => {
+                const label = r.closest("label");
+                label.classList.remove("bg-secondary-500", "hover:bg-secondary-600", "text-white");
+                label.classList.add("bg-gray-100", "hover:bg-gray-200", "text-dark-600");
+              });
+
+              // Highlight the selected radio button label
+              const selectedLabel = this.closest("label");
+              selectedLabel.classList.remove("bg-gray-100", "hover:bg-gray-200", "text-dark-600");
+              selectedLabel.classList.add("bg-secondary-500", "hover:bg-secondary-600", "text-white");
+            });
+          });
+        }
+
+        // Same as home appreciation checkbox handler
+        const sameAsAppreciationCheckbox = document.getElementById("sameAsAppreciationRate");
+        const rentIncreaseSlider = document.querySelector('input[data-id="rentIncrease"]');
+        const homeAppreciationSlider = document.querySelector('input[data-id="homeAppreciation"]');
+
+        if (sameAsAppreciationCheckbox && rentIncreaseSlider && homeAppreciationSlider) {
+          // Function to update rent increase to match home appreciation
+          const updateRentIncreaseFromAppreciation = () => {
+            if (sameAsAppreciationCheckbox.checked) {
+              const appreciationValue = parseFloat(homeAppreciationSlider.value);
+              rentIncreaseSlider.value = appreciationValue;
+
+              // Also update the display
+              const rentIncreaseDisplay = rentIncreaseSlider.parentElement.querySelector(".px-3.py-1");
+              if (rentIncreaseDisplay) {
+                rentIncreaseDisplay.textContent = `${appreciationValue}%`;
+              }
+
+              // Disable the slider when checkbox is checked
+              rentIncreaseSlider.disabled = true;
+              rentIncreaseSlider.classList.add("opacity-50");
+            } else {
+              // Enable the slider when checkbox is unchecked
+              rentIncreaseSlider.disabled = false;
+              rentIncreaseSlider.classList.remove("opacity-50");
+            }
+          };
+
+          // Initial setup
+          updateRentIncreaseFromAppreciation();
+
+          // Listen for checkbox changes
+          sameAsAppreciationCheckbox.addEventListener("change", updateRentIncreaseFromAppreciation);
+
+          // Listen for home appreciation changes when checkbox is checked
+          homeAppreciationSlider.addEventListener("input", () => {
+            if (sameAsAppreciationCheckbox.checked) {
+              updateRentIncreaseFromAppreciation();
+            }
+          });
+
+          // Listen for rent increase slider manual changes (enable only when checkbox is unchecked)
+          rentIncreaseSlider.addEventListener("input", function () {
+            if (!sameAsAppreciationCheckbox.checked) {
+              const value = this.value;
+              const rentIncreaseDisplay = this.parentElement.querySelector(".px-3.py-1");
+              if (rentIncreaseDisplay) {
+                rentIncreaseDisplay.textContent = `${value}%`;
+              }
+            }
+          });
         }
 
         // City Defaults Data
@@ -1568,59 +1733,6 @@
               document.body.removeChild(textarea);
             });
         });
-
-        // Same as home appreciation checkbox handler
-        const sameAsAppreciationCheckbox = document.getElementById("sameAsAppreciationRate");
-        const rentIncreaseSlider = document.querySelector('input[data-id="rentIncrease"]');
-        const homeAppreciationSlider = document.querySelector('input[data-id="homeAppreciation"]');
-
-        if (sameAsAppreciationCheckbox && rentIncreaseSlider && homeAppreciationSlider) {
-          // Function to update rent increase to match home appreciation
-          const updateRentIncreaseFromAppreciation = () => {
-            if (sameAsAppreciationCheckbox.checked) {
-              const appreciationValue = parseFloat(homeAppreciationSlider.value);
-              rentIncreaseSlider.value = appreciationValue;
-
-              // Also update the display
-              const rentIncreaseDisplay = rentIncreaseSlider.parentElement.querySelector(".px-3.py-1");
-              if (rentIncreaseDisplay) {
-                rentIncreaseDisplay.textContent = `${appreciationValue}%`;
-              }
-
-              // Disable the slider when checkbox is checked
-              rentIncreaseSlider.disabled = true;
-              rentIncreaseSlider.classList.add("opacity-50");
-            } else {
-              // Enable the slider when checkbox is unchecked
-              rentIncreaseSlider.disabled = false;
-              rentIncreaseSlider.classList.remove("opacity-50");
-            }
-          };
-
-          // Initial setup
-          updateRentIncreaseFromAppreciation();
-
-          // Listen for checkbox changes
-          sameAsAppreciationCheckbox.addEventListener("change", updateRentIncreaseFromAppreciation);
-
-          // Listen for home appreciation changes when checkbox is checked
-          homeAppreciationSlider.addEventListener("input", () => {
-            if (sameAsAppreciationCheckbox.checked) {
-              updateRentIncreaseFromAppreciation();
-            }
-          });
-
-          // Listen for rent increase slider manual changes (enable only when checkbox is unchecked)
-          rentIncreaseSlider.addEventListener("input", function () {
-            if (!sameAsAppreciationCheckbox.checked) {
-              const value = this.value;
-              const rentIncreaseDisplay = this.parentElement.querySelector(".px-3.py-1");
-              if (rentIncreaseDisplay) {
-                rentIncreaseDisplay.textContent = `${value}%`;
-              }
-            }
-          });
-        }
       });
     </script>
   </body>
