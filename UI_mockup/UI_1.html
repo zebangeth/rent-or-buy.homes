@@ -267,7 +267,7 @@
                     </div>
                     <div class="flex items-center">
                       <i class="fas fa-arrow-up text-secondary-500 mr-2"></i>
-                      <span>Rent increase: <span class="font-medium">5%/year</span></span>
+                      <span>Rent increase: <span class="font-bold text-secondary-700">5%/year</span></span>
                     </div>
                   </div>
                 </div>
@@ -355,15 +355,23 @@
                 <!-- House Price -->
                 <div>
                   <div class="flex justify-between mb-3">
-                    <label class="text-sm font-medium text-dark-700">House Price</label>
+                    <label class="text-sm font-medium text-dark-700">Property Purchase Price</label>
                     <div class="px-3 py-1 bg-primary-100 text-primary-700 rounded-lg font-semibold text-sm">
                       $2,500,000
                     </div>
                   </div>
-                  <input type="range" min="500000" max="5000000" value="2500000" step="50000" class="w-full" />
+                  <input
+                    type="range"
+                    min="100000"
+                    max="10000000"
+                    value="2500000"
+                    step="50000"
+                    class="w-full"
+                    data-id="housePrice"
+                  />
                   <div class="flex justify-between text-xs text-dark-400 mt-1">
-                    <span>$500K</span>
-                    <span>$5M</span>
+                    <span>$100K</span>
+                    <span>$10M</span>
                   </div>
                 </div>
 
@@ -371,44 +379,68 @@
                 <div>
                   <div class="flex justify-between mb-3">
                     <label class="text-sm font-medium text-dark-700">Down Payment</label>
-                    <div class="px-3 py-1 bg-primary-100 text-primary-700 rounded-lg font-semibold text-sm">25%</div>
+                    <div class="px-3 py-1 bg-primary-100 text-primary-700 rounded-lg font-semibold text-sm">
+                      25% ($625,000)
+                    </div>
                   </div>
-                  <input type="range" min="5" max="50" value="25" step="1" class="w-full" />
+                  <input type="range" min="0" max="100" value="25" step="1" class="w-full" data-id="downPayment" />
                   <div class="flex justify-between text-xs text-dark-400 mt-1">
-                    <span>5%</span>
-                    <span>50%</span>
+                    <span>0%</span>
+                    <span>100%</span>
                   </div>
                 </div>
 
                 <!-- Interest Rate -->
                 <div>
                   <div class="flex justify-between mb-3">
-                    <label class="text-sm font-medium text-dark-700">Interest Rate</label>
+                    <label class="text-sm font-medium text-dark-700">Mortgage Interest Rate</label>
                     <div class="px-3 py-1 bg-primary-100 text-primary-700 rounded-lg font-semibold text-sm">6.75%</div>
                   </div>
-                  <input type="range" min="3" max="12" value="6.75" step="0.25" class="w-full" />
+                  <input type="range" min="2" max="10" value="6.75" step="0.25" class="w-full" data-id="interestRate" />
                   <div class="flex justify-between text-xs text-dark-400 mt-1">
-                    <span>3%</span>
-                    <span>12%</span>
+                    <span>2%</span>
+                    <span>10%</span>
                   </div>
                 </div>
 
-                <!-- Property Tax -->
+                <!-- Mortgage Term -->
                 <div>
                   <div class="flex justify-between mb-3">
-                    <label class="text-sm font-medium text-dark-700">Property Tax</label>
-                    <div class="px-3 py-1 bg-primary-100 text-primary-700 rounded-lg font-semibold text-sm">1.2%</div>
+                    <label class="text-sm font-medium text-dark-700">Mortgage Term</label>
                   </div>
-                  <input type="range" min="0.5" max="2.5" value="1.2" step="0.1" class="w-full" />
+                  <div class="grid grid-cols-3 gap-2">
+                    <button class="bg-primary-500 text-white p-2 rounded-lg text-sm font-medium">30 Years</button>
+                    <button class="bg-gray-100 text-dark-500 p-2 rounded-lg text-sm font-medium">20 Years</button>
+                    <button class="bg-gray-100 text-dark-500 p-2 rounded-lg text-sm font-medium">15 Years</button>
+                  </div>
+                </div>
+
+                <!-- Expected Annual Home Appreciation -->
+                <div>
+                  <div class="flex justify-between mb-3">
+                    <label class="text-sm font-medium text-dark-700">Expected Annual Home Appreciation</label>
+                    <div class="px-3 py-1 bg-primary-100 text-primary-700 rounded-lg font-semibold text-sm">3.5%</div>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="10"
+                    value="3.5"
+                    step="0.5"
+                    class="w-full"
+                    data-id="homeAppreciation"
+                  />
                   <div class="flex justify-between text-xs text-dark-400 mt-1">
-                    <span>0.5%</span>
-                    <span>2.5%</span>
+                    <span>0%</span>
+                    <span>10%</span>
                   </div>
+                  <div class="text-xs text-dark-400 mt-1 italic">Based on historical average in your selected area</div>
                 </div>
 
                 <!-- Advanced Toggle -->
                 <div class="mt-4 border-t border-gray-100 pt-4">
                   <button
+                    id="advancedOptionsToggle"
                     class="flex w-full items-center justify-between text-dark-600 hover:text-primary-600 transition"
                   >
                     <span class="font-medium text-sm">Advanced Options</span>
@@ -416,52 +448,118 @@
                   </button>
 
                   <!-- Advanced Options (Initially Hidden) -->
-                  <div class="mt-4 space-y-3 bg-gray-50 p-4 rounded-xl">
+                  <div id="advancedOptionsContent" class="mt-4 space-y-3 bg-gray-50 p-4 rounded-xl">
+                    <!-- Buying/Selling Transaction Costs Section -->
+                    <div class="text-xs font-semibold text-dark-600 mb-2">Buying/Selling Transaction Costs</div>
+
                     <div class="flex justify-between items-center">
-                      <label class="text-xs font-medium text-dark-600">Closing Cost</label>
+                      <label class="text-xs font-medium text-dark-600 flex items-center">
+                        Closing Costs (Current Buy)
+                        <div class="relative group ml-1">
+                          <i class="fas fa-info-circle text-primary-400 text-xs"></i>
+                          <div
+                            class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-52 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"
+                          >
+                            As a % of property price (e.g., loan origination, title, and other closing costs).
+                          </div>
+                        </div>
+                      </label>
                       <div class="flex space-x-2 items-center">
-                        <input type="number" value="1" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
+                        <input type="number" value="2" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
                         <span class="text-xs text-dark-500">%</span>
                       </div>
                     </div>
 
                     <div class="flex justify-between items-center">
-                      <label class="text-xs font-medium text-dark-600">Selling Cost</label>
+                      <label class="text-xs font-medium text-dark-600 flex items-center">
+                        Selling Costs (Future Sale)
+                        <div class="relative group ml-1">
+                          <i class="fas fa-info-circle text-primary-400 text-xs"></i>
+                          <div
+                            class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-52 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"
+                          >
+                            As a % of future sale price (e.g., agent commissions).
+                          </div>
+                        </div>
+                      </label>
                       <div class="flex space-x-2 items-center">
                         <input type="number" value="5" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
                         <span class="text-xs text-dark-500">%</span>
                       </div>
                     </div>
 
-                    <div class="flex justify-between items-center">
-                      <label class="text-xs font-medium text-dark-600">Insurance & Maintenance</label>
-                      <div class="flex space-x-2 items-center">
-                        <span class="text-xs text-dark-500">$</span>
-                        <input type="number" value="3000" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
-                        <span class="text-xs text-dark-500">/year</span>
-                      </div>
-                    </div>
+                    <!-- Holding Costs Section -->
+                    <div class="text-xs font-semibold text-dark-600 mb-2 mt-4">Holding Costs</div>
 
                     <div class="flex justify-between items-center">
-                      <label class="text-xs font-medium text-dark-600">Property Appreciation</label>
+                      <label class="text-xs font-medium text-dark-600 flex items-center">
+                        Annual Property Tax Rate
+                        <div class="relative group ml-1">
+                          <i class="fas fa-info-circle text-primary-400 text-xs"></i>
+                          <div
+                            class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-52 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"
+                          >
+                            As a % of the property's assessed value each year.
+                          </div>
+                        </div>
+                      </label>
                       <div class="flex space-x-2 items-center">
-                        <input type="number" value="7.14" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
+                        <input
+                          type="number"
+                          value="1.1"
+                          step="0.1"
+                          class="w-16 p-1.5 text-xs text-center border rounded-lg"
+                        />
                         <span class="text-xs text-dark-500">%</span>
                       </div>
                     </div>
 
                     <div class="flex justify-between items-center">
-                      <label class="text-xs font-medium text-dark-600">Mortgage Interest Deduction</label>
+                      <label class="text-xs font-medium text-dark-600 flex items-center">
+                        Annual Insurance & Maintenance
+                        <div class="relative group ml-1">
+                          <i class="fas fa-info-circle text-primary-400 text-xs"></i>
+                          <div
+                            class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-52 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"
+                          >
+                            Combined estimate as a % of the property's value each year.
+                          </div>
+                        </div>
+                      </label>
                       <div class="flex space-x-2 items-center">
-                        <select class="w-16 p-1.5 text-xs text-center border rounded-lg">
-                          <option value="yes" selected>Yes</option>
-                          <option value="no">No</option>
-                        </select>
+                        <input
+                          type="number"
+                          value="1.0"
+                          step="0.1"
+                          class="w-16 p-1.5 text-xs text-center border rounded-lg"
+                        />
+                        <span class="text-xs text-dark-500">%</span>
                       </div>
                     </div>
 
                     <div class="flex justify-between items-center">
-                      <label class="text-xs font-medium text-dark-600">Capital Gains Tax Rate</label>
+                      <label class="text-xs font-medium text-dark-600">Annual HOA Fee</label>
+                      <div class="flex space-x-2 items-center">
+                        <span class="text-xs text-dark-500">$</span>
+                        <input type="number" value="0" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
+                      </div>
+                    </div>
+
+                    <!-- Tax Implications Section -->
+                    <div class="text-xs font-semibold text-dark-600 mb-2 mt-4">Tax Implications</div>
+
+                    <div class="flex justify-between items-center">
+                      <label class="text-xs font-medium text-dark-600 flex items-center">
+                        Your Marginal Income Tax Rate
+                        <div class="relative group ml-1">
+                          <i class="fas fa-info-circle text-primary-400 text-xs"></i>
+                          <div
+                            class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-60 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"
+                          >
+                            Your combined federal and state rate. Used to estimate mortgage interest deduction benefits.
+                          </div>
+                        </div>
+                      </label>
                       <div class="flex space-x-2 items-center">
                         <input type="number" value="24" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
                         <span class="text-xs text-dark-500">%</span>
@@ -469,11 +567,55 @@
                     </div>
 
                     <div class="flex justify-between items-center">
-                      <label class="text-xs font-medium text-dark-600">Monthly P&I Payment</label>
+                      <label class="text-xs font-medium text-dark-600 flex items-center">
+                        Claim Mortgage Interest Deduction?
+                        <div class="relative group ml-1">
+                          <i class="fas fa-info-circle text-primary-400 text-xs"></i>
+                          <div
+                            class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-60 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"
+                          >
+                            If you itemize deductions on your tax return, you can deduct the interest paid on your
+                            mortgage.
+                          </div>
+                        </div>
+                      </label>
+                      <div class="flex items-center">
+                        <label for="mortgageDeductionToggle" class="flex items-center cursor-pointer">
+                          <div class="relative">
+                            <input type="checkbox" id="mortgageDeductionToggle" class="sr-only" checked />
+                            <div class="block bg-primary-200 w-8 h-4 rounded-full"></div>
+                            <div class="dot absolute left-0.5 top-0.5 bg-white w-3 h-3 rounded-full transition"></div>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <label class="text-xs font-medium text-dark-600">Capital Gains Tax Rate (Property Sale)</label>
                       <div class="flex space-x-2 items-center">
-                        <span class="text-xs text-dark-500">$</span>
-                        <input type="number" value="12161" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
-                        <span class="text-xs text-dark-500">/mo</span>
+                        <input type="number" value="15" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
+                        <span class="text-xs text-dark-500">%</span>
+                      </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <label class="text-xs font-medium text-dark-600 flex items-center">
+                        Tax-Free Capital Gain Amount (Home Sale)
+                        <div class="relative group ml-1">
+                          <i class="fas fa-info-circle text-primary-400 text-xs"></i>
+                          <div
+                            class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-60 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"
+                          >
+                            $250,000 for single, $500,000 for married filing jointly in the US.
+                          </div>
+                        </div>
+                      </label>
+                      <div class="flex space-x-2">
+                        <div class="flex bg-gray-100 rounded-lg overflow-hidden">
+                          <button class="px-2 py-1 text-xs bg-primary-600 text-white font-medium">Married</button>
+                          <button class="px-2 py-1 text-xs text-dark-600">Single</button>
+                          <button class="px-2 py-1 text-xs text-dark-600">HoH</button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -499,86 +641,99 @@
                       $6,000
                     </div>
                   </div>
-                  <input type="range" min="2000" max="15000" value="6000" step="100" class="w-full" />
+                  <input
+                    type="range"
+                    min="1000"
+                    max="10000"
+                    value="6000"
+                    step="100"
+                    class="w-full"
+                    data-id="monthlyRent"
+                  />
                   <div class="flex justify-between text-xs text-dark-400 mt-1">
-                    <span>$2K</span>
-                    <span>$15K</span>
+                    <span>$1K</span>
+                    <span>$10K</span>
                   </div>
                 </div>
 
                 <!-- Rent Increase -->
                 <div>
                   <div class="flex justify-between mb-3">
-                    <label class="text-sm font-medium text-dark-700">Annual Rent Increase</label>
-                    <div class="px-3 py-1 bg-secondary-100 text-secondary-700 rounded-lg font-semibold text-sm">5%</div>
+                    <label class="text-sm font-medium text-dark-700">Expected Annual Rent Increase</label>
+                    <div class="px-3 py-1 bg-secondary-100 text-secondary-700 rounded-lg font-semibold text-sm">
+                      3.5%
+                    </div>
                   </div>
-                  <input type="range" min="1" max="10" value="5" step="0.5" class="w-full" />
+                  <input type="range" min="0" max="10" value="3.5" step="0.5" class="w-full" data-id="rentIncrease" />
                   <div class="flex justify-between text-xs text-dark-400 mt-1">
-                    <span>1%</span>
+                    <span>0%</span>
                     <span>10%</span>
+                  </div>
+                  <div class="mt-2 flex items-center">
+                    <input type="checkbox" id="sameAsAppreciationRate" class="mr-2" checked />
+                    <label for="sameAsAppreciationRate" class="text-xs text-dark-500"
+                      >Same as home appreciation rate</label
+                    >
                   </div>
                 </div>
 
                 <!-- Investment Type -->
                 <div>
                   <div class="flex justify-between mb-3">
-                    <label class="text-sm font-medium text-dark-700">Investment Type</label>
-                    <div class="px-3 py-1 bg-secondary-100 text-secondary-700 rounded-lg font-semibold text-sm">
-                      SPY
+                    <label class="text-sm font-medium text-dark-700 flex items-center">
+                      Expected Annual Investment Return
+                      <div class="relative group ml-1">
+                        <i class="fas fa-info-circle text-secondary-400 text-xs"></i>
+                        <div
+                          class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-60 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"
+                        >
+                          Your estimated average annual growth rate for investments.
+                        </div>
+                      </div>
+                    </label>
+                    <div
+                      id="investmentReturnDisplay"
+                      class="px-3 py-1 bg-secondary-100 text-secondary-700 rounded-lg font-semibold text-sm"
+                    >
+                      8%
                     </div>
                   </div>
                   <div class="grid grid-cols-3 gap-2">
                     <button class="bg-secondary-500 text-white p-2 rounded-lg text-sm font-medium">SPY</button>
                     <button class="bg-gray-100 text-dark-500 p-2 rounded-lg text-sm font-medium">QQQ</button>
-                    <button class="bg-gray-100 text-dark-500 p-2 rounded-lg text-sm font-medium">GOOG</button>
+                    <button class="bg-gray-100 text-dark-500 p-2 rounded-lg text-sm font-medium">Custom</button>
                   </div>
                   <div class="flex justify-between items-center mt-3">
                     <span class="text-xs text-dark-500">Annual Return Rate</span>
-                    <span class="text-xs font-medium text-secondary-700">9.25%</span>
+                    <span id="investmentReturnValue" class="text-xs font-medium text-secondary-700">8%</span>
+                  </div>
+                  <!-- Custom slider (initially hidden) -->
+                  <div id="customReturnRateSlider" class="hidden mt-3">
+                    <input type="range" min="0" max="30" value="8" step="0.25" class="w-full" />
+                    <div class="flex justify-between text-xs text-dark-400 mt-1">
+                      <span>0%</span>
+                      <span>30%</span>
+                    </div>
                   </div>
                 </div>
 
-                <!-- Advanced Toggle -->
-                <div class="mt-4 border-t border-gray-100 pt-4">
-                  <button
-                    class="flex w-full items-center justify-between text-dark-600 hover:text-secondary-600 transition"
-                  >
-                    <span class="font-medium text-sm">Advanced Options</span>
-                    <i class="fas fa-chevron-down text-xs"></i>
-                  </button>
-
-                  <!-- Advanced Options (Initially Hidden) -->
-                  <div class="mt-4 space-y-3 bg-gray-50 p-4 rounded-xl">
-                    <div class="flex justify-between items-center">
-                      <label class="text-xs font-medium text-dark-600">Custom Return Rate</label>
-                      <div class="flex space-x-2 items-center">
-                        <input type="number" value="9.25" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
-                        <span class="text-xs text-dark-500">%</span>
+                <!-- Capital Gains Tax Rate -->
+                <div>
+                  <div class="flex justify-between mb-3">
+                    <label class="text-sm font-medium text-dark-700 flex items-center">
+                      Capital Gains Tax Rate
+                      <div class="relative group ml-1">
+                        <i class="fas fa-info-circle text-secondary-400 text-xs"></i>
+                        <div
+                          class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-60 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"
+                        >
+                          Tax rate on profits when investments are sold. Assumes long-term capital gains tax rate.
+                        </div>
                       </div>
-                    </div>
-
-                    <div class="flex justify-between items-center">
-                      <label class="text-xs font-medium text-dark-600">Capital Gains Tax Rate</label>
-                      <div class="flex space-x-2 items-center">
-                        <input type="number" value="24" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
-                        <span class="text-xs text-dark-500">%</span>
-                      </div>
-                    </div>
-
-                    <div class="flex justify-between items-center">
-                      <label class="text-xs font-medium text-dark-600">Monthly Additional Investment</label>
-                      <div class="flex space-x-2 items-center">
-                        <span class="text-xs text-dark-500">$</span>
-                        <input type="number" value="0" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
-                      </div>
-                    </div>
-
-                    <div class="flex justify-between items-center">
-                      <label class="text-xs font-medium text-dark-600">Initial Investment</label>
-                      <div class="flex space-x-2 items-center">
-                        <span class="text-xs text-dark-500">$</span>
-                        <input type="number" value="625000" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
-                      </div>
+                    </label>
+                    <div class="flex space-x-2 items-center">
+                      <input type="number" value="15" class="w-16 p-1.5 text-xs text-center border rounded-lg" />
+                      <span class="text-xs text-dark-500">%</span>
                     </div>
                   </div>
                 </div>
@@ -815,6 +970,95 @@
       document.addEventListener("DOMContentLoaded", () => {
         var chart;
 
+        // Advanced Options Toggle
+        const advancedOptionsToggle = document.getElementById("advancedOptionsToggle");
+        const advancedOptionsContent = document.getElementById("advancedOptionsContent");
+
+        if (advancedOptionsToggle && advancedOptionsContent) {
+          // Initially hide the advanced options
+          advancedOptionsContent.style.display = "none";
+
+          advancedOptionsToggle.addEventListener("click", function () {
+            const icon = this.querySelector("i");
+
+            if (advancedOptionsContent.style.display === "none") {
+              advancedOptionsContent.style.display = "block";
+              icon.classList.remove("fa-chevron-down");
+              icon.classList.add("fa-chevron-up");
+            } else {
+              advancedOptionsContent.style.display = "none";
+              icon.classList.remove("fa-chevron-up");
+              icon.classList.add("fa-chevron-down");
+            }
+          });
+        }
+
+        // Investment Type Buttons
+        const investmentButtons = document.querySelectorAll("#rent-invest-tab-content .grid button");
+        const customReturnSlider = document.getElementById("customReturnRateSlider");
+        const returnRateDisplay = document.querySelector("#investmentReturnValue");
+        const returnHeaderDisplay = document.querySelector("#investmentReturnDisplay");
+
+        if (investmentButtons.length > 0 && customReturnSlider) {
+          // Investment returns for each option
+          const returns = {
+            SPY: "8%",
+            QQQ: "9.25%",
+            Custom: "8%",
+          };
+
+          investmentButtons.forEach((button) => {
+            button.addEventListener("click", function () {
+              // Reset all buttons
+              investmentButtons.forEach((btn) => {
+                btn.classList.remove("bg-secondary-500", "text-white");
+                btn.classList.add("bg-gray-100", "text-dark-500");
+              });
+
+              // Highlight clicked button
+              this.classList.remove("bg-gray-100", "text-dark-500");
+              this.classList.add("bg-secondary-500", "text-white");
+
+              const investmentType = this.textContent.trim();
+
+              // Show/hide custom slider
+              if (investmentType === "Custom") {
+                customReturnSlider.classList.remove("hidden");
+              } else {
+                customReturnSlider.classList.add("hidden");
+
+                // Update the return rate display
+                const returnValue = returns[investmentType];
+                if (returnRateDisplay) {
+                  returnRateDisplay.textContent = returnValue;
+                }
+
+                // Update the header value display
+                if (returnHeaderDisplay) {
+                  returnHeaderDisplay.textContent = returnValue;
+                }
+              }
+            });
+          });
+
+          // Custom slider event
+          const customSlider = customReturnSlider.querySelector("input[type='range']");
+          if (customSlider) {
+            customSlider.addEventListener("input", function () {
+              const value = this.value;
+
+              if (returnRateDisplay) {
+                returnRateDisplay.textContent = `${value}%`;
+              }
+
+              // Update the header value display
+              if (returnHeaderDisplay) {
+                returnHeaderDisplay.textContent = `${value}%`;
+              }
+            });
+          }
+        }
+
         // City Defaults Data
         const cityDefaults = {
           sunnyvale: {
@@ -907,6 +1151,9 @@
           updateRangeAndDisplay("monthlyRent", cityData.monthlyRent);
           updateRangeAndDisplay("rentIncrease", cityData.rentIncrease);
 
+          // Update calculated fields
+          updateInitialInvestment(cityData.housePrice, cityData.downPayment);
+
           // Show a notification
           showNotification(
             `Loaded defaults for ${
@@ -938,6 +1185,42 @@
         // Helper function to format numbers with commas
         function numberWithCommas(x) {
           return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // Helper function to update the initial investment field based on house price and down payment
+        function updateInitialInvestment(housePrice, downPaymentPercent) {
+          const downPayment = (housePrice * downPaymentPercent) / 100;
+          const closingCost = housePrice * 0.01; // 1% closing cost
+          const initialInvestment = downPayment + closingCost;
+
+          const initialInvestmentInput = document.querySelector("input[data-tooltip]");
+          if (initialInvestmentInput) {
+            initialInvestmentInput.value = Math.round(initialInvestment);
+            initialInvestmentInput.setAttribute(
+              "data-tooltip",
+              `Down payment ($${numberWithCommas(downPayment)}) + Closing costs ($${numberWithCommas(closingCost)})`
+            );
+          }
+        }
+
+        // Update down payment display when slider changes
+        const downPaymentSlider = document.querySelector('input[data-id="downPayment"]');
+        const housePriceSlider = document.querySelector('input[data-id="housePrice"]');
+
+        if (downPaymentSlider && housePriceSlider) {
+          const updateDownPaymentDisplay = () => {
+            const downPaymentPercentage = parseFloat(downPaymentSlider.value);
+            const housePrice = parseFloat(housePriceSlider.value);
+            const downPaymentAmount = (housePrice * downPaymentPercentage) / 100;
+
+            const displayElement = downPaymentSlider.parentElement.querySelector(".px-3.py-1");
+            if (displayElement) {
+              displayElement.textContent = `${downPaymentPercentage}% ($${numberWithCommas(downPaymentAmount)})`;
+            }
+          };
+
+          downPaymentSlider.addEventListener("input", updateDownPaymentDisplay);
+          housePriceSlider.addEventListener("input", updateDownPaymentDisplay);
         }
 
         // Show a temporary notification
@@ -1044,7 +1327,6 @@
                     maximumFractionDigits: 0,
                   }).format(value);
                 },
-                style: { colors: "#64748b", fontSize: "12px", fontWeight: 500 },
               },
             },
             tooltip: {
@@ -1286,6 +1568,59 @@
               document.body.removeChild(textarea);
             });
         });
+
+        // Same as home appreciation checkbox handler
+        const sameAsAppreciationCheckbox = document.getElementById("sameAsAppreciationRate");
+        const rentIncreaseSlider = document.querySelector('input[data-id="rentIncrease"]');
+        const homeAppreciationSlider = document.querySelector('input[data-id="homeAppreciation"]');
+
+        if (sameAsAppreciationCheckbox && rentIncreaseSlider && homeAppreciationSlider) {
+          // Function to update rent increase to match home appreciation
+          const updateRentIncreaseFromAppreciation = () => {
+            if (sameAsAppreciationCheckbox.checked) {
+              const appreciationValue = parseFloat(homeAppreciationSlider.value);
+              rentIncreaseSlider.value = appreciationValue;
+
+              // Also update the display
+              const rentIncreaseDisplay = rentIncreaseSlider.parentElement.querySelector(".px-3.py-1");
+              if (rentIncreaseDisplay) {
+                rentIncreaseDisplay.textContent = `${appreciationValue}%`;
+              }
+
+              // Disable the slider when checkbox is checked
+              rentIncreaseSlider.disabled = true;
+              rentIncreaseSlider.classList.add("opacity-50");
+            } else {
+              // Enable the slider when checkbox is unchecked
+              rentIncreaseSlider.disabled = false;
+              rentIncreaseSlider.classList.remove("opacity-50");
+            }
+          };
+
+          // Initial setup
+          updateRentIncreaseFromAppreciation();
+
+          // Listen for checkbox changes
+          sameAsAppreciationCheckbox.addEventListener("change", updateRentIncreaseFromAppreciation);
+
+          // Listen for home appreciation changes when checkbox is checked
+          homeAppreciationSlider.addEventListener("input", () => {
+            if (sameAsAppreciationCheckbox.checked) {
+              updateRentIncreaseFromAppreciation();
+            }
+          });
+
+          // Listen for rent increase slider manual changes (enable only when checkbox is unchecked)
+          rentIncreaseSlider.addEventListener("input", function () {
+            if (!sameAsAppreciationCheckbox.checked) {
+              const value = this.value;
+              const rentIncreaseDisplay = this.parentElement.querySelector(".px-3.py-1");
+              if (rentIncreaseDisplay) {
+                rentIncreaseDisplay.textContent = `${value}%`;
+              }
+            }
+          });
+        }
       });
     </script>
   </body>
