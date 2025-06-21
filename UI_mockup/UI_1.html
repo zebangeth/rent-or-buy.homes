@@ -193,10 +193,12 @@
           <div class="flex justify-between items-center mb-4">
             <div>
               <h1 class="text-4xl font-bold text-dark-800 inline-block">
-                <span class="text-primary-600">Buy</span> vs
+                <span class="font-medium text-dark-500">Should I</span>
+                <span class="text-primary-600">Buy</span>
+                <span class="font-medium text-dark-500">or</span>
                 <span class="text-secondary-600">Rent</span>
+                <span class="font-medium text-dark-500">a House?</span>
               </h1>
-              <span class="ml-2 px-3 py-1 bg-dark-100 text-dark-600 text-xs font-medium rounded-full">Pro Edition</span>
             </div>
             <div class="flex items-center space-x-3">
               <button
@@ -212,8 +214,8 @@
             </div>
           </div>
           <p class="text-dark-500 max-w-2xl">
-            Financial decision tool to compare the long-term impact of buying a home versus renting and investing the
-            difference. Customizable model based on historical market data.
+            This website helps you compare the financial outcomes of buying vs renting to see which option makes more
+            financial sense.
           </p>
         </header>
 
@@ -222,24 +224,24 @@
           <div
             class="card bg-gradient-to-r from-primary-50 to-secondary-50 p-8 border border-gray-200 relative overflow-hidden"
           >
-            <!-- Winner Banner -->
-            <div class="absolute top-0 right-0 bg-primary-600 text-white px-6 py-2 rounded-bl-xl shadow-md">
-              <div class="flex items-center font-bold">
-                <i class="fas fa-trophy mr-2"></i>
-                <span>Buying Wins Financially</span>
-              </div>
-            </div>
-
             <!-- Main Content -->
-            <div class="flex flex-col lg:flex-row gap-8 pt-6">
+            <div class="flex flex-col lg:flex-row gap-8">
               <!-- Explanation Section -->
               <div class="flex-1">
+                <!-- Conclusion -->
+                <div class="bg-primary-600 text-white px-4 py-2 rounded-lg inline-block mb-4">
+                  <div class="flex items-center font-bold">
+                    <i class="fas fa-trophy mr-2"></i>
+                    <span>Buying is the better option</span>
+                  </div>
+                </div>
+
+                <p class="text-xl md:text-2xl leading-relaxed text-dark-800 mb-1 font-medium">
+                  If you buy a $2,500,000 home today and it grows to $3,500,000 in 10 years, your net worth would be
+                  <span class="font-bold text-primary-700 border-b-2 border-primary-300">$3,120,000</span>.
+                </p>
                 <p class="text-xl md:text-2xl leading-relaxed text-dark-800 mb-5 font-medium">
-                  If you buy a <span class="font-bold text-primary-700">$2,500,000 home</span> today and it grows to
-                  $3,500,000 in 10 years, your net worth would be
-                  <span class="font-bold text-primary-700 border-b-2 border-primary-300">$3,120,000</span>. If you rent
-                  for <span class="font-bold text-secondary-700">$6,000/month</span> and invest the difference, your net
-                  worth would be
+                  If you rent for $6,000/month and invest the difference, your net worth would be
                   <span class="font-bold text-secondary-700 border-b-2 border-secondary-300">$2,850,000</span>.
                 </p>
                 <div class="text-sm text-dark-500 bg-white bg-opacity-60 rounded-lg p-3">
@@ -259,11 +261,11 @@
                     </div>
                     <div class="flex items-center">
                       <i class="fas fa-chart-line text-secondary-500 mr-2"></i>
-                      <span>Stock returns: <span class="font-medium">9.25%/year</span></span>
+                      <span>Investment returns: <span class="font-medium">9.25%/yr</span></span>
                     </div>
                     <div class="flex items-center">
-                      <i class="fas fa-dollar-sign text-primary-500 mr-2"></i>
-                      <span>Mortgage rate: <span class="font-medium">6.75%</span></span>
+                      <i class="fas fa-trending-up text-primary-500 mr-2"></i>
+                      <span>Home appreciation: <span class="font-medium">3.5%/yr</span></span>
                     </div>
                     <div class="flex items-center">
                       <i class="fas fa-arrow-up text-secondary-500 mr-2"></i>
@@ -273,35 +275,78 @@
                 </div>
               </div>
 
-              <!-- Summary Stats & CTA -->
-              <div class="lg:w-1/3 flex flex-col">
-                <div class="bg-white rounded-xl p-4 shadow-sm mb-4">
-                  <div class="flex justify-between items-center mb-3">
-                    <div class="font-medium text-dark-700">10-Year Advantage</div>
-                    <div class="text-lg font-bold text-primary-600">$279,480</div>
+              <!-- Net Asset Value Breakdown -->
+              <div class="lg:w-1/3 space-y-4">
+                <!-- Buy Option -->
+                <div class="bg-white rounded-xl p-4 shadow-sm border-l-4 border-primary-500">
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center">
+                      <i class="fas fa-home text-primary-500 mr-2"></i>
+                      <span class="font-semibold text-primary-700">Buy Option</span>
+                    </div>
+                    <span class="text-lg font-bold text-primary-600">$3,120,000</span>
                   </div>
-                  <div class="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-                    <div class="h-full bg-primary-500 rounded-full" style="width: 9.8%"></div>
+                  <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                      <span class="text-dark-500">Property value:</span>
+                      <span class="font-medium">$3,500,000</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-dark-500">Mortgage balance:</span>
+                      <span class="font-medium">-$380,000</span>
+                    </div>
+                    <div class="flex justify-between border-t pt-2">
+                      <span class="text-dark-600 font-medium">Net Asset Value:</span>
+                      <span class="font-bold text-primary-600">$3,120,000</span>
+                    </div>
                   </div>
-                  <div class="text-xs text-dark-400 mt-1 text-right">9.8% better outcome</div>
                 </div>
 
-                <!-- CTA Buttons -->
-                <div class="space-y-3 mt-auto">
-                  <button
-                    id="edit-inputs-btn"
-                    class="w-full py-3 px-4 bg-dark-800 hover:bg-dark-700 text-white font-medium rounded-xl transition flex items-center justify-center"
-                  >
-                    <i class="fas fa-sliders-h mr-2"></i> Edit My Inputs
-                  </button>
-                  <button
-                    id="share-result-btn"
-                    class="w-full py-3 px-4 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-medium rounded-xl transition flex items-center justify-center"
-                  >
-                    <i class="fas fa-share-alt mr-2"></i> Share This Result
-                  </button>
+                <!-- Rent Option -->
+                <div class="bg-white rounded-xl p-4 shadow-sm border-l-4 border-secondary-500">
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center">
+                      <i class="fas fa-chart-line text-secondary-500 mr-2"></i>
+                      <span class="font-semibold text-secondary-700">Rent + Invest</span>
+                    </div>
+                    <span class="text-lg font-bold text-secondary-600">$2,850,000</span>
+                  </div>
+                  <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                      <span class="text-dark-500">Initial investment:</span>
+                      <span class="font-medium">$625,000</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-dark-500">Accumulated investments:</span>
+                      <span class="font-medium">$1,180,000</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-dark-500">Investment growth:</span>
+                      <span class="font-medium">$1,045,000</span>
+                    </div>
+                    <div class="flex justify-between border-t pt-2">
+                      <span class="text-dark-600 font-medium">Net Asset Value:</span>
+                      <span class="font-bold text-secondary-600">$2,850,000</span>
+                    </div>
+                  </div>
                 </div>
               </div>
+            </div>
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3 mt-6 pt-6 border-t border-gray-200">
+              <button
+                id="edit-inputs-btn"
+                class="flex-1 py-3 px-4 bg-dark-800 hover:bg-dark-700 text-white font-medium rounded-xl transition flex items-center justify-center"
+              >
+                <i class="fas fa-sliders-h mr-2"></i> Edit My Inputs
+              </button>
+              <button
+                id="share-result-btn"
+                class="flex-1 py-3 px-4 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-medium rounded-xl transition flex items-center justify-center"
+              >
+                <i class="fas fa-share-alt mr-2"></i> Share This Result
+              </button>
             </div>
           </div>
         </div>
