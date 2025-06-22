@@ -88,6 +88,11 @@ GitHub and Vercel
 
 1. **Project Setup**: Establish a solid foundation with Vite, React, TypeScript, and the chosen tech stack.
 2. **UI Development**: Build the inputs and result panels, ensuring responsiveness and a mobile-first design.
+   - Header
+   - Hero Section
+   - Input Panel
+   - Result Panel
+   - Footer
 3. **Calculation Engine**: Create accurate, reusable financial formulas.
 4. **State Management**: Centralize state with React Context for real-time updates.
 5. **URL Synchronization**: Enable shareable links with state encoded in the URL.
@@ -102,36 +107,35 @@ GitHub and Vercel
 ```plaintext
 rent-or-buy.homes/
 ├── public/
-│   ├── locales/
-│   │   ├── en/
-│   │   │   └── translation.json
-│   │   └── zh/
-│   │       └── translation.json
-│   └── index.html
+│   └── locales/             # i18n files
+│       ├── en/translation.json
+│       └── zh/translation.json
 ├── src/
 │   ├── components/
-│   │   ├── ParametersPanel.tsx   # User input parameters
-│   │   ├── HeroPanel.tsx         # Hero section with results
-│   │   ├── LanguageSwitcher.tsx  # Language toggle
-│   │   └── Charts/
-│   │       ├── NetWorthChart.tsx # Net worth curve
-│   │       └── CashFlowChart.tsx # Cash flow bars
+│   │   ├── Header/
+│   │   ├── HeroSection/
+│   │   ├── InputPanel/
+│   │   ├── ResultPanel/     # Results and charts
+│   │   └── Footer/
+│   │       ├── Footer.tsx
+│   │       ├── FooterLinks.tsx
+│   │       └── FooterText.tsx
 │   ├── lib/
-│   │   └── finance/
-│   │       ├── calculateNetWorth.ts  # Net worth calculation
-│   │       ├── calculateCashFlow.ts  # Cash flow calculation
-│   │       └── index.ts          # Exports
+│   │   └── finance/         # Financial calculations
+│   │       ├── calculateNetWorth.ts
+│   │       ├── calculateCashFlow.ts
+│   │       └── index.ts
 │   ├── contexts/
-│   │   └── AppContext.tsx        # State management
+│   │   └── AppContext.tsx
 │   ├── hooks/
-│   │   └── useURLSync.ts         # URL state sync
-│   ├── styles/
-│   │   └── global.css            # Tailwind styles
-│   ├── App.tsx                   # Main app component
-│   └── main.tsx                  # Entry point
-├── tests/
-├── tailwind.config.js            # Tailwind config
-├── vite.config.ts                # Vite config
-├── package.json                  # Dependencies and scripts
-└── README.md                     # Project docs
+│   │   └── useURLSync.ts
+│   ├── App.tsx              # Main app component
+│   ├── index.css            # Global styles with Tailwind
+│   ├── main.tsx             # Entry point
+│   └── vite-env.d.ts        # Vite TypeScript env
+├── index.html               # HTML template
+├── package.json             # Project dependencies
+├── tailwind.config.js       # Tailwind configuration
+├── tsconfig.json            # TypeScript config
+└── vite.config.ts           # Vite config
 ```

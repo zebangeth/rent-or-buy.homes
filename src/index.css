@@ -1,68 +1,62 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+@layer base {
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f8fafc;
   }
-  a:hover {
-    color: #747bff;
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl bg-white shadow-lg border border-gray-100 transition-all duration-300;
   }
-  button {
-    background-color: #f9f9f9;
+  
+  .card:hover {
+    @apply -translate-y-1 shadow-xl;
+  }
+  
+  .glow-primary {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+  }
+  
+  .glow-secondary {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+  }
+  
+  .tab-active {
+    @apply relative;
+  }
+  
+  .tab-active::after {
+    content: '';
+    @apply absolute -bottom-2 left-0 w-full h-0.5 bg-primary-500 rounded-full;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in-out {
+    animation: fadeInOut 3.5s ease-in-out;
+  }
+  
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    10% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
   }
 }

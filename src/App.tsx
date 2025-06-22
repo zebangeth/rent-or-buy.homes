@@ -1,34 +1,36 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Header from './components/Header'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentLanguage, setCurrentLanguage] = useState('en')
+
+  const handleLanguageChange = (language: string) => {
+    setCurrentLanguage(language)
+    // TODO: Implement actual i18n logic
+    console.log(`Language changed to: ${language}`)
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="w-full max-w-6xl mx-auto min-h-screen">
+      <div className="px-4 sm:px-6 lg:px-8 py-8">
+        <Header 
+          currentLanguage={currentLanguage}
+          onLanguageChange={handleLanguageChange}
+        />
+        
+        {/* Placeholder content - will be replaced with actual components */}
+        <div className="space-y-8">
+          <div className="card p-8 text-center">
+            <h2 className="text-2xl font-semibold text-dark-800 mb-4">
+              Buy vs Rent Calculator
+            </h2>
+            <p className="text-dark-500">
+              UI components will be implemented here. The header section is now complete!
+            </p>
+          </div>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
 
