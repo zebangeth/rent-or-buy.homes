@@ -64,34 +64,6 @@
         font-family: "Montserrat", sans-serif;
         background-color: #f3f4f6;
       }
-      .browser-frame {
-        border-radius: 16px;
-        overflow: hidden;
-        border: 1px solid #e5e7eb;
-        background: #020617;
-      }
-      .browser-header {
-        height: 48px;
-        background: #1a1c25;
-        display: flex;
-        align-items: center;
-        padding: 0 16px;
-        border-bottom: 1px solid #2d3748;
-      }
-      .browser-btn {
-        width: 14px;
-        height: 14px;
-        border-radius: 50%;
-        margin-right: 8px;
-      }
-      .browser-address {
-        background: #232631;
-        border-radius: 8px;
-        height: 32px;
-        flex-grow: 1;
-        margin: 0 16px;
-        border: 1px solid #394050;
-      }
 
       /* Custom slider styles */
       input[type="range"] {
@@ -175,19 +147,10 @@
       }
     </style>
   </head>
-  <body class="bg-gray-100 min-h-screen p-4">
-    <!-- Browser Window Frame -->
-    <div class="browser-frame w-full max-w-6xl mx-auto">
-      <!-- Browser Navigation Bar -->
-      <div class="browser-header">
-        <div class="browser-btn bg-red-500"></div>
-        <div class="browser-btn bg-yellow-500"></div>
-        <div class="browser-btn bg-green-500"></div>
-        <div class="browser-address"></div>
-      </div>
-
-      <!-- App Content -->
-      <div class="p-8 bg-white">
+  <body class="bg-white min-h-screen">
+    <!-- App Content -->
+    <div class="w-full max-w-6xl mx-auto min-h-screen">
+      <div class="px-4 sm:px-6 lg:px-8 py-8">
         <!-- Header -->
         <header class="mb-10 border-b border-gray-200 pb-6">
           <div class="flex justify-between items-center mb-4">
@@ -201,16 +164,35 @@
               </h1>
             </div>
             <div class="flex items-center space-x-3">
-              <button
-                class="bg-primary-100 text-primary-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-primary-200 transition"
+              <!-- Language Switch -->
+              <div class="relative">
+                <select
+                  id="languageSwitch"
+                  class="appearance-none text-sm font-medium text-dark-600 bg-gray-100 pl-8 pr-8 py-2 rounded-full cursor-pointer hover:bg-gray-200 transition focus:outline-none focus:ring-2 focus:ring-primary-500"
+                >
+                  <option value="en">🇺🇸 English</option>
+                  <option value="zh">🇨🇳 中文</option>
+                  <option value="es">🇪🇸 Español</option>
+                  <option value="fr">🇫🇷 Français</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
+                  <i class="fas fa-globe text-dark-500"></i>
+                </div>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                  <i class="fas fa-chevron-down text-xs text-dark-500"></i>
+                </div>
+              </div>
+
+              <!-- GitHub Link -->
+              <a
+                href="https://github.com/yourusername/rent-or-buy"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="bg-dark-800 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-dark-700 transition flex items-center"
+                title="View on GitHub"
               >
-                <i class="fas fa-save mr-1"></i> Save
-              </button>
-              <button
-                class="bg-primary-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-primary-700 transition"
-              >
-                Share Results
-              </button>
+                <i class="fab fa-github mr-1"></i> GitHub
+              </a>
             </div>
           </div>
           <p class="text-dark-500 max-w-2xl">
@@ -1792,6 +1774,21 @@
             showNotification(`Projection updated to ${years} years`);
           });
         });
+
+        // Language switch functionality (placeholder for future implementation)
+        const languageSwitch = document.getElementById("languageSwitch");
+        if (languageSwitch) {
+          languageSwitch.addEventListener("change", function () {
+            const selectedLanguage = this.value;
+            const languageNames = {
+              en: "English",
+              zh: "中文",
+              es: "Español",
+              fr: "Français",
+            };
+            showNotification(`Language switched to ${languageNames[selectedLanguage]} (Feature coming soon!)`);
+          });
+        }
 
         // Hero section button handlers
         document.getElementById("edit-inputs-btn").addEventListener("click", function () {
