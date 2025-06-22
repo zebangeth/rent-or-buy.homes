@@ -77,3 +77,61 @@ A lightweight web app that lets users compare long‑term net‑worth outcomes f
 ## 7. Build & Deploy Pipeline
 
 GitHub and Vercel
+
+---
+
+---
+
+---
+
+# Implementation Plan
+
+1. **Project Setup**: Establish a solid foundation with Vite, React, TypeScript, and the chosen tech stack.
+2. **UI Development**: Build the inputs and result panels, ensuring responsiveness and a mobile-first design.
+3. **Calculation Engine**: Create accurate, reusable financial formulas.
+4. **State Management**: Centralize state with React Context for real-time updates.
+5. **URL Synchronization**: Enable shareable links with state encoded in the URL.
+6. **Internationalization**: Add multi-language support with proper formatting.
+7. **Chart Integration**: Visualize results with dynamic charts.
+8. **Optimization**: Compress URL parameters for efficiency.
+9. **Testing**: Validate functionality and responsiveness.
+10. **Deployment**: Launch the app on Vercel with continuous deployment.
+
+## Potential Repository Structure
+
+```plaintext
+rent-or-buy.homes/
+├── public/
+│   ├── locales/
+│   │   ├── en/
+│   │   │   └── translation.json
+│   │   └── zh/
+│   │       └── translation.json
+│   └── index.html
+├── src/
+│   ├── components/
+│   │   ├── ParametersPanel.tsx   # User input parameters
+│   │   ├── HeroPanel.tsx         # Hero section with results
+│   │   ├── LanguageSwitcher.tsx  # Language toggle
+│   │   └── Charts/
+│   │       ├── NetWorthChart.tsx # Net worth curve
+│   │       └── CashFlowChart.tsx # Cash flow bars
+│   ├── lib/
+│   │   └── finance/
+│   │       ├── calculateNetWorth.ts  # Net worth calculation
+│   │       ├── calculateCashFlow.ts  # Cash flow calculation
+│   │       └── index.ts          # Exports
+│   ├── contexts/
+│   │   └── AppContext.tsx        # State management
+│   ├── hooks/
+│   │   └── useURLSync.ts         # URL state sync
+│   ├── styles/
+│   │   └── global.css            # Tailwind styles
+│   ├── App.tsx                   # Main app component
+│   └── main.tsx                  # Entry point
+├── tests/
+├── tailwind.config.js            # Tailwind config
+├── vite.config.ts                # Vite config
+├── package.json                  # Dependencies and scripts
+└── README.md                     # Project docs
+```
