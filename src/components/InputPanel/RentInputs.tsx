@@ -79,7 +79,18 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
   };
 
   const getDisplayValue = <K extends keyof RentInputsType>(field: K): string | number => {
-    return inputValues[field] !== undefined ? inputValues[field] : rentInputs[field];
+    const localValue = inputValues[field];
+    const globalValue = rentInputs[field];
+
+    if (localValue !== undefined) {
+      return localValue;
+    }
+
+    if (typeof globalValue === "boolean") {
+      return globalValue.toString();
+    }
+
+    return globalValue as string | number;
   };
 
   const formatNumberWithCommas = (value: number): string => {
@@ -96,8 +107,8 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
       return value; // Already being edited, keep as-is
     }
     // Format large numbers with commas for better readability
-    const fieldsToFormat = ["currentMonthlyRentAmount"] as const;
-    if (fieldsToFormat.includes(field as any) && typeof value === "number") {
+    const fieldsToFormat: (keyof RentInputsType)[] = ["currentMonthlyRentAmount"];
+    if (fieldsToFormat.includes(field) && typeof value === "number") {
       return formatNumberWithCommas(value);
     }
     return value;
@@ -127,7 +138,7 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
           min: rgMin,
           max: rgMax,
           minLabel: `${rgMin}%`,
-          maxLabel: `${rgMax}%`
+          maxLabel: `${rgMax}%`,
         };
       }
       default:
@@ -141,15 +152,6 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
       updateRentInput("rentGrowthRateAnnual", buyInputs.homeAppreciationCagr);
     }
   }, [buyInputs.homeAppreciationCagr, rentInputs.sameAsHomeAppreciation, updateRentInput]);
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
 
   const getInvestmentReturnRate = () => {
     const rates: Record<InvestmentOption, number> = {

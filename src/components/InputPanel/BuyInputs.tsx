@@ -89,7 +89,19 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
   };
 
   const getDisplayValue = <K extends keyof BuyInputsType>(field: K): string | number => {
-    return inputValues[field] !== undefined ? inputValues[field] : buyInputs[field];
+    const localValue = inputValues[field];
+    const globalValue = buyInputs[field];
+
+    if (localValue !== undefined) {
+      return localValue;
+    }
+
+    // Convert boolean to string for display
+    if (typeof globalValue === "boolean") {
+      return globalValue.toString();
+    }
+
+    return globalValue as string | number;
   };
 
   const formatNumberWithCommas = (value: number): string => {
@@ -106,8 +118,8 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
       return value; // Already being edited, keep as-is
     }
     // Format large numbers with commas for better readability
-    const fieldsToFormat = ["propertyPrice", "hoaFeeAnnual"] as const;
-    if (fieldsToFormat.includes(field as any) && typeof value === "number") {
+    const fieldsToFormat: (keyof BuyInputsType)[] = ["propertyPrice", "hoaFeeAnnual"];
+    if (fieldsToFormat.includes(field) && typeof value === "number") {
       return formatNumberWithCommas(value);
     }
     return value;
@@ -118,7 +130,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
     const currentNum = typeof currentValue === "string" ? parseFormattedNumber(currentValue) : currentValue;
 
     switch (field) {
-      case "propertyPrice":
+      case "propertyPrice": {
         const defaultMin = 100000;
         const defaultMax = 10000000;
         const min = Math.min(defaultMin, currentNum);
@@ -129,24 +141,27 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
           minLabel: min < 1000000 ? `$${Math.round(min / 1000)}K` : `$${(min / 1000000).toFixed(1)}M`,
           maxLabel: max < 1000000 ? `$${Math.round(max / 1000)}K` : `$${(max / 1000000).toFixed(1)}M`,
         };
-      case "mortgageInterestRateAnnual":
+      }
+      case "mortgageInterestRateAnnual": {
         const irMin = Math.min(0, currentNum);
         const irMax = Math.max(10, currentNum);
         return {
           min: irMin,
           max: irMax,
           minLabel: `${irMin}%`,
-          maxLabel: `${irMax}%`
+          maxLabel: `${irMax}%`,
         };
-      case "homeAppreciationCagr":
+      }
+      case "homeAppreciationCagr": {
         const haMin = Math.min(0, currentNum);
         const haMax = Math.max(10, currentNum);
         return {
           min: haMin,
           max: haMax,
           minLabel: `${haMin}%`,
-          maxLabel: `${haMax}%`
+          maxLabel: `${haMax}%`,
         };
+      }
       default:
         return null;
     }
@@ -261,7 +276,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
             <span className="text-xs text-dark-500">%</span>
           </div>
         </div>
-{(() => {
+        {(() => {
           const limits = getSliderLimits("mortgageInterestRateAnnual", buyInputs.mortgageInterestRateAnnual);
           return (
             <>
@@ -324,7 +339,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
             <span className="text-xs text-dark-500">%</span>
           </div>
         </div>
-{(() => {
+        {(() => {
           const limits = getSliderLimits("homeAppreciationCagr", buyInputs.homeAppreciationCagr);
           return (
             <>
@@ -592,7 +607,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
               </label>
               <div className="flex space-x-2">
                 <div className="flex bg-gray-100 rounded-lg overflow-hidden">
-                  {["Married", "Single", "HeadOfHousehold"].map((status) => (
+                  {(["Married", "Single", "HeadOfHousehold"] as const).map((status) => (
                     <button
                       key={status}
                       onClick={() => handleInputChange("filingStatus", status)}
