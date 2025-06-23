@@ -99,7 +99,7 @@ export interface AppState {
   isCalculationValid: boolean;
 }
 
-// Action types
+// Action types with specific field types
 export type AppAction =
   | { type: "UPDATE_BUY_INPUT"; field: keyof BuyInputs; value: BuyInputs[keyof BuyInputs] }
   | { type: "UPDATE_RENT_INPUT"; field: keyof RentInputs; value: RentInputs[keyof RentInputs] }

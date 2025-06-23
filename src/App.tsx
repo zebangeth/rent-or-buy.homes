@@ -1,4 +1,5 @@
 import Header from './components/Header'
+import InputPanel from './components/InputPanel'
 import { AppProvider, useApp } from './contexts'
 
 function AppContent() {
@@ -18,56 +19,69 @@ function AppContent() {
           onLanguageChange={handleLanguageChange}
         />
         
-        {/* Placeholder content - will be replaced with actual components */}
-        <div className="space-y-8">
-          <div className="card p-8 text-center">
-            <h2 className="text-2xl font-semibold text-dark-800 mb-4">
-              Buy vs Rent Calculator
-            </h2>
-            <p className="text-dark-500 mb-6">
-              Global state is now set up! Current configuration:
-            </p>
-            
-            {/* Demo state display */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-              <div className="bg-primary-50 p-4 rounded-lg">
-                <h3 className="font-semibold text-primary-800 mb-2">Buy Scenario</h3>
-                <ul className="text-sm text-primary-700 space-y-1">
-                  <li>Property Price: ${state.buyInputs.propertyPrice.toLocaleString()}</li>
-                  <li>Down Payment: {state.buyInputs.downPaymentPercentage}%</li>
-                  <li>Interest Rate: {state.buyInputs.mortgageInterestRateAnnual}%</li>
-                  <li>Term: {state.buyInputs.mortgageTermYears} years</li>
-                  <li>Home Appreciation: {state.buyInputs.homeAppreciationCagr}%</li>
-                </ul>
-              </div>
+        {/* Main Dashboard Layout */}
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* Left Section: Input Panel */}
+          <div className="w-full md:w-1/3">
+            <InputPanel />
+          </div>
+          
+          {/* Right Section: Results Placeholder */}
+          <div className="w-full md:w-2/3 space-y-6">
+            {/* Placeholder for Results */}
+            <div className="card p-8 text-center">
+              <h2 className="text-2xl font-semibold text-dark-800 mb-4">
+                Results Panel
+              </h2>
+              <p className="text-dark-500 mb-6">
+                Input panels are now functional! Results and charts will be implemented next.
+              </p>
               
-              <div className="bg-secondary-50 p-4 rounded-lg">
-                <h3 className="font-semibold text-secondary-800 mb-2">Rent Scenario</h3>
-                <ul className="text-sm text-secondary-700 space-y-1">
-                  <li>Monthly Rent: ${state.rentInputs.currentMonthlyRentAmount.toLocaleString()}</li>
-                  <li>Rent Growth: {state.rentInputs.rentGrowthRateAnnual}%</li>
-                  <li>Investment: {state.rentInputs.selectedInvestmentOption}</li>
-                  <li>Capital Gains Tax: {state.rentInputs.longTermCapitalGainsTaxRateInvestment}%</li>
-                </ul>
-              </div>
-              
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-semibold text-gray-800 mb-2">App Settings</h3>
-                <ul className="text-sm text-gray-700 space-y-1">
-                  <li>Language: {state.appSettings.currentLanguage}</li>
-                  <li>Projection: {state.appSettings.projectionYears} years</li>
-                  <li>Cash Out Mode: {state.appSettings.showCashOut ? 'On' : 'Off'}</li>
-                  <li>Yearly Mode: {state.appSettings.showYearlyMode ? 'On' : 'Off'}</li>
-                </ul>
-              </div>
-              
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h3 className="font-semibold text-blue-800 mb-2">Status</h3>
-                <ul className="text-sm text-blue-700 space-y-1">
-                  <li>Calculations Valid: {state.isCalculationValid ? 'Yes' : 'No'}</li>
-                  <li>Data Points: {state.calculations.length}</li>
-                  <li>Better Option: {state.summary.betterOption}</li>
-                </ul>
+              {/* Current State Preview */}
+              <div className="grid grid-cols-1 gap-4 text-left">
+                <div className="bg-primary-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-primary-800 mb-2">Current Buy Settings</h3>
+                  <div className="text-sm text-primary-700 space-y-1">
+                    <div className="flex justify-between">
+                      <span>Property Price:</span>
+                      <span>${state.buyInputs.propertyPrice.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Down Payment:</span>
+                      <span>{state.buyInputs.downPaymentPercentage}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Interest Rate:</span>
+                      <span>{state.buyInputs.mortgageInterestRateAnnual}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Term:</span>
+                      <span>{state.buyInputs.mortgageTermYears} years</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-secondary-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-secondary-800 mb-2">Current Rent Settings</h3>
+                  <div className="text-sm text-secondary-700 space-y-1">
+                    <div className="flex justify-between">
+                      <span>Monthly Rent:</span>
+                      <span>${state.rentInputs.currentMonthlyRentAmount.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Rent Growth:</span>
+                      <span>{state.rentInputs.rentGrowthRateAnnual}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Investment:</span>
+                      <span>{state.rentInputs.selectedInvestmentOption}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Capital Gains Tax:</span>
+                      <span>{state.rentInputs.longTermCapitalGainsTaxRateInvestment}%</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
