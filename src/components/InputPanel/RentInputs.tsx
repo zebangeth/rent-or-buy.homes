@@ -16,6 +16,21 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
     updateRentInput(field, value);
   };
 
+  const validateRentInput = <K extends keyof RentInputsType>(field: K, value: number): number => {
+    switch (field) {
+      case "currentMonthlyRentAmount": {
+        return Math.max(0, value);
+      }
+      case "rentGrowthRateAnnual":
+      case "customInvestmentReturn":
+      case "longTermCapitalGainsTaxRateInvestment": {
+        return Math.max(0, value);
+      }
+      default:
+        return value;
+    }
+  };
+
   const handleNumberInputChange = <K extends keyof RentInputsType>(
     field: K,
     value: string,
@@ -28,7 +43,8 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
     if (value !== "" && !isNaN(Number(value))) {
       const numValue = parser(value);
       if (!isNaN(numValue as number)) {
-        updateRentInput(field, numValue);
+        const validatedValue = validateRentInput(field, numValue as number);
+        updateRentInput(field, validatedValue as RentInputsType[K]);
       }
     }
   };
@@ -47,10 +63,11 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
         return newState;
       });
     } else {
-      // Update global state with final value
+      // Update global state with final validated value
       const numValue = parser(localValue);
       if (!isNaN(numValue as number)) {
-        updateRentInput(field, numValue);
+        const validatedValue = validateRentInput(field, numValue as number);
+        updateRentInput(field, validatedValue as RentInputsType[K]);
       }
       // Clear local state
       setInputValues((prev) => {
@@ -91,7 +108,7 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
     const currentNum = typeof currentValue === "string" ? parseFormattedNumber(currentValue) : currentValue;
 
     switch (field) {
-      case "currentMonthlyRentAmount":
+      case "currentMonthlyRentAmount": {
         const defaultMin = 1000;
         const defaultMax = 10000;
         const min = Math.min(defaultMin, currentNum);
@@ -102,6 +119,17 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
           minLabel: min < 1000 ? `$${min}` : `$${Math.round(min / 1000)}K`,
           maxLabel: max < 1000 ? `$${max}` : `$${Math.round(max / 1000)}K`,
         };
+      }
+      case "rentGrowthRateAnnual": {
+        const rgMin = Math.min(0, currentNum);
+        const rgMax = Math.max(10, currentNum);
+        return {
+          min: rgMin,
+          max: rgMax,
+          minLabel: `${rgMin}%`,
+          maxLabel: `${rgMax}%`
+        };
+      }
       default:
         return null;
     }
@@ -192,33 +220,39 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
               value={getDisplayValue("rentGrowthRateAnnual")}
               onChange={(e) => handleNumberInputChange("rentGrowthRateAnnual", e.target.value, (val) => Number(val))}
               onBlur={() => handleNumberInputBlur("rentGrowthRateAnnual", (val) => Number(val))}
-              className={`w-16 px-2 py-1 text-sm font-semibold text-secondary-700 bg-secondary-100 border border-secondary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-300 text-center ${
+              className={`w-16 px-2 py-1 text-sm font-semibold text-secondary-700 bg-secondary-100 border border-secondary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-300 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                 rentInputs.sameAsHomeAppreciation ? "opacity-50 cursor-not-allowed" : ""
               }`}
               disabled={rentInputs.sameAsHomeAppreciation}
               min="0"
-              max="10"
               step="0.5"
             />
             <span className="text-xs text-dark-500">%</span>
           </div>
         </div>
-        <input
-          type="range"
-          min="0"
-          max="10"
-          value={rentInputs.rentGrowthRateAnnual}
-          step="0.5"
-          className={`custom-range-secondary ${
-            rentInputs.sameAsHomeAppreciation ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-          disabled={rentInputs.sameAsHomeAppreciation}
-          onChange={(e) => handleInputChange("rentGrowthRateAnnual", Number(e.target.value))}
-        />
-        <div className="flex justify-between text-xs text-dark-400 mt-1">
-          <span>0%</span>
-          <span>10%</span>
-        </div>
+        {(() => {
+          const limits = getSliderLimits("rentGrowthRateAnnual", rentInputs.rentGrowthRateAnnual);
+          return (
+            <>
+              <input
+                type="range"
+                min={limits?.min || 0}
+                max={limits?.max || 10}
+                value={rentInputs.rentGrowthRateAnnual}
+                step="0.5"
+                className={`custom-range-secondary ${
+                  rentInputs.sameAsHomeAppreciation ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                disabled={rentInputs.sameAsHomeAppreciation}
+                onChange={(e) => handleInputChange("rentGrowthRateAnnual", Number(e.target.value))}
+              />
+              <div className="flex justify-between text-xs text-dark-400 mt-1">
+                <span>{limits?.minLabel || "0%"}</span>
+                <span>{limits?.maxLabel || "10%"}</span>
+              </div>
+            </>
+          );
+        })()}
         <div className="mt-2 flex items-center">
           <input
             type="checkbox"
@@ -259,11 +293,12 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
                 setInputValues((prev) => ({ ...prev, investmentReturn: value }));
 
                 if (value !== "" && !isNaN(Number(value))) {
+                  const numValue = Math.max(0, Number(value));
                   // Auto-switch to Custom when user edits the field
                   if (rentInputs.selectedInvestmentOption !== "Custom") {
                     handleInputChange("selectedInvestmentOption", "Custom");
                   }
-                  handleInputChange("customInvestmentReturn", Number(value));
+                  handleInputChange("customInvestmentReturn", numValue);
                 }
               }}
               onBlur={() => {
@@ -277,10 +312,11 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
                   });
                 } else {
                   // Ensure it's saved and clear local state
+                  const numValue = Math.max(0, Number(localValue));
                   if (rentInputs.selectedInvestmentOption !== "Custom") {
                     handleInputChange("selectedInvestmentOption", "Custom");
                   }
-                  handleInputChange("customInvestmentReturn", Number(localValue));
+                  handleInputChange("customInvestmentReturn", numValue);
                   setInputValues((prev) => {
                     const newState = { ...prev };
                     delete newState["investmentReturn"];
@@ -288,7 +324,7 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
                   });
                 }
               }}
-              className="w-16 px-2 py-1 text-sm font-semibold text-secondary-700 bg-secondary-100 border border-secondary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-300 text-center"
+              className="w-16 px-2 py-1 text-sm font-semibold text-secondary-700 bg-secondary-100 border border-secondary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-300 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               min="0"
               max="30"
               step="0.25"
