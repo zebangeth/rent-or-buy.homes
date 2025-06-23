@@ -1,0 +1,358 @@
+import { createContext, useContext, useReducer } from "react";
+import type { ReactNode } from "react";
+
+// Types for investment options
+export type InvestmentOption = "SPY" | "QQQ" | "Custom";
+
+export type FilingStatus = "Single" | "Married" | "HeadOfHousehold";
+
+// Buy scenario inputs
+export interface BuyInputs {
+  // Essential inputs
+  propertyPrice: number;
+  downPaymentPercentage: number;
+  mortgageInterestRateAnnual: number;
+  mortgageTermYears: 15 | 20 | 30;
+  homeAppreciationCagr: number;
+
+  // Advanced inputs - transaction costs
+  closingCostsPercentageBuy: number;
+  sellingCostsPercentageSell: number;
+
+  // Advanced inputs - holding costs
+  propertyTaxRateAnnual: number;
+  insuranceAndMaintenanceRateAnnual: number;
+  hoaFeeAnnual: number;
+
+  // Advanced inputs - tax implications
+  marginalTaxRate: number;
+  mortgageInterestDeduction: boolean;
+  longTermCapitalGainsTaxRateProperty: number;
+  taxFreeCapitalGainAmount: number;
+  filingStatus: FilingStatus;
+}
+
+// Rent & invest scenario inputs
+export interface RentInputs {
+  currentMonthlyRentAmount: number;
+  rentGrowthRateAnnual: number;
+  sameAsHomeAppreciation: boolean;
+  selectedInvestmentOption: InvestmentOption;
+  customInvestmentReturn: number;
+  longTermCapitalGainsTaxRateInvestment: number;
+}
+
+// App settings
+export interface AppSettings {
+  currentLanguage: string;
+  projectionYears: number;
+  showCashOut: boolean;
+  showYearlyMode: boolean;
+}
+
+// Calculated outputs for a single year
+export interface YearlyCalculation {
+  year: number;
+
+  // Buy scenario results
+  buy: {
+    currentPropertyValue: number;
+    cashOutflow: number;
+    adjustedCashOutflow: number;
+    annualInterestPaid: number;
+    annualPrincipalPaid: number;
+    remainingMortgageBalance: number;
+    netAssetValueNotCashOut: number;
+    netAssetValueCashOut: number;
+    totalHoldingCosts: number;
+  };
+
+  // Rent scenario results
+  rent: {
+    annualRentCost: number;
+    cashOutflow: number;
+    additionalInvestmentThisYear: number;
+    investmentPortfolioValue: number;
+    totalCashInvestedSoFar: number;
+    netAssetValueNotCashOut: number;
+    netAssetValueCashOut: number;
+  };
+}
+
+// Summary results
+export interface CalculationSummary {
+  projectionYears: number;
+  betterOption: "buy" | "rent";
+  buyNetWorth: number;
+  rentNetWorth: number;
+  difference: number;
+  differencePercentage: number;
+}
+
+// Complete app state
+export interface AppState {
+  buyInputs: BuyInputs;
+  rentInputs: RentInputs;
+  appSettings: AppSettings;
+  calculations: YearlyCalculation[];
+  summary: CalculationSummary;
+  isCalculationValid: boolean;
+}
+
+// Action types
+export type AppAction =
+  | { type: "UPDATE_BUY_INPUT"; field: keyof BuyInputs; value: BuyInputs[keyof BuyInputs] }
+  | { type: "UPDATE_RENT_INPUT"; field: keyof RentInputs; value: RentInputs[keyof RentInputs] }
+  | { type: "UPDATE_APP_SETTING"; field: keyof AppSettings; value: AppSettings[keyof AppSettings] }
+  | { type: "SET_PROJECTION_YEARS"; years: number }
+  | { type: "TOGGLE_CASH_OUT_MODE" }
+  | { type: "TOGGLE_YEARLY_MODE" }
+  | { type: "RECALCULATE" }
+  | { type: "LOAD_CITY_DEFAULTS"; cityData: Partial<BuyInputs & RentInputs> };
+
+// Default values
+const defaultBuyInputs: BuyInputs = {
+  // Essential
+  propertyPrice: 2500000,
+  downPaymentPercentage: 25,
+  mortgageInterestRateAnnual: 6.75,
+  mortgageTermYears: 30,
+  homeAppreciationCagr: 3.5,
+
+  // Transaction costs
+  closingCostsPercentageBuy: 2,
+  sellingCostsPercentageSell: 5,
+
+  // Holding costs
+  propertyTaxRateAnnual: 1.1,
+  insuranceAndMaintenanceRateAnnual: 1.0,
+  hoaFeeAnnual: 0,
+
+  // Tax implications
+  marginalTaxRate: 24,
+  mortgageInterestDeduction: true,
+  longTermCapitalGainsTaxRateProperty: 15,
+  taxFreeCapitalGainAmount: 500000, // Married filing jointly
+  filingStatus: "Married",
+};
+
+const defaultRentInputs: RentInputs = {
+  currentMonthlyRentAmount: 6000,
+  rentGrowthRateAnnual: 3.5,
+  sameAsHomeAppreciation: true,
+  selectedInvestmentOption: "SPY",
+  customInvestmentReturn: 8,
+  longTermCapitalGainsTaxRateInvestment: 15,
+};
+
+const defaultAppSettings: AppSettings = {
+  currentLanguage: "en",
+  projectionYears: 10,
+  showCashOut: true,
+  showYearlyMode: false,
+};
+
+const initialState: AppState = {
+  buyInputs: defaultBuyInputs,
+  rentInputs: defaultRentInputs,
+  appSettings: defaultAppSettings,
+  calculations: [],
+  summary: {
+    projectionYears: 10,
+    betterOption: "buy",
+    buyNetWorth: 0,
+    rentNetWorth: 0,
+    difference: 0,
+    differencePercentage: 0,
+  },
+  isCalculationValid: false,
+};
+
+// Helper function to get investment return rate
+export const getInvestmentReturnRate = (inputs: RentInputs): number => {
+  const rates: Record<InvestmentOption, number> = {
+    SPY: 8,
+    QQQ: 9.25,
+    Custom: inputs.customInvestmentReturn,
+  };
+  return rates[inputs.selectedInvestmentOption];
+};
+
+// Helper function to get tax-free capital gain amount
+export const getTaxFreeCapitalGainAmount = (filingStatus: FilingStatus): number => {
+  const amounts: Record<FilingStatus, number> = {
+    Single: 250000,
+    Married: 500000,
+    HeadOfHousehold: 250000,
+  };
+  return amounts[filingStatus];
+};
+
+// Reducer function
+function appReducer(state: AppState, action: AppAction): AppState {
+  switch (action.type) {
+    case "UPDATE_BUY_INPUT": {
+      const newBuyInputs = {
+        ...state.buyInputs,
+        [action.field]: action.value,
+      };
+
+      // Update tax-free capital gain amount when filing status changes
+      if (action.field === "filingStatus") {
+        newBuyInputs.taxFreeCapitalGainAmount = getTaxFreeCapitalGainAmount(action.value as FilingStatus);
+      }
+
+      return {
+        ...state,
+        buyInputs: newBuyInputs,
+        isCalculationValid: false,
+      };
+    }
+
+    case "UPDATE_RENT_INPUT": {
+      const newRentInputs = {
+        ...state.rentInputs,
+        [action.field]: action.value,
+      };
+
+      // If sameAsHomeAppreciation is enabled, sync rent growth with home appreciation
+      if (action.field === "sameAsHomeAppreciation" && action.value) {
+        newRentInputs.rentGrowthRateAnnual = state.buyInputs.homeAppreciationCagr;
+      }
+
+      return {
+        ...state,
+        rentInputs: newRentInputs,
+        isCalculationValid: false,
+      };
+    }
+
+    case "UPDATE_APP_SETTING":
+      return {
+        ...state,
+        appSettings: {
+          ...state.appSettings,
+          [action.field]: action.value,
+        },
+      };
+
+    case "SET_PROJECTION_YEARS":
+      return {
+        ...state,
+        appSettings: {
+          ...state.appSettings,
+          projectionYears: action.years,
+        },
+        isCalculationValid: false,
+      };
+
+    case "TOGGLE_CASH_OUT_MODE":
+      return {
+        ...state,
+        appSettings: {
+          ...state.appSettings,
+          showCashOut: !state.appSettings.showCashOut,
+        },
+      };
+
+    case "TOGGLE_YEARLY_MODE":
+      return {
+        ...state,
+        appSettings: {
+          ...state.appSettings,
+          showYearlyMode: !state.appSettings.showYearlyMode,
+        },
+      };
+
+    case "LOAD_CITY_DEFAULTS":
+      return {
+        ...state,
+        buyInputs: {
+          ...state.buyInputs,
+          ...action.cityData,
+        },
+        rentInputs: {
+          ...state.rentInputs,
+          ...action.cityData,
+        },
+        isCalculationValid: false,
+      };
+
+    case "RECALCULATE":
+      // TODO: Implement actual calculation logic
+      // For now, return state with calculations marked as valid
+      return {
+        ...state,
+        isCalculationValid: true,
+      };
+
+    default:
+      return state;
+  }
+}
+
+// Context creation
+interface AppContextType {
+  state: AppState;
+  dispatch: React.Dispatch<AppAction>;
+
+  // Convenience functions
+  updateBuyInput: (field: keyof BuyInputs, value: BuyInputs[keyof BuyInputs]) => void;
+  updateRentInput: (field: keyof RentInputs, value: RentInputs[keyof RentInputs]) => void;
+  updateAppSetting: (field: keyof AppSettings, value: AppSettings[keyof AppSettings]) => void;
+  loadCityDefaults: (cityData: Partial<BuyInputs & RentInputs>) => void;
+  recalculate: () => void;
+}
+
+const AppContext = createContext<AppContextType | undefined>(undefined);
+
+// Provider component
+interface AppProviderProps {
+  children: ReactNode;
+}
+
+export function AppProvider({ children }: AppProviderProps) {
+  const [state, dispatch] = useReducer(appReducer, initialState);
+
+  // Convenience functions
+  const updateBuyInput = (field: keyof BuyInputs, value: BuyInputs[keyof BuyInputs]) => {
+    dispatch({ type: "UPDATE_BUY_INPUT", field, value });
+  };
+
+  const updateRentInput = (field: keyof RentInputs, value: RentInputs[keyof RentInputs]) => {
+    dispatch({ type: "UPDATE_RENT_INPUT", field, value });
+  };
+
+  const updateAppSetting = (field: keyof AppSettings, value: AppSettings[keyof AppSettings]) => {
+    dispatch({ type: "UPDATE_APP_SETTING", field, value });
+  };
+
+  const loadCityDefaults = (cityData: Partial<BuyInputs & RentInputs>) => {
+    dispatch({ type: "LOAD_CITY_DEFAULTS", cityData });
+  };
+
+  const recalculate = () => {
+    dispatch({ type: "RECALCULATE" });
+  };
+
+  const value: AppContextType = {
+    state,
+    dispatch,
+    updateBuyInput,
+    updateRentInput,
+    updateAppSetting,
+    loadCityDefaults,
+    recalculate,
+  };
+
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+}
+
+// Hook to use the context
+export function useApp() {
+  const context = useContext(AppContext);
+  if (context === undefined) {
+    throw new Error("useApp must be used within an AppProvider");
+  }
+  return context;
+}

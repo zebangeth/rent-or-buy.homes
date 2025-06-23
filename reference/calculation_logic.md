@@ -1,12 +1,4 @@
-整体计算逻辑：
-
-1. 计算买房和租房的现金流，然后比较现金流。如果一个选项的当年支出比另一个选项的当年支出更多，则将多出的支出部分视为另一个选项的当年投资。
-2. 在初始年，买房的首付和交易成本是买房的支出，租房的支出则是当年租金，所以买房的当年投资是 0，租房的当年投资则是首付和交易成本减去当年租金的剩余部分。
-3. 对于后续年份，买房的当年支出是当年房贷还款以及当年房产税、保险和维修费用，租房的当年支出是当年租金，两种选项支出更低的选项可以将剩余部分视为当年投资。
-
-对于两种选项的 net asset value，买房的 net asset value 是当年房产价值减去当年房贷余额（如果买房选项有投资的话，则再加上投资价值），租房的 net asset value 是累计投资价值。
-
-Here’s the overall logic behind our calculator:
+Overall logic behind our calculator:
 
 1. We calculate the cash flow for both buying and renting, then compare them. If one option’s expenses in a given year are higher than the other’s, the extra expense is treated as an investment in the other option for that year.
 2. In the first year, the down payment and transaction costs count as expenses for buying, while rent is the expense for renting. So, the investment for buying that year is zero, and for renting, it’s the down payment and transaction costs minus that year’s rent.
