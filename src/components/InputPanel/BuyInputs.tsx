@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { useApp, type BuyInputs as BuyInputsType } from "../../contexts";
+import { useInputHandlers, formatCurrency, parseFormattedNumber, type InputValidationConfig } from "../../lib/inputUtils";
+import { SLIDER_LIMITS, MORTGAGE_TERMS, VALIDATION_LIMITS } from "../../lib/constants";
+import { SliderInput, ButtonGroup } from "./shared";
 
 interface BuyInputsProps {
   onSwitchToRent?: () => void;
@@ -10,120 +13,28 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
   const { buyInputs } = state;
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  // Local state for input display values to allow partial editing
-  const [inputValues, setInputValues] = useState<Record<string, string>>({});
-
-  const handleInputChange = <K extends keyof BuyInputsType>(field: K, value: BuyInputsType[K]) => {
-    updateBuyInput(field, value);
+  const validationConfig: InputValidationConfig<BuyInputsType> = {
+    propertyPrice: VALIDATION_LIMITS.PROPERTY_PRICE,
+    hoaFeeAnnual: VALIDATION_LIMITS.HOA_FEE,
+    downPaymentPercentage: VALIDATION_LIMITS.PERCENTAGE,
+    closingCostsPercentageBuy: VALIDATION_LIMITS.PERCENTAGE,
+    sellingCostsPercentageSell: VALIDATION_LIMITS.PERCENTAGE,
+    propertyTaxRateAnnual: VALIDATION_LIMITS.PERCENTAGE,
+    insuranceAndMaintenanceRateAnnual: VALIDATION_LIMITS.PERCENTAGE,
+    marginalTaxRate: VALIDATION_LIMITS.PERCENTAGE,
+    longTermCapitalGainsTaxRateProperty: VALIDATION_LIMITS.PERCENTAGE,
+    mortgageInterestRateAnnual: VALIDATION_LIMITS.POSITIVE_NUMBER,
+    homeAppreciationCagr: VALIDATION_LIMITS.POSITIVE_NUMBER,
   };
 
-  const validateInput = <K extends keyof BuyInputsType>(field: K, value: number): number => {
-    switch (field) {
-      case "propertyPrice":
-      case "hoaFeeAnnual": {
-        return Math.max(0, value);
-      }
-      case "downPaymentPercentage":
-      case "closingCostsPercentageBuy":
-      case "sellingCostsPercentageSell":
-      case "propertyTaxRateAnnual":
-      case "insuranceAndMaintenanceRateAnnual":
-      case "marginalTaxRate":
-      case "longTermCapitalGainsTaxRateProperty": {
-        return Math.max(0, Math.min(100, value));
-      }
-      case "mortgageInterestRateAnnual":
-      case "homeAppreciationCagr": {
-        return Math.max(0, value);
-      }
-      default:
-        return value;
-    }
-  };
+  const {
+    handleInputChange,
+    handleNumberInputChange,
+    handleNumberInputBlur,
+    getDisplayValue,
+    formatDisplayValue,
+  } = useInputHandlers(buyInputs as unknown as Record<string, unknown>, updateBuyInput as (field: string, value: unknown) => void, validationConfig);
 
-  const handleNumberInputChange = <K extends keyof BuyInputsType>(
-    field: K,
-    value: string,
-    parser: (val: string) => BuyInputsType[K]
-  ) => {
-    // Update local display value immediately for smooth UX
-    setInputValues((prev) => ({ ...prev, [field]: value }));
-
-    // Only update global state if we have a valid number
-    if (value !== "" && !isNaN(Number(value))) {
-      const numValue = parser(value);
-      if (!isNaN(numValue as number)) {
-        const validatedValue = validateInput(field, numValue as number);
-        updateBuyInput(field, validatedValue as BuyInputsType[K]);
-      }
-    }
-  };
-
-  const handleNumberInputBlur = <K extends keyof BuyInputsType>(
-    field: K,
-    parser: (val: string) => BuyInputsType[K]
-  ) => {
-    // On blur, clear local state and ensure we have a valid value
-    const localValue = inputValues[field];
-    if (localValue === "" || isNaN(Number(localValue))) {
-      // Reset to current global state value if invalid
-      setInputValues((prev) => {
-        const newState = { ...prev };
-        delete newState[field];
-        return newState;
-      });
-    } else {
-      // Update global state with final validated value
-      const numValue = parser(localValue);
-      if (!isNaN(numValue as number)) {
-        const validatedValue = validateInput(field, numValue as number);
-        updateBuyInput(field, validatedValue as BuyInputsType[K]);
-      }
-      // Clear local state
-      setInputValues((prev) => {
-        const newState = { ...prev };
-        delete newState[field];
-        return newState;
-      });
-    }
-  };
-
-  const getDisplayValue = <K extends keyof BuyInputsType>(field: K): string | number => {
-    const localValue = inputValues[field];
-    const globalValue = buyInputs[field];
-
-    if (localValue !== undefined) {
-      return localValue;
-    }
-
-    // Convert boolean to string for display
-    if (typeof globalValue === "boolean") {
-      return globalValue.toString();
-    }
-
-    return globalValue as string | number;
-  };
-
-  const formatNumberWithCommas = (value: number): string => {
-    return new Intl.NumberFormat("en-US").format(value);
-  };
-
-  const parseFormattedNumber = (value: string): number => {
-    return Number(value.replace(/,/g, ""));
-  };
-
-  const formatDisplayValue = <K extends keyof BuyInputsType>(field: K): string | number => {
-    const value = getDisplayValue(field);
-    if (typeof value === "string") {
-      return value; // Already being edited, keep as-is
-    }
-    // Format large numbers with commas for better readability
-    const fieldsToFormat: (keyof BuyInputsType)[] = ["propertyPrice", "hoaFeeAnnual"];
-    if (fieldsToFormat.includes(field) && typeof value === "number") {
-      return formatNumberWithCommas(value);
-    }
-    return value;
-  };
 
   // Dynamic slider limits based on user input
   const getSliderLimits = (field: keyof BuyInputsType, currentValue: number) => {
@@ -131,49 +42,41 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
 
     switch (field) {
       case "propertyPrice": {
-        const defaultMin = 100000;
-        const defaultMax = 10000000;
-        const min = Math.min(defaultMin, currentNum);
-        const max = Math.max(defaultMax, currentNum);
+        const min = Math.min(SLIDER_LIMITS.PROPERTY_PRICE.MIN, currentNum);
+        const max = Math.max(SLIDER_LIMITS.PROPERTY_PRICE.MAX, currentNum);
         return {
           min,
           max,
+          step: SLIDER_LIMITS.PROPERTY_PRICE.STEP,
           minLabel: min < 1000000 ? `$${Math.round(min / 1000)}K` : `$${(min / 1000000).toFixed(1)}M`,
           maxLabel: max < 1000000 ? `$${Math.round(max / 1000)}K` : `$${(max / 1000000).toFixed(1)}M`,
         };
       }
       case "mortgageInterestRateAnnual": {
-        const irMin = Math.min(0, currentNum);
-        const irMax = Math.max(10, currentNum);
+        const min = Math.min(SLIDER_LIMITS.MORTGAGE_INTEREST_RATE.MIN, currentNum);
+        const max = Math.max(SLIDER_LIMITS.MORTGAGE_INTEREST_RATE.MAX, currentNum);
         return {
-          min: irMin,
-          max: irMax,
-          minLabel: `${irMin}%`,
-          maxLabel: `${irMax}%`,
+          min,
+          max,
+          step: SLIDER_LIMITS.MORTGAGE_INTEREST_RATE.STEP,
+          minLabel: `${min}%`,
+          maxLabel: `${max}%`,
         };
       }
       case "homeAppreciationCagr": {
-        const haMin = Math.min(0, currentNum);
-        const haMax = Math.max(10, currentNum);
+        const min = Math.min(SLIDER_LIMITS.HOME_APPRECIATION.MIN, currentNum);
+        const max = Math.max(SLIDER_LIMITS.HOME_APPRECIATION.MAX, currentNum);
         return {
-          min: haMin,
-          max: haMax,
-          minLabel: `${haMin}%`,
-          maxLabel: `${haMax}%`,
+          min,
+          max,
+          step: SLIDER_LIMITS.HOME_APPRECIATION.STEP,
+          minLabel: `${min}%`,
+          maxLabel: `${max}%`,
         };
       }
       default:
         return null;
     }
-  };
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
   };
 
   const calculateDownPaymentAmount = () => {
@@ -204,21 +107,15 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
         {(() => {
           const limits = getSliderLimits("propertyPrice", buyInputs.propertyPrice);
           return (
-            <>
-              <input
-                type="range"
-                min={limits?.min || 100000}
-                max={limits?.max || 10000000}
-                value={buyInputs.propertyPrice}
-                step="50000"
-                className="custom-range"
-                onChange={(e) => handleInputChange("propertyPrice", Number(e.target.value))}
-              />
-              <div className="flex justify-between text-xs text-dark-400 mt-1">
-                <span>{limits?.minLabel || "$100K"}</span>
-                <span>{limits?.maxLabel || "$10M"}</span>
-              </div>
-            </>
+            <SliderInput
+              value={buyInputs.propertyPrice}
+              onChange={(value) => handleInputChange("propertyPrice", value)}
+              min={limits?.min || SLIDER_LIMITS.PROPERTY_PRICE.MIN}
+              max={limits?.max || SLIDER_LIMITS.PROPERTY_PRICE.MAX}
+              step={limits?.step || SLIDER_LIMITS.PROPERTY_PRICE.STEP}
+              minLabel={limits?.minLabel || "$100K"}
+              maxLabel={limits?.maxLabel || "$10M"}
+            />
           );
         })()}
       </div>
@@ -242,19 +139,15 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
             <span className="text-xs text-dark-400">({formatCurrency(calculateDownPaymentAmount())})</span>
           </div>
         </div>
-        <input
-          type="range"
-          min="0"
-          max="100"
+        <SliderInput
           value={buyInputs.downPaymentPercentage}
-          step="1"
-          className="custom-range"
-          onChange={(e) => handleInputChange("downPaymentPercentage", Number(e.target.value))}
+          onChange={(value) => handleInputChange("downPaymentPercentage", value)}
+          min={SLIDER_LIMITS.DOWN_PAYMENT.MIN}
+          max={SLIDER_LIMITS.DOWN_PAYMENT.MAX}
+          step={SLIDER_LIMITS.DOWN_PAYMENT.STEP}
+          minLabel="0%"
+          maxLabel="100%"
         />
-        <div className="flex justify-between text-xs text-dark-400 mt-1">
-          <span>0%</span>
-          <span>100%</span>
-        </div>
       </div>
 
       {/* Interest Rate */}
@@ -303,21 +196,12 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
         <div className="flex justify-between mb-3">
           <label className="text-sm font-medium text-dark-700">Mortgage Term</label>
         </div>
-        <div className="grid grid-cols-3 gap-2">
-          {[30, 20, 15].map((term) => (
-            <button
-              key={term}
-              onClick={() => handleInputChange("mortgageTermYears", term as 15 | 20 | 30)}
-              className={`p-2 rounded-lg text-sm font-medium transition-colors ${
-                buyInputs.mortgageTermYears === term
-                  ? "bg-primary-500 text-white"
-                  : "bg-gray-100 text-dark-500 hover:bg-gray-200"
-              }`}
-            >
-              {term} Years
-            </button>
-          ))}
-        </div>
+        <ButtonGroup
+          options={MORTGAGE_TERMS.map(term => ({ value: term, label: `${term} Years` }))}
+          value={buyInputs.mortgageTermYears}
+          onChange={(value) => handleInputChange("mortgageTermYears", value)}
+          className="grid grid-cols-3 gap-2"
+        />
       </div>
 
       {/* Expected Annual Home Appreciation */}

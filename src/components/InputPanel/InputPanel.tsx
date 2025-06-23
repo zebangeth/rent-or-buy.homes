@@ -7,7 +7,7 @@ import RentInputs from './RentInputs';
 type ActiveTab = 'buy' | 'rent';
 
 export default function InputPanel() {
-  const { state, loadCityDefaults } = useApp();
+  const { loadCityDefaults } = useApp();
   const [activeTab, setActiveTab] = useState<ActiveTab>('buy');
 
   const handleCityDefaultChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

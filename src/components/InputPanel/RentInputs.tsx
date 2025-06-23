@@ -1,5 +1,8 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useApp, type RentInputs as RentInputsType, type InvestmentOption } from "../../contexts";
+import { useInputHandlers, parseFormattedNumber, type InputValidationConfig } from "../../lib/inputUtils";
+import { SLIDER_LIMITS, INVESTMENT_OPTIONS, TAX_RATES, VALIDATION_LIMITS } from "../../lib/constants";
+import { SliderInput, ButtonGroup } from "./shared";
 
 interface RentInputsProps {
   onSwitchToBuy?: () => void;
@@ -9,110 +12,23 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
   const { state, updateRentInput } = useApp();
   const { rentInputs, buyInputs } = state;
 
-  // Local state for input display values to allow partial editing
-  const [inputValues, setInputValues] = useState<Record<string, string>>({});
-
-  const handleInputChange = <K extends keyof RentInputsType>(field: K, value: RentInputsType[K]) => {
-    updateRentInput(field, value);
+  const validationConfig: InputValidationConfig<RentInputsType> = {
+    currentMonthlyRentAmount: VALIDATION_LIMITS.MONTHLY_RENT,
+    rentGrowthRateAnnual: VALIDATION_LIMITS.POSITIVE_NUMBER,
+    customInvestmentReturn: VALIDATION_LIMITS.POSITIVE_NUMBER,
+    longTermCapitalGainsTaxRateInvestment: VALIDATION_LIMITS.POSITIVE_NUMBER,
   };
 
-  const validateRentInput = <K extends keyof RentInputsType>(field: K, value: number): number => {
-    switch (field) {
-      case "currentMonthlyRentAmount": {
-        return Math.max(0, value);
-      }
-      case "rentGrowthRateAnnual":
-      case "customInvestmentReturn":
-      case "longTermCapitalGainsTaxRateInvestment": {
-        return Math.max(0, value);
-      }
-      default:
-        return value;
-    }
-  };
+  const {
+    inputValues,
+    setInputValues,
+    handleInputChange,
+    handleNumberInputChange,
+    handleNumberInputBlur,
+    getDisplayValue,
+    formatDisplayValue,
+  } = useInputHandlers(rentInputs as unknown as Record<string, unknown>, updateRentInput as (field: string, value: unknown) => void, validationConfig);
 
-  const handleNumberInputChange = <K extends keyof RentInputsType>(
-    field: K,
-    value: string,
-    parser: (val: string) => RentInputsType[K]
-  ) => {
-    // Update local display value immediately for smooth UX
-    setInputValues((prev) => ({ ...prev, [field]: value }));
-
-    // Only update global state if we have a valid number
-    if (value !== "" && !isNaN(Number(value))) {
-      const numValue = parser(value);
-      if (!isNaN(numValue as number)) {
-        const validatedValue = validateRentInput(field, numValue as number);
-        updateRentInput(field, validatedValue as RentInputsType[K]);
-      }
-    }
-  };
-
-  const handleNumberInputBlur = <K extends keyof RentInputsType>(
-    field: K,
-    parser: (val: string) => RentInputsType[K]
-  ) => {
-    // On blur, clear local state and ensure we have a valid value
-    const localValue = inputValues[field];
-    if (localValue === "" || isNaN(Number(localValue))) {
-      // Reset to current global state value if invalid
-      setInputValues((prev) => {
-        const newState = { ...prev };
-        delete newState[field];
-        return newState;
-      });
-    } else {
-      // Update global state with final validated value
-      const numValue = parser(localValue);
-      if (!isNaN(numValue as number)) {
-        const validatedValue = validateRentInput(field, numValue as number);
-        updateRentInput(field, validatedValue as RentInputsType[K]);
-      }
-      // Clear local state
-      setInputValues((prev) => {
-        const newState = { ...prev };
-        delete newState[field];
-        return newState;
-      });
-    }
-  };
-
-  const getDisplayValue = <K extends keyof RentInputsType>(field: K): string | number => {
-    const localValue = inputValues[field];
-    const globalValue = rentInputs[field];
-
-    if (localValue !== undefined) {
-      return localValue;
-    }
-
-    if (typeof globalValue === "boolean") {
-      return globalValue.toString();
-    }
-
-    return globalValue as string | number;
-  };
-
-  const formatNumberWithCommas = (value: number): string => {
-    return new Intl.NumberFormat("en-US").format(value);
-  };
-
-  const parseFormattedNumber = (value: string): number => {
-    return Number(value.replace(/,/g, ""));
-  };
-
-  const formatDisplayValue = <K extends keyof RentInputsType>(field: K): string | number => {
-    const value = getDisplayValue(field);
-    if (typeof value === "string") {
-      return value; // Already being edited, keep as-is
-    }
-    // Format large numbers with commas for better readability
-    const fieldsToFormat: (keyof RentInputsType)[] = ["currentMonthlyRentAmount"];
-    if (fieldsToFormat.includes(field) && typeof value === "number") {
-      return formatNumberWithCommas(value);
-    }
-    return value;
-  };
 
   // Dynamic slider limits based on user input
   const getSliderLimits = (field: keyof RentInputsType, currentValue: number) => {
@@ -120,25 +36,25 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
 
     switch (field) {
       case "currentMonthlyRentAmount": {
-        const defaultMin = 1000;
-        const defaultMax = 10000;
-        const min = Math.min(defaultMin, currentNum);
-        const max = Math.max(defaultMax, currentNum);
+        const min = Math.min(SLIDER_LIMITS.MONTHLY_RENT.MIN, currentNum);
+        const max = Math.max(SLIDER_LIMITS.MONTHLY_RENT.MAX, currentNum);
         return {
           min,
           max,
+          step: SLIDER_LIMITS.MONTHLY_RENT.STEP,
           minLabel: min < 1000 ? `$${min}` : `$${Math.round(min / 1000)}K`,
           maxLabel: max < 1000 ? `$${max}` : `$${Math.round(max / 1000)}K`,
         };
       }
       case "rentGrowthRateAnnual": {
-        const rgMin = Math.min(0, currentNum);
-        const rgMax = Math.max(10, currentNum);
+        const min = Math.min(SLIDER_LIMITS.RENT_GROWTH.MIN, currentNum);
+        const max = Math.max(SLIDER_LIMITS.RENT_GROWTH.MAX, currentNum);
         return {
-          min: rgMin,
-          max: rgMax,
-          minLabel: `${rgMin}%`,
-          maxLabel: `${rgMax}%`,
+          min,
+          max,
+          step: SLIDER_LIMITS.RENT_GROWTH.STEP,
+          minLabel: `${min}%`,
+          maxLabel: `${max}%`,
         };
       }
       default:
@@ -154,12 +70,10 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
   }, [buyInputs.homeAppreciationCagr, rentInputs.sameAsHomeAppreciation, updateRentInput]);
 
   const getInvestmentReturnRate = () => {
-    const rates: Record<InvestmentOption, number> = {
-      SPY: 8,
-      QQQ: 9.25,
-      Custom: rentInputs.customInvestmentReturn,
-    };
-    return rates[rentInputs.selectedInvestmentOption];
+    if (rentInputs.selectedInvestmentOption === 'Custom') {
+      return rentInputs.customInvestmentReturn;
+    }
+    return INVESTMENT_OPTIONS[rentInputs.selectedInvestmentOption].returnRate;
   };
 
   const handleSameAsAppreciationChange = (checked: boolean) => {
@@ -193,21 +107,16 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
         {(() => {
           const limits = getSliderLimits("currentMonthlyRentAmount", rentInputs.currentMonthlyRentAmount);
           return (
-            <>
-              <input
-                type="range"
-                min={limits?.min || 1000}
-                max={limits?.max || 10000}
-                value={rentInputs.currentMonthlyRentAmount}
-                step="100"
-                className="custom-range-secondary"
-                onChange={(e) => handleInputChange("currentMonthlyRentAmount", Number(e.target.value))}
-              />
-              <div className="flex justify-between text-xs text-dark-400 mt-1">
-                <span>{limits?.minLabel || "$1K"}</span>
-                <span>{limits?.maxLabel || "$10K"}</span>
-              </div>
-            </>
+            <SliderInput
+              value={rentInputs.currentMonthlyRentAmount}
+              onChange={(value) => handleInputChange("currentMonthlyRentAmount", value)}
+              min={limits?.min || SLIDER_LIMITS.MONTHLY_RENT.MIN}
+              max={limits?.max || SLIDER_LIMITS.MONTHLY_RENT.MAX}
+              step={limits?.step || SLIDER_LIMITS.MONTHLY_RENT.STEP}
+              minLabel={limits?.minLabel || "$1K"}
+              maxLabel={limits?.maxLabel || "$10K"}
+              className="custom-range-secondary"
+            />
           );
         })()}
       </div>
@@ -336,21 +245,16 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
         </div>
 
         {/* Investment Type Buttons */}
-        <div className="grid grid-cols-3 gap-2 mb-3">
-          {(["SPY", "QQQ", "Custom"] as InvestmentOption[]).map((option) => (
-            <button
-              key={option}
-              onClick={() => handleInputChange("selectedInvestmentOption", option)}
-              className={`p-2 rounded-lg text-sm font-medium transition-colors ${
-                rentInputs.selectedInvestmentOption === option
-                  ? "bg-secondary-500 text-white"
-                  : "bg-gray-100 text-dark-500 hover:bg-gray-200"
-              }`}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
+        <ButtonGroup
+          options={Object.keys(INVESTMENT_OPTIONS).map(key => ({ 
+            value: key as InvestmentOption, 
+            label: key 
+          }))}
+          value={rentInputs.selectedInvestmentOption}
+          onChange={(value) => handleInputChange("selectedInvestmentOption", value)}
+          className="grid grid-cols-3 gap-2 mb-3"
+          activeClassName="bg-secondary-500 text-white"
+        />
 
         {/* Custom Investment Return Slider */}
         {rentInputs.selectedInvestmentOption === "Custom" && (
@@ -460,21 +364,17 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
         </div>
 
         {/* Tax Rate Selection Buttons */}
-        <div className="grid grid-cols-4 gap-2">
-          {[0, 15, 18.8, 23.8].map((rate) => (
-            <button
-              key={rate}
-              onClick={() => handleInputChange("longTermCapitalGainsTaxRateInvestment", rate)}
-              className={`text-center p-2 rounded-lg text-sm font-medium cursor-pointer transition-colors ${
-                rentInputs.longTermCapitalGainsTaxRateInvestment === rate
-                  ? "bg-secondary-500 text-white"
-                  : "bg-gray-100 text-dark-600 hover:bg-gray-200"
-              }`}
-            >
-              {rate}%
-            </button>
-          ))}
-        </div>
+        <ButtonGroup
+          options={TAX_RATES.CAPITAL_GAINS.map(rate => ({ 
+            value: rate, 
+            label: `${rate}%` 
+          }))}
+          value={rentInputs.longTermCapitalGainsTaxRateInvestment}
+          onChange={(value) => handleInputChange("longTermCapitalGainsTaxRateInvestment", value)}
+          className="grid grid-cols-4 gap-2"
+          activeClassName="bg-secondary-500 text-white"
+          inactiveClassName="bg-gray-100 text-dark-600 hover:bg-gray-200"
+        />
       </div>
 
       {/* Tab Switch Button */}
