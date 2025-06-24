@@ -93,7 +93,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
             <span className="text-xs text-dark-500">$</span>
             <input
               type="text"
-              value={formatDisplayValue("propertyPrice")}
+              value={formatDisplayValue("propertyPrice", ["propertyPrice", "hoaFeeAnnual"])}
               onChange={(e) => {
                 const rawValue = e.target.value.replace(/,/g, "");
                 handleNumberInputChange("propertyPrice", rawValue, (val) => parseFormattedNumber(val));
@@ -382,7 +382,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                 <span className="text-xs text-dark-500">$</span>
                 <input
                   type="text"
-                  value={formatDisplayValue("hoaFeeAnnual")}
+                  value={formatDisplayValue("hoaFeeAnnual", ["propertyPrice", "hoaFeeAnnual"])}
                   onChange={(e) => {
                     const rawValue = e.target.value.replace(/,/g, "");
                     if (rawValue === "" || (!isNaN(Number(rawValue)) && Number(rawValue) >= 0)) {

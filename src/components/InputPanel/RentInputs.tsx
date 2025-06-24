@@ -93,7 +93,7 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
             <span className="text-xs text-dark-500">$</span>
             <input
               type="text"
-              value={formatDisplayValue("currentMonthlyRentAmount")}
+              value={formatDisplayValue("currentMonthlyRentAmount", ["currentMonthlyRentAmount"])}
               onChange={(e) => {
                 const rawValue = e.target.value.replace(/,/g, "");
                 handleNumberInputChange("currentMonthlyRentAmount", rawValue, (val) => parseFormattedNumber(val));
