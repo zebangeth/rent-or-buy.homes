@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 interface HeaderProps {
   currentLanguage?: string;
   onLanguageChange?: (language: string) => void;
 }
 
-export default function Header({ currentLanguage = 'en', onLanguageChange }: HeaderProps) {
+export default function Header({ currentLanguage = "en", onLanguageChange }: HeaderProps) {
   const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage);
 
   const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -15,8 +15,8 @@ export default function Header({ currentLanguage = 'en', onLanguageChange }: Hea
   };
 
   const languages = [
-    { code: 'en', label: '🇺🇸 English' },
-    { code: 'zh', label: '🇨🇳 中文' }
+    { code: "en", label: "🇺🇸 English" },
+    { code: "zh", label: "🇨🇳 中文" },
   ];
 
   return (
@@ -55,7 +55,7 @@ export default function Header({ currentLanguage = 'en', onLanguageChange }: Hea
 
           {/* GitHub Link */}
           <a
-            href="https://github.com/yourusername/rent-or-buy"
+            href="https://github.com/zebangeth/rent-or-buy.homes"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-dark-800 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-dark-700 transition flex items-center"

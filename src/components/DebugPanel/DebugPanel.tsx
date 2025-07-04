@@ -6,7 +6,7 @@ import { formatCurrency } from '../../lib/inputUtils';
 export default function DebugPanel() {
   const { state } = useApp();
   const { results, formulas, getNetWorthComparison, getTotalCashOutflowComparison, getBreakEvenYear } = useCalculations();
-  const [selectedYear, setSelectedYear] = useState(10);
+  const [selectedYear, setSelectedYear] = useState(() => Math.min(20, results.projectionYears));
   const [showFormulas, setShowFormulas] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
 
@@ -487,7 +487,7 @@ export default function DebugPanel() {
                 </tr>
               </thead>
               <tbody>
-                {results.yearlyResults.slice(0, 10).map((yearData) => {
+                {results.yearlyResults.slice(0, Math.min(20, results.projectionYears)).map((yearData) => {
                   const netWorth = getNetWorthComparison(yearData.year, state.appSettings.showCashOut);
                   const cashDiff = yearData.buy.adjustedCashOutflow - yearData.rent.cashOutflow;
                   
