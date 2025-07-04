@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useApp } from '../../contexts';
 import { useCalculations } from '../../hooks';
 import { formatCurrency } from '../../lib/inputUtils';
-import { runSimpleTest } from '../../lib/finance/test';
 
 export default function DebugPanel() {
   const { state } = useApp();
@@ -31,15 +30,6 @@ export default function DebugPanel() {
           Calculation Engine Debug
         </h2>
         <div className="flex items-center space-x-4">
-          <button
-            onClick={() => {
-              console.clear();
-              runSimpleTest();
-            }}
-            className="px-3 py-1 text-xs rounded bg-green-500 text-white hover:bg-green-600"
-          >
-            Run Test
-          </button>
           <button
             onClick={() => setShowFormulas(!showFormulas)}
             className={`px-3 py-1 text-xs rounded ${showFormulas ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
