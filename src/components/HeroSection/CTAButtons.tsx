@@ -18,7 +18,7 @@ export default function CTAButtons() {
       await navigator.clipboard.writeText(url);
       // Show success notification (could be implemented with toast/notification system)
       console.log("Result link copied to clipboard!");
-    } catch (err) {
+    } catch {
       // Fallback for browsers that don't support clipboard API
       const textarea = document.createElement("textarea");
       textarea.value = url;
@@ -31,7 +31,7 @@ export default function CTAButtons() {
       try {
         document.execCommand("copy");
         console.log("Result link copied to clipboard!");
-      } catch (copyErr) {
+      } catch {
         console.log("Failed to copy link");
       }
       

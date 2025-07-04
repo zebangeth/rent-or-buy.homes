@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useApp, type RentInputs as RentInputsType, type InvestmentOption } from "../../contexts";
 import { useInputHandlers, parseFormattedNumber, type InputValidationConfig } from "../../lib/inputUtils";
 import { SLIDER_LIMITS, INVESTMENT_OPTIONS, TAX_RATES, VALIDATION_LIMITS } from "../../lib/constants";
@@ -62,12 +61,7 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
     }
   };
 
-  // Auto-sync rent growth with home appreciation when enabled
-  useEffect(() => {
-    if (rentInputs.sameAsHomeAppreciation) {
-      updateRentInput("rentGrowthRateAnnual", buyInputs.homeAppreciationCagr);
-    }
-  }, [buyInputs.homeAppreciationCagr, rentInputs.sameAsHomeAppreciation, updateRentInput]);
+  // Synchronization is now handled in the AppContext reducer
 
   const getInvestmentReturnRate = () => {
     if (rentInputs.selectedInvestmentOption === 'Custom') {

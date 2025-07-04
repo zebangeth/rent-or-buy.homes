@@ -202,9 +202,19 @@ function appReducer(state: AppState, action: AppAction): AppState {
         newBuyInputs.taxFreeCapitalGainAmount = getTaxFreeCapitalGainAmount(action.value as FilingStatus);
       }
 
+      // If home appreciation rate changes and rent is set to follow it, update rent growth rate
+      let newRentInputs = state.rentInputs;
+      if (action.field === "homeAppreciationCagr" && state.rentInputs.sameAsHomeAppreciation) {
+        newRentInputs = {
+          ...state.rentInputs,
+          rentGrowthRateAnnual: action.value as number,
+        };
+      }
+
       return {
         ...state,
         buyInputs: newBuyInputs,
+        rentInputs: newRentInputs,
         isCalculationValid: false,
       };
     }
