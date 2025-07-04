@@ -168,6 +168,56 @@ export default function DebugPanel() {
         )}
       </div>
 
+      {/* Calculation Logic Explanation */}
+      <div className="mb-6">
+        <button
+          onClick={() => toggleSection('logic')}
+          className="flex items-center justify-between w-full p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
+        >
+          <span className="font-semibold">Cash Flow Differential Logic</span>
+          <i className={`fas ${expandedSections.logic ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
+        </button>
+        
+        {expandedSections.logic && (
+          <div className="mt-3 bg-blue-50 p-4 rounded-lg">
+            <h4 className="font-semibold text-blue-800 mb-3">How Cash Flow Differences Are Handled</h4>
+            <div className="text-sm space-y-2">
+              <div className="bg-white p-3 rounded border">
+                <div className="font-medium text-green-700">When Buy Scenario Costs More:</div>
+                <div className="text-xs mt-1">
+                  • Difference = Buy Cash Outflow - Rent Cash Outflow<br/>
+                  • This difference is invested in the rent scenario's investment portfolio<br/>
+                  • Logic: You save money by renting, so you invest the savings
+                </div>
+              </div>
+              <div className="bg-white p-3 rounded border">
+                <div className="font-medium text-orange-700">When Rent Scenario Costs More:</div>
+                <div className="text-xs mt-1">
+                  • Difference = Rent Cash Outflow - Buy Cash Outflow<br/>
+                  • This difference is invested in an additional portfolio for the buy scenario<br/>
+                  • Logic: You save money by buying, so you invest the savings
+                </div>
+              </div>
+              <div className="bg-white p-3 rounded border">
+                <div className="font-medium text-blue-700">Current Year {selectedYear} Scenario:</div>
+                <div className="text-xs mt-1">
+                  {selectedYearData && (
+                    <>
+                      • Buy Cash Outflow: {formatCurrency(selectedYearData.buy.adjustedCashOutflow)}<br/>
+                      • Rent Cash Outflow: {formatCurrency(selectedYearData.rent.cashOutflow)}<br/>
+                      • Difference: {formatCurrency(Math.abs(selectedYearData.buy.adjustedCashOutflow - selectedYearData.rent.cashOutflow))}<br/>
+                      • {selectedYearData.buy.adjustedCashOutflow > selectedYearData.rent.cashOutflow 
+                        ? `Buy costs more → Rent gets ${formatCurrency(selectedYearData.rent.additionalInvestmentThisYear)} investment` 
+                        : `Rent costs more → Buy gets ${formatCurrency(selectedYearData.buy.additionalInvestmentPortfolio - (selectedYearData.buy.additionalInvestmentPortfolio / (1 + results.preliminary.investmentReturnRate / 100)))} investment`}
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Year-by-Year Breakdown */}
       {selectedYearData && (
         <div className="mb-6">
@@ -196,6 +246,33 @@ export default function DebugPanel() {
                   </div>
                   <div className="flex justify-between">
                     <span>Home Equity:</span>
+                    <span className="font-medium">{formatCurrency(selectedYearData.buy.propertyValue - selectedYearData.buy.remainingMortgageBalance)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Additional Investment Portfolio:</span>
+                    <span className="font-medium">{formatCurrency(selectedYearData.buy.additionalInvestmentPortfolio)}</span>
+                  </div>
+                  {selectedYearData.buy.additionalInvestmentPortfolio > 0 && (
+                    <>
+                      <div className="flex justify-between pl-2 text-xs">
+                        <span>• Cost Basis (Total Invested):</span>
+                        <span className="font-medium">{formatCurrency(selectedYearData.buy.additionalInvestmentCostBasis)}</span>
+                      </div>
+                      <div className="flex justify-between pl-2 text-xs">
+                        <span>• Investment Gains:</span>
+                        <span className="font-medium">{formatCurrency(selectedYearData.buy.additionalInvestmentGains)}</span>
+                      </div>
+                      <div className="bg-blue-50 p-2 rounded text-xs mt-1">
+                        <div className="font-medium text-blue-700 mb-1">How This Portfolio Grows:</div>
+                        <div>• Each year rent costs more than buying, the difference gets invested</div>
+                        <div>• Previous portfolio value + new investment earns {results.preliminary.investmentReturnRate}% return</div>
+                        <div>• Cost basis tracks total cash invested (no compound growth)</div>
+                        <div>• Gains = Portfolio Value - Cost Basis</div>
+                      </div>
+                    </>
+                  )}
+                  <div className="flex justify-between">
+                    <span>Total Net Worth:</span>
                     <span className="font-medium">{formatCurrency(selectedYearData.buy.netAssetValueNotCashOut)}</span>
                   </div>
                   
@@ -243,22 +320,75 @@ export default function DebugPanel() {
                   
                   {state.appSettings.showCashOut && (
                     <>
-                      <div className="font-semibold text-primary-700 mb-1 mt-3">If Sold Today</div>
-                      <div className="flex justify-between">
-                        <span>Capital Gain:</span>
+                      <div className="font-semibold text-primary-700 mb-1 mt-3">If Sold Today - Detailed Calculation</div>
+                      <div className="flex justify-between text-xs">
+                        <span>1. Property Sale Price:</span>
+                        <span className="font-medium">{formatCurrency(selectedYearData.buy.propertyValue)}</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span>2. Selling Costs ({state.buyInputs.sellingCostsPercentageSell}%):</span>
+                        <span className="font-medium">-{formatCurrency(selectedYearData.buy.propertyValue * state.buyInputs.sellingCostsPercentageSell / 100)}</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span>3. Remaining Mortgage Balance:</span>
+                        <span className="font-medium">-{formatCurrency(selectedYearData.buy.remainingMortgageBalance)}</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span>4. Proceeds Before Tax:</span>
+                        <span className="font-medium">{formatCurrency(selectedYearData.buy.propertyValue - (selectedYearData.buy.propertyValue * state.buyInputs.sellingCostsPercentageSell / 100) - selectedYearData.buy.remainingMortgageBalance)}</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span>5. Capital Gain on Property:</span>
                         <span className="font-medium">{formatCurrency(selectedYearData.buy.capitalGainOnProperty)}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Taxable Gain:</span>
+                      <div className="flex justify-between text-xs">
+                        <span>6. Tax-Free Allowance:</span>
+                        <span className="font-medium">-{formatCurrency(results.preliminary.taxFreeCapitalGainAmount)}</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span>7. Taxable Gain:</span>
                         <span className="font-medium">{formatCurrency(selectedYearData.buy.taxableGainOnProperty)}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Tax on Gain:</span>
-                        <span className="font-medium">{formatCurrency(selectedYearData.buy.taxOnPropertyGain)}</span>
+                      <div className="flex justify-between text-xs">
+                        <span>8. Tax on Property Gain ({state.buyInputs.longTermCapitalGainsTaxRateProperty}%):</span>
+                        <span className="font-medium">-{formatCurrency(selectedYearData.buy.taxOnPropertyGain)}</span>
                       </div>
+                      {selectedYearData.buy.additionalInvestmentPortfolio > 0 && (
+                        <>
+                          <div className="flex justify-between text-xs">
+                            <span>9. Additional Investment Portfolio Value:</span>
+                            <span className="font-medium">+{formatCurrency(selectedYearData.buy.additionalInvestmentPortfolio)}</span>
+                          </div>
+                          <div className="flex justify-between text-xs ml-4">
+                            <span>• Total Cost Basis (Amount Invested):</span>
+                            <span className="font-medium">{formatCurrency(selectedYearData.buy.additionalInvestmentCostBasis)}</span>
+                          </div>
+                          <div className="flex justify-between text-xs ml-4">
+                            <span>• Investment Gains:</span>
+                            <span className="font-medium">{formatCurrency(selectedYearData.buy.additionalInvestmentGains)}</span>
+                          </div>
+                          <div className="flex justify-between text-xs">
+                            <span>10. Tax on Investment Gains ({state.buyInputs.longTermCapitalGainsTaxRateProperty}%):</span>
+                            <span className="font-medium">-{formatCurrency(selectedYearData.buy.taxOnAdditionalInvestment)}</span>
+                          </div>
+                          <div className="bg-gray-100 p-2 rounded text-xs mt-1">
+                            <div className="font-medium text-gray-700 mb-1">Investment Portfolio Tax Calculation:</div>
+                            <div>Portfolio Value: {formatCurrency(selectedYearData.buy.additionalInvestmentPortfolio)}</div>
+                            <div>Cost Basis: {formatCurrency(selectedYearData.buy.additionalInvestmentCostBasis)}</div>
+                            <div>Capital Gains: {formatCurrency(selectedYearData.buy.additionalInvestmentGains)}</div>
+                            <div>Tax Rate: {state.buyInputs.longTermCapitalGainsTaxRateProperty}%</div>
+                            <div className="border-t pt-1 mt-1">
+                              Tax = {formatCurrency(selectedYearData.buy.additionalInvestmentGains)} × {state.buyInputs.longTermCapitalGainsTaxRateProperty}% = {formatCurrency(selectedYearData.buy.taxOnAdditionalInvestment)}
+                            </div>
+                          </div>
+                        </>
+                      )}
                       <div className="flex justify-between border-t pt-1 mt-1">
                         <span className="font-semibold">Net Proceeds:</span>
                         <span className="font-bold">{formatCurrency(selectedYearData.buy.netAssetValueCashOut)}</span>
+                      </div>
+                      <div className="text-xs text-gray-600 mt-2">
+                        Summary: Sale Price - Selling Costs - Remaining Mortgage - Tax on Property Gain {selectedYearData.buy.additionalInvestmentPortfolio > 0 ? '+ Investment Portfolio - Tax on Investment' : ''}
                       </div>
                     </>
                   )}
@@ -280,6 +410,10 @@ export default function DebugPanel() {
                   </div>
                   
                   <div className="font-semibold text-secondary-700 mb-1 mt-3">Investment Portfolio</div>
+                  <div className="flex justify-between">
+                    <span>Cash Flow Difference:</span>
+                    <span className="font-medium">{formatCurrency(selectedYearData.buy.adjustedCashOutflow - selectedYearData.rent.cashOutflow)}</span>
+                  </div>
                   <div className="flex justify-between">
                     <span>Additional Investment:</span>
                     <span className="font-medium">{formatCurrency(selectedYearData.rent.additionalInvestmentThisYear)}</span>
@@ -303,18 +437,31 @@ export default function DebugPanel() {
                   
                   {state.appSettings.showCashOut && (
                     <>
-                      <div className="font-semibold text-secondary-700 mb-1 mt-3">If Liquidated Today</div>
-                      <div className="flex justify-between">
-                        <span>Capital Gain:</span>
+                      <div className="font-semibold text-secondary-700 mb-1 mt-3">If Liquidated Today - Detailed Calculation</div>
+                      <div className="flex justify-between text-xs">
+                        <span>1. Current Portfolio Value:</span>
+                        <span className="font-medium">{formatCurrency(selectedYearData.rent.portfolioValueEndOfYear)}</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span>2. Total Cash Invested:</span>
+                        <span className="font-medium">{formatCurrency(selectedYearData.rent.totalCashInvestedSoFar)}</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span>3. Capital Gain on Investment:</span>
                         <span className="font-medium">{formatCurrency(selectedYearData.rent.capitalGainOnInvestment)}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Tax on Gain:</span>
-                        <span className="font-medium">{formatCurrency(selectedYearData.rent.taxOnInvestmentGain)}</span>
+                      <div className="flex justify-between text-xs">
+                        <span>4. Tax on Investment Gain ({state.rentInputs.longTermCapitalGainsTaxRateInvestment}%):</span>
+                        <span className="font-medium">-{formatCurrency(selectedYearData.rent.taxOnInvestmentGain)}</span>
                       </div>
                       <div className="flex justify-between border-t pt-1 mt-1">
                         <span className="font-semibold">Net Proceeds:</span>
                         <span className="font-bold">{formatCurrency(selectedYearData.rent.netAssetValueCashOut)}</span>
+                      </div>
+                      <div className="text-xs text-gray-600 mt-2">
+                        Calculation: Portfolio Value - Tax on Gains<br/>
+                        = {formatCurrency(selectedYearData.rent.portfolioValueEndOfYear)} - {formatCurrency(selectedYearData.rent.taxOnInvestmentGain)}<br/>
+                        = {formatCurrency(selectedYearData.rent.netAssetValueCashOut)}
                       </div>
                     </>
                   )}
