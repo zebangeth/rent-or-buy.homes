@@ -136,7 +136,9 @@ export function calculateBuyScenarioForYear(
   year: number,
   buyInputs: BuyInputs,
   mortgageBreakdown: YearlyMortgageBreakdown,
-  preliminary: PreliminaryCalculations
+  preliminary: PreliminaryCalculations,
+  rentCashOutflow?: number,
+  previousBuyCalculation?: YearlyBuyCalculation
 ): YearlyBuyCalculation {
   // Current property value with appreciation
   const propertyValue = buyInputs.propertyPrice * Math.pow(1 + buyInputs.homeAppreciationCagr / 100, year);
@@ -168,8 +170,33 @@ export function calculateBuyScenarioForYear(
   
   const adjustedCashOutflow = cashOutflow - taxSavingsFromDeduction;
   
+  // Additional investment portfolio for buy scenario when rent costs more
+  let additionalInvestmentPortfolio = 0;
+  let additionalInvestmentCostBasis = 0;
+  if (rentCashOutflow !== undefined) {
+    const cashFlowDifference = rentCashOutflow - adjustedCashOutflow;
+    if (cashFlowDifference > 0) {
+      // Rent costs more, so buy scenario gets additional investment
+      const additionalInvestmentThisYear = cashFlowDifference;
+      let portfolioValueBeforeGrowth: number;
+      
+      if (year === 1) {
+        portfolioValueBeforeGrowth = additionalInvestmentThisYear;
+        additionalInvestmentCostBasis = additionalInvestmentThisYear;
+      } else {
+        const previousPortfolioValue = previousBuyCalculation?.additionalInvestmentPortfolio || 0;
+        const previousCostBasis = previousBuyCalculation?.additionalInvestmentCostBasis || 0;
+        portfolioValueBeforeGrowth = previousPortfolioValue + additionalInvestmentThisYear;
+        additionalInvestmentCostBasis = previousCostBasis + additionalInvestmentThisYear;
+      }
+      
+      const investmentReturnThisYear = portfolioValueBeforeGrowth * preliminary.investmentReturnRate / 100;
+      additionalInvestmentPortfolio = portfolioValueBeforeGrowth + investmentReturnThisYear;
+    }
+  }
+  
   // Net asset value calculations
-  const netAssetValueNotCashOut = propertyValue - mortgageBreakdown.remainingBalance;
+  const netAssetValueNotCashOut = propertyValue - mortgageBreakdown.remainingBalance + additionalInvestmentPortfolio;
   
   // Cash out scenario calculations
   const sellingPrice = propertyValue;
@@ -178,9 +205,20 @@ export function calculateBuyScenarioForYear(
   const capitalGainOnProperty = sellingPrice - buyInputs.propertyPrice;
   const taxableGainOnProperty = Math.max(0, capitalGainOnProperty - preliminary.taxFreeCapitalGainAmount);
   const taxOnPropertyGain = taxableGainOnProperty * buyInputs.longTermCapitalGainsTaxRateProperty / 100;
+  
+  // Calculate tax on additional investment portfolio if applicable
+  let taxOnAdditionalInvestment = 0;
+  let additionalInvestmentGains = 0;
+  if (additionalInvestmentPortfolio > 0) {
+    additionalInvestmentGains = Math.max(0, additionalInvestmentPortfolio - additionalInvestmentCostBasis);
+    taxOnAdditionalInvestment = additionalInvestmentGains * buyInputs.longTermCapitalGainsTaxRateProperty / 100;
+  }
+  
   const netAssetValueCashOut = proceedsBeforeTaxAndLoanRepayment - 
                                mortgageBreakdown.remainingBalance - 
-                               taxOnPropertyGain;
+                               taxOnPropertyGain +
+                               additionalInvestmentPortfolio -
+                               taxOnAdditionalInvestment;
   
   return {
     year,
@@ -200,7 +238,11 @@ export function calculateBuyScenarioForYear(
     capitalGainOnProperty,
     taxableGainOnProperty,
     taxOnPropertyGain,
-    remainingMortgageBalance: mortgageBreakdown.remainingBalance
+    remainingMortgageBalance: mortgageBreakdown.remainingBalance,
+    additionalInvestmentPortfolio,
+    additionalInvestmentCostBasis,
+    additionalInvestmentGains,
+    taxOnAdditionalInvestment
   };
 }
 
@@ -221,7 +263,10 @@ export function calculateRentScenarioForYear(
   const cashOutflow = annualRentCost;
   
   // Differential cash flow for investment
-  const additionalInvestmentThisYear = buyCalculation.adjustedCashOutflow - cashOutflow;
+  // When buy scenario costs more, the difference can be invested (positive)
+  // When rent scenario costs more, no additional investment is made (0)
+  const cashFlowDifference = buyCalculation.adjustedCashOutflow - cashOutflow;
+  const additionalInvestmentThisYear = Math.max(0, cashFlowDifference);
   
   // Investment portfolio calculations
   let portfolioValueBeforeGrowth: number;
@@ -229,12 +274,12 @@ export function calculateRentScenarioForYear(
   
   if (year === 1) {
     // Year 1: Only invest the cash flow difference (which already includes down payment savings)
-    portfolioValueBeforeGrowth = Math.max(0, additionalInvestmentThisYear);
-    totalCashInvestedSoFar = Math.max(0, additionalInvestmentThisYear);
+    portfolioValueBeforeGrowth = additionalInvestmentThisYear;
+    totalCashInvestedSoFar = additionalInvestmentThisYear;
   } else {
     const previousPortfolioValue = previousRentCalculation?.portfolioValueEndOfYear || 0;
     portfolioValueBeforeGrowth = previousPortfolioValue + additionalInvestmentThisYear;
-    totalCashInvestedSoFar = (previousRentCalculation?.totalCashInvestedSoFar || 0) + Math.max(0, additionalInvestmentThisYear);
+    totalCashInvestedSoFar = (previousRentCalculation?.totalCashInvestedSoFar || 0) + additionalInvestmentThisYear;
   }
   
   const investmentReturnThisYear = portfolioValueBeforeGrowth * preliminary.investmentReturnRate / 100;
@@ -285,25 +330,41 @@ export function calculateAllScenarios(
   
   const yearlyResults: YearlyCalculation[] = [];
   let previousRentCalculation: YearlyRentCalculation | null = null;
+  let previousBuyCalculation: YearlyBuyCalculation | undefined = undefined;
   
   for (let year = 1; year <= appSettings.projectionYears; year++) {
     const mortgageBreakdown = mortgageSchedule[year - 1];
-    const buyCalculation = calculateBuyScenarioForYear(year, buyInputs, mortgageBreakdown, preliminary);
+    
+    // First pass: Calculate initial buy scenario (without rent cash flow considerations)
+    const initialBuyCalculation = calculateBuyScenarioForYear(year, buyInputs, mortgageBreakdown, preliminary);
+    
+    // Calculate rent scenario based on initial buy calculation
     const rentCalculation = calculateRentScenarioForYear(
       year, 
       rentInputs, 
-      buyCalculation, 
+      initialBuyCalculation, 
       previousRentCalculation, 
       preliminary
     );
     
+    // Second pass: Calculate final buy scenario with rent cash flow considerations
+    const finalBuyCalculation = calculateBuyScenarioForYear(
+      year, 
+      buyInputs, 
+      mortgageBreakdown, 
+      preliminary,
+      rentCalculation.cashOutflow,
+      previousBuyCalculation
+    );
+    
     yearlyResults.push({
       year,
-      buy: buyCalculation,
+      buy: finalBuyCalculation,
       rent: rentCalculation
     });
     
     previousRentCalculation = rentCalculation;
+    previousBuyCalculation = finalBuyCalculation;
   }
   
   return {

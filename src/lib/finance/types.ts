@@ -32,6 +32,10 @@ export interface YearlyBuyCalculation {
   taxableGainOnProperty: number;
   taxOnPropertyGain: number;
   remainingMortgageBalance: number;
+  additionalInvestmentPortfolio: number;
+  additionalInvestmentCostBasis: number;
+  additionalInvestmentGains: number;
+  taxOnAdditionalInvestment: number;
 }
 
 export interface YearlyRentCalculation {
