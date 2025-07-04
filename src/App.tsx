@@ -1,4 +1,5 @@
 import Header from "./components/Header";
+import HeroSection from "./components/HeroSection";
 import InputPanel from "./components/InputPanel";
 import { DebugPanel } from "./components/DebugPanel";
 import { AppProvider, useApp } from "./contexts";
@@ -16,6 +17,9 @@ function AppContent() {
     <div className="w-full max-w-6xl mx-auto min-h-screen">
       <div className="px-4 sm:px-6 lg:px-8 py-8">
         <Header currentLanguage={state.appSettings.currentLanguage} onLanguageChange={handleLanguageChange} />
+
+        {/* Hero Section */}
+        <HeroSection />
 
         {/* Main Dashboard Layout */}
         <div className="flex flex-col md:flex-row gap-6">

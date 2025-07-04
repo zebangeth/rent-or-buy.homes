@@ -23,7 +23,7 @@ export default function InputPanel() {
   };
 
   return (
-    <div className="card p-6 border border-gray-100">
+    <div className="card p-6 border border-gray-100" data-testid="input-panel">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-semibold text-dark-800">
           <i className="fas fa-sliders-h text-primary-500 mr-2"></i>

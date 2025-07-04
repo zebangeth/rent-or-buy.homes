@@ -25,6 +25,14 @@ export const formatCurrency = (value: number): string => {
   }).format(value);
 };
 
+export const formatPercentage = (value: number): string => {
+  return `${value}%`;
+};
+
+export const formatNumber = (value: number): string => {
+  return new Intl.NumberFormat("en-US").format(value);
+};
+
 export function useInputHandlers<T extends Record<string, unknown>>(
   currentValues: T,
   updateFunction: (field: string, value: unknown) => void,
