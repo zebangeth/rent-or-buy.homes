@@ -32,7 +32,7 @@ export default function InputPanel() {
         <div className="relative inline-block">
           <select
             onChange={handleCityDefaultChange}
-            className="appearance-none text-xs font-medium text-primary-600 bg-primary-100 pl-7 pr-8 py-1 rounded-full cursor-pointer hover:bg-primary-200 transition focus:outline-none"
+            className="appearance-none text-xs font-medium text-dark-700 bg-gray-100 pl-7 pr-8 py-1 rounded-full cursor-pointer hover:bg-gray-200 transition focus:outline-none"
           >
             {cityDefaults.map((city) => (
               <option key={city.id} value={city.id}>
@@ -41,10 +41,10 @@ export default function InputPanel() {
             ))}
           </select>
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
-            <i className="fas fa-bolt text-primary-600"></i>
+            <i className="fas fa-bolt text-dark-600"></i>
           </div>
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-            <i className="fas fa-chevron-down text-xs text-primary-600"></i>
+            <i className="fas fa-chevron-down text-xs text-dark-600"></i>
           </div>
         </div>
       </div>

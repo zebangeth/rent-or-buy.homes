@@ -147,7 +147,7 @@ const defaultRentInputs: RentInputs = {
 
 const defaultAppSettings: AppSettings = {
   currentLanguage: "en",
-  projectionYears: 40,
+  projectionYears: 30,
   showCashOut: true,
   showYearlyMode: false,
 };
@@ -158,7 +158,7 @@ const initialState: AppState = {
   appSettings: defaultAppSettings,
   calculations: [],
   summary: {
-    projectionYears: 40,
+    projectionYears: 30,
     betterOption: "buy",
     buyNetWorth: 0,
     rentNetWorth: 0,
