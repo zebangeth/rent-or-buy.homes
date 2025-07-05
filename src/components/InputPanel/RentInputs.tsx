@@ -26,8 +26,11 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
     handleNumberInputBlur,
     getDisplayValue,
     formatDisplayValue,
-  } = useInputHandlers(rentInputs as unknown as Record<string, unknown>, updateRentInput as (field: string, value: unknown) => void, validationConfig);
-
+  } = useInputHandlers(
+    rentInputs as unknown as Record<string, unknown>,
+    updateRentInput as (field: string, value: unknown) => void,
+    validationConfig
+  );
 
   // Dynamic slider limits based on user input
   const getSliderLimits = (field: keyof RentInputsType, currentValue: number) => {
@@ -64,7 +67,7 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
   // Synchronization is now handled in the AppContext reducer
 
   const getInvestmentReturnRate = () => {
-    if (rentInputs.selectedInvestmentOption === 'Custom') {
+    if (rentInputs.selectedInvestmentOption === "Custom") {
       return rentInputs.customInvestmentReturn;
     }
     return INVESTMENT_OPTIONS[rentInputs.selectedInvestmentOption].returnRate;
@@ -240,9 +243,9 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
 
         {/* Investment Type Buttons */}
         <ButtonGroup
-          options={Object.keys(INVESTMENT_OPTIONS).map(key => ({ 
-            value: key as InvestmentOption, 
-            label: key 
+          options={Object.keys(INVESTMENT_OPTIONS).map((key) => ({
+            value: key as InvestmentOption,
+            label: key,
           }))}
           value={rentInputs.selectedInvestmentOption}
           onChange={(value) => handleInputChange("selectedInvestmentOption", value)}
@@ -328,25 +331,6 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
                       <td className="p-1">Over $600,050</td>
                       <td className="p-1 text-right">23.8%</td>
                     </tr>
-                    <tr className="border-b border-dark-600">
-                      <td className="p-1 font-medium" rowSpan={4}>
-                        Head of Household
-                      </td>
-                      <td className="p-1">$0 – $64,750</td>
-                      <td className="p-1 text-right">0%</td>
-                    </tr>
-                    <tr className="border-b border-dark-600">
-                      <td className="p-1">$64,751 – $200,000</td>
-                      <td className="p-1 text-right">15%</td>
-                    </tr>
-                    <tr className="border-b border-dark-600">
-                      <td className="p-1">$200,001 – $566,700</td>
-                      <td className="p-1 text-right">18.8%</td>
-                    </tr>
-                    <tr>
-                      <td className="p-1">Over $566,700</td>
-                      <td className="p-1 text-right">23.8%</td>
-                    </tr>
                   </tbody>
                 </table>
                 <p className="mt-2 text-xs">
@@ -359,9 +343,9 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
 
         {/* Tax Rate Selection Buttons */}
         <ButtonGroup
-          options={TAX_RATES.CAPITAL_GAINS.map(rate => ({ 
-            value: rate, 
-            label: `${rate}%` 
+          options={TAX_RATES.CAPITAL_GAINS.map((rate) => ({
+            value: rate,
+            label: `${rate}%`,
           }))}
           value={rentInputs.longTermCapitalGainsTaxRateInvestment}
           onChange={(value) => handleInputChange("longTermCapitalGainsTaxRateInvestment", value)}

@@ -58,7 +58,6 @@ export const TAX_RATES = {
 export const TAX_FREE_CAPITAL_GAINS = {
   Single: 250000,
   Married: 500000,
-  HeadOfHousehold: 250000,
 } as const;
 
 export const MORTGAGE_TERMS = [15, 20, 30] as const;

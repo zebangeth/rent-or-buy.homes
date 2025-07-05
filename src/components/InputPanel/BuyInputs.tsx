@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { useApp, type BuyInputs as BuyInputsType } from "../../contexts";
-import { useInputHandlers, formatCurrency, parseFormattedNumber, type InputValidationConfig } from "../../lib/inputUtils";
+import {
+  useInputHandlers,
+  formatCurrency,
+  parseFormattedNumber,
+  type InputValidationConfig,
+} from "../../lib/inputUtils";
 import { SLIDER_LIMITS, MORTGAGE_TERMS, VALIDATION_LIMITS } from "../../lib/constants";
 import { SliderInput, ButtonGroup } from "./shared";
 
@@ -27,14 +32,12 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
     homeAppreciationCagr: VALIDATION_LIMITS.POSITIVE_NUMBER,
   };
 
-  const {
-    handleInputChange,
-    handleNumberInputChange,
-    handleNumberInputBlur,
-    getDisplayValue,
-    formatDisplayValue,
-  } = useInputHandlers(buyInputs as unknown as Record<string, unknown>, updateBuyInput as (field: string, value: unknown) => void, validationConfig);
-
+  const { handleInputChange, handleNumberInputChange, handleNumberInputBlur, getDisplayValue, formatDisplayValue } =
+    useInputHandlers(
+      buyInputs as unknown as Record<string, unknown>,
+      updateBuyInput as (field: string, value: unknown) => void,
+      validationConfig
+    );
 
   // Dynamic slider limits based on user input
   const getSliderLimits = (field: keyof BuyInputsType, currentValue: number) => {
@@ -197,7 +200,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
           <label className="text-sm font-medium text-dark-700">Mortgage Term</label>
         </div>
         <ButtonGroup
-          options={MORTGAGE_TERMS.map(term => ({ value: term, label: `${term} Years` }))}
+          options={MORTGAGE_TERMS.map((term) => ({ value: term, label: `${term} Years` }))}
           value={buyInputs.mortgageTermYears}
           onChange={(value) => handleInputChange("mortgageTermYears", value)}
           className="grid grid-cols-3 gap-2"
@@ -281,7 +284,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                     handleNumberInputChange("closingCostsPercentageBuy", e.target.value, (val) => Number(val))
                   }
                   onBlur={() => handleNumberInputBlur("closingCostsPercentageBuy", (val) => Number(val))}
-                  className="w-16 p-1 text-xs text-center border rounded-lg"
+                  className="w-14 p-1 text-xs text-center border rounded-lg"
                   min="0"
                   max="100"
                 />
@@ -308,7 +311,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                     handleNumberInputChange("sellingCostsPercentageSell", e.target.value, (val) => Number(val))
                   }
                   onBlur={() => handleNumberInputBlur("sellingCostsPercentageSell", (val) => Number(val))}
-                  className="w-16 p-1 text-xs text-center border rounded-lg"
+                  className="w-14 p-1 text-xs text-center border rounded-lg"
                   min="0"
                   max="100"
                 />
@@ -339,7 +342,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                     handleNumberInputChange("propertyTaxRateAnnual", e.target.value, (val) => Number(val))
                   }
                   onBlur={() => handleNumberInputBlur("propertyTaxRateAnnual", (val) => Number(val))}
-                  className="w-16 p-1 text-xs text-center border rounded-lg"
+                  className="w-14 p-1 text-xs text-center border rounded-lg"
                   min="0"
                   max="100"
                 />
@@ -367,7 +370,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                     handleNumberInputChange("insuranceAndMaintenanceRateAnnual", e.target.value, (val) => Number(val))
                   }
                   onBlur={() => handleNumberInputBlur("insuranceAndMaintenanceRateAnnual", (val) => Number(val))}
-                  className="w-16 p-1 text-xs text-center border rounded-lg"
+                  className="w-14 p-1 text-xs text-center border rounded-lg"
                   min="0"
                   max="100"
                 />
@@ -390,7 +393,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                     }
                   }}
                   onBlur={() => handleNumberInputBlur("hoaFeeAnnual", (val) => parseFormattedNumber(val))}
-                  className="w-16 p-1 text-xs text-center border rounded-lg"
+                  className="w-14 p-1 text-xs text-center border rounded-lg"
                   placeholder="5,000"
                 />
               </div>
@@ -416,7 +419,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                   value={getDisplayValue("marginalTaxRate")}
                   onChange={(e) => handleNumberInputChange("marginalTaxRate", e.target.value, (val) => Number(val))}
                   onBlur={() => handleNumberInputBlur("marginalTaxRate", (val) => Number(val))}
-                  className="w-16 p-1 text-xs text-center border rounded-lg"
+                  className="w-14 p-1 text-xs text-center border rounded-lg"
                   min="0"
                   max="100"
                 />
@@ -461,7 +464,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
 
             {/* Capital Gains Tax Rate */}
             <div className="flex justify-between items-center">
-              <label className="text-xs font-medium text-dark-600">Capital Gains Tax Rate (Property Sale)</label>
+              <label className="text-xs font-medium text-dark-600">Capital Gains Tax Rate</label>
               <div className="flex space-x-2 items-center">
                 <input
                   type="number"
@@ -470,7 +473,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                     handleNumberInputChange("longTermCapitalGainsTaxRateProperty", e.target.value, (val) => Number(val))
                   }
                   onBlur={() => handleNumberInputBlur("longTermCapitalGainsTaxRateProperty", (val) => Number(val))}
-                  className="w-16 p-1 text-xs text-center border rounded-lg"
+                  className="w-14 p-1 text-xs text-center border rounded-lg"
                   min="0"
                   max="100"
                 />
@@ -485,13 +488,13 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                 <div className="relative group ml-1">
                   <i className="fas fa-info-circle text-primary-400 text-xs"></i>
                   <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-60 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
-                    $250,000 for single, $500,000 for married filing jointly in the US.
+                    $250,000 for single filers, $500,000 for married filing jointly in the US.
                   </div>
                 </div>
               </label>
               <div className="flex space-x-2">
                 <div className="flex bg-gray-100 rounded-lg overflow-hidden">
-                  {(["Married", "Single", "HeadOfHousehold"] as const).map((status) => (
+                  {(["Married", "Single"] as const).map((status) => (
                     <button
                       key={status}
                       onClick={() => handleInputChange("filingStatus", status)}
@@ -501,7 +504,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                           : "text-dark-600 hover:bg-gray-200"
                       }`}
                     >
-                      {status === "HeadOfHousehold" ? "HoH" : status}
+                      {status}
                     </button>
                   ))}
                 </div>

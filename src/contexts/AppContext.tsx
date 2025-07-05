@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 // Types for investment options
 export type InvestmentOption = "SPY" | "QQQ" | "Custom";
 
-export type FilingStatus = "Single" | "Married" | "HeadOfHousehold";
+export type FilingStatus = "Single" | "Married";
 
 // Buy scenario inputs
 export interface BuyInputs {
@@ -183,7 +183,6 @@ export const getTaxFreeCapitalGainAmount = (filingStatus: FilingStatus): number 
   const amounts: Record<FilingStatus, number> = {
     Single: 250000,
     Married: 500000,
-    HeadOfHousehold: 250000,
   };
   return amounts[filingStatus];
 };
