@@ -10,9 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "apexcharts": "^4.7.0",
     "i18next": "^25.2.1",
     "lz-string": "^1.5.0",
     "react": "^19.1.0",
+    "react-apexcharts": "^1.7.0",
     "react-dom": "^19.1.0",
     "react-i18next": "^15.5.3",
     "react-router-dom": "^7.6.2"

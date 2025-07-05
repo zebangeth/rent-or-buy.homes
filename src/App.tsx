@@ -1,7 +1,7 @@
 import Header from "./components/Header";
 import HeroSection from "./components/HeroSection";
 import InputPanel from "./components/InputPanel";
-import { DebugPanel } from "./components/DebugPanel";
+import ResultPanel from "./components/ResultPanel";
 import { AppProvider, useApp } from "./contexts";
 
 function AppContent() {
@@ -28,20 +28,8 @@ function AppContent() {
             <InputPanel />
           </div>
 
-          {/* Right Section: Results Placeholder */}
-          <div className="w-full md:w-2/3 space-y-6">
-            {/* Results Panel Placeholder */}
-            <div className="card p-8 text-center">
-              <h2 className="text-2xl font-semibold text-dark-800 mb-4">Results Panel</h2>
-              <p className="text-dark-500 mb-6">Financial calculations and charts will be implemented here.</p>
-              <div className="text-sm text-gray-600">
-                Coming soon: Net worth projections, cash flow analysis, and interactive charts
-              </div>
-            </div>
-
-            {/* Debug Panel for Testing */}
-            <DebugPanel />
-          </div>
+          {/* Right Section: Results Panel */}
+          <ResultPanel />
         </div>
       </div>
     </div>
