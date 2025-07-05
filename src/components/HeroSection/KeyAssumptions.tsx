@@ -5,7 +5,7 @@ import { getInvestmentReturnRate } from "../../contexts/AppContext";
 export default function KeyAssumptions() {
   const { state } = useApp();
   const { buyInputs, rentInputs } = state;
-  
+
   const investmentReturn = getInvestmentReturnRate(rentInputs);
 
   return (
@@ -18,39 +18,41 @@ export default function KeyAssumptions() {
             Home value: <span className="font-medium">{formatCurrency(buyInputs.propertyPrice)}</span>
           </span>
         </div>
-        
+
         <div className="flex items-center">
-          <i className="fas fa-key text-secondary-500 mr-2"></i>
+          <i className="fas fa-building text-secondary-500 mr-2"></i>
           <span>
             Current rent: <span className="font-medium">{formatCurrency(rentInputs.currentMonthlyRentAmount)}/mo</span>
           </span>
         </div>
-        
+
         <div className="flex items-center">
-          <i className="fas fa-percentage text-primary-500 mr-2"></i>
+          <i className="fas fa-coins text-primary-500 mr-2"></i>
           <span>
             Down payment: <span className="font-medium">{formatPercentage(buyInputs.downPaymentPercentage)}</span>
           </span>
         </div>
-        
+
         <div className="flex items-center">
           <i className="fas fa-chart-line text-secondary-500 mr-2"></i>
           <span>
             Investment returns: <span className="font-medium">{formatPercentage(investmentReturn)}/yr</span>
           </span>
         </div>
-        
+
         <div className="flex items-center">
-          <i className="fas fa-trending-up text-primary-500 mr-2"></i>
+          <i className="fas fa-arrow-trend-up text-primary-500 mr-2"></i>
           <span>
-            Home appreciation: <span className="font-medium">{formatPercentage(buyInputs.homeAppreciationCagr)}/yr</span>
+            Home appreciation:{" "}
+            <span className="font-medium">{formatPercentage(buyInputs.homeAppreciationCagr)}/yr</span>
           </span>
         </div>
-        
+
         <div className="flex items-center">
-          <i className="fas fa-arrow-up text-secondary-500 mr-2"></i>
+          <i className="fas fa-arrow-trend-up text-secondary-500 mr-2"></i>
           <span>
-            Rent increase: <span className="font-bold text-secondary-700">{formatPercentage(rentInputs.rentGrowthRateAnnual)}/year</span>
+            Rent increase:{" "}
+            <span className="font-bold text-secondary-700">{formatPercentage(rentInputs.rentGrowthRateAnnual)}/yr</span>
           </span>
         </div>
       </div>

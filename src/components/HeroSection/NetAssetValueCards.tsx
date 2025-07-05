@@ -31,15 +31,20 @@ export default function NetAssetValueCards() {
     <>
       {/* Buy Option */}
       <div className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-primary-500">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center">
-            <i className="fas fa-home text-primary-500 mr-2"></i>
-            <span className="font-semibold text-primary-700">Buy Option</span>
-          </div>
-          <span className="text-lg font-bold text-primary-600">
-            {formatCurrency(buyData.netWorth)}
-          </span>
+        <div className="flex items-center mb-4">
+          <i className="fas fa-home text-primary-500 mr-2"></i>
+          <span className="font-semibold text-primary-700">Buy Option</span>
         </div>
+        
+        {/* Main Net Worth Display */}
+        <div className="text-center mb-4 p-3 bg-primary-50 rounded-lg">
+          <div className="text-xs text-primary-600 font-medium mb-1">Net Asset Value</div>
+          <div className="text-2xl font-bold text-primary-600">
+            {formatCurrency(buyData.netWorth)}
+          </div>
+        </div>
+        
+        {/* Breakdown */}
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-dark-500">Property value:</span>
@@ -47,42 +52,35 @@ export default function NetAssetValueCards() {
           </div>
           <div className="flex justify-between">
             <span className="text-dark-500">Mortgage balance:</span>
-            <span className="font-medium">-{formatCurrency(buyData.mortgageBalance)}</span>
-          </div>
-          <div className="flex justify-between border-t pt-2">
-            <span className="text-dark-600 font-medium">Net Asset Value:</span>
-            <span className="font-bold text-primary-600">{formatCurrency(buyData.netWorth)}</span>
+            <span className="font-medium text-red-600">-{formatCurrency(buyData.mortgageBalance)}</span>
           </div>
         </div>
       </div>
 
       {/* Rent Option */}
       <div className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-secondary-500">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center">
-            <i className="fas fa-chart-line text-secondary-500 mr-2"></i>
-            <span className="font-semibold text-secondary-700">Rent + Invest</span>
-          </div>
-          <span className="text-lg font-bold text-secondary-600">
-            {formatCurrency(rentData.netWorth)}
-          </span>
+        <div className="flex items-center mb-4">
+          <i className="fas fa-chart-line text-secondary-500 mr-2"></i>
+          <span className="font-semibold text-secondary-700">Rent + Invest</span>
         </div>
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-dark-500">Initial investment:</span>
-            <span className="font-medium">{formatCurrency(rentData.initialInvestment)}</span>
+        
+        {/* Main Net Worth Display */}
+        <div className="text-center mb-4 p-3 bg-secondary-50 rounded-lg">
+          <div className="text-xs text-secondary-600 font-medium mb-1">Portfolio Value</div>
+          <div className="text-2xl font-bold text-secondary-600">
+            {formatCurrency(rentData.netWorth)}
           </div>
+        </div>
+        
+        {/* Breakdown */}
+        <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-dark-500">Total invested:</span>
             <span className="font-medium">{formatCurrency(rentData.totalInvested)}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-dark-500">Investment growth:</span>
-            <span className="font-medium">{formatCurrency(investmentGrowth)}</span>
-          </div>
-          <div className="flex justify-between border-t pt-2">
-            <span className="text-dark-600 font-medium">Net Asset Value:</span>
-            <span className="font-bold text-secondary-600">{formatCurrency(rentData.netWorth)}</span>
+            <span className="font-medium text-green-600">+{formatCurrency(investmentGrowth)}</span>
           </div>
         </div>
       </div>

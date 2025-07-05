@@ -31,7 +31,7 @@ export default function TimeHorizonSelector() {
               onClick={() => handleYearChange(years)}
               className={`px-3 py-1 text-sm font-medium rounded-md transition ${
                 currentYears === years
-                  ? "bg-primary-600 text-white"
+                  ? "bg-dark-800 text-white"
                   : "text-dark-600 hover:bg-gray-200"
               }`}
             >
