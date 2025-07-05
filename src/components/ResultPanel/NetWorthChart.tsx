@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Chart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
 import { useCalculations } from "../../hooks/useCalculations";
@@ -9,9 +8,9 @@ interface NetWorthChartProps {
 }
 
 export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
-  const { state } = useApp();
+  const { state, dispatch } = useApp();
   const { results } = useCalculations();
-  const [showCashOut, setShowCashOut] = useState(state.appSettings.showCashOut);
+  const showCashOut = state.appSettings.showCashOut;
 
   // Prepare chart data
   const years = results.yearlyResults.map((r) => r.year);
@@ -115,29 +114,62 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
           colors: "#64748b",
         },
         formatter: (value: number) => {
-          return new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-          }).format(value);
+          if (value >= 1000000) {
+            return `$${(value / 1000000).toFixed(1)}M`;
+          } else if (value >= 1000) {
+            return `$${(value / 1000).toFixed(0)}K`;
+          } else {
+            return `$${value.toFixed(0)}`;
+          }
         },
       },
     },
     tooltip: {
       theme: "light",
-      y: {
-        formatter: (value: number) => {
+      shared: true,
+      intersect: false,
+      custom: function ({ series, dataPointIndex, w }) {
+        const year = w.globals.categoryLabels[dataPointIndex];
+        const buyValue = series[0][dataPointIndex];
+        const rentValue = series[1][dataPointIndex];
+
+        // Sort by value (highest first)
+        const sortedData = [
+          { name: "Buy a Home", value: buyValue, color: "#8b5cf6" },
+          { name: "Rent + Invest", value: rentValue, color: "#10b981" },
+        ].sort((a, b) => b.value - a.value);
+
+        const formatValue = (value: number) => {
           return new Intl.NumberFormat("en-US", {
             style: "currency",
             currency: "USD",
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
           }).format(value);
-        },
-      },
-      style: {
-        fontSize: "14px",
+        };
+
+        return `
+          <div style="background: white; padding: 12px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+            <div style="font-weight: 600; margin-bottom: 8px; color: #374151;">Year ${year}</div>
+            ${sortedData
+              .map(
+                (item) => `
+              <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                <div style="width: 12px; height: 12px; background-color: ${
+                  item.color
+                }; border-radius: 50%; margin-right: 8px;"></div>
+                <div style="display: flex; justify-content: space-between; width: 100%; min-width: 140px;">
+                  <span style="color: #6b7280; font-size: 13px;">${item.name}:</span>
+                  <span style="color: #374151; font-weight: 500; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 13px;">${formatValue(
+                    item.value
+                  )}</span>
+                </div>
+              </div>
+            `
+              )
+              .join("")}
+          </div>
+        `;
       },
     },
     responsive: [
@@ -180,13 +212,11 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
             <input
               type="checkbox"
               checked={showCashOut}
-              onChange={(e) => setShowCashOut(e.target.checked)}
+              onChange={() => dispatch({ type: "TOGGLE_CASH_OUT_MODE" })}
               className="sr-only"
             />
             <div className="relative">
-              <div
-                className={`w-11 h-6 rounded-full transition-colors ${showCashOut ? "bg-primary-500" : "bg-gray-300"}`}
-              >
+              <div className={`w-11 h-6 rounded-full transition-colors ${showCashOut ? "bg-gray-700" : "bg-gray-300"}`}>
                 <div
                   className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
                     showCashOut ? "translate-x-5" : "translate-x-0"
