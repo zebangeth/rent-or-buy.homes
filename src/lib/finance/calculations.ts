@@ -170,29 +170,27 @@ export function calculateBuyScenarioForYear(
   
   const adjustedCashOutflow = cashOutflow - taxSavingsFromDeduction;
   
-  // Additional investment portfolio for buy scenario when rent costs more
+  // Additional investment portfolio for buy scenario
   let additionalInvestmentPortfolio = 0;
   let additionalInvestmentCostBasis = 0;
   if (rentCashOutflow !== undefined) {
     const cashFlowDifference = rentCashOutflow - adjustedCashOutflow;
-    if (cashFlowDifference > 0) {
-      // Rent costs more, so buy scenario gets additional investment
-      const additionalInvestmentThisYear = cashFlowDifference;
-      let portfolioValueBeforeGrowth: number;
-      
-      if (year === 1) {
-        portfolioValueBeforeGrowth = additionalInvestmentThisYear;
-        additionalInvestmentCostBasis = additionalInvestmentThisYear;
-      } else {
-        const previousPortfolioValue = previousBuyCalculation?.additionalInvestmentPortfolio || 0;
-        const previousCostBasis = previousBuyCalculation?.additionalInvestmentCostBasis || 0;
-        portfolioValueBeforeGrowth = previousPortfolioValue + additionalInvestmentThisYear;
-        additionalInvestmentCostBasis = previousCostBasis + additionalInvestmentThisYear;
-      }
-      
-      const investmentReturnThisYear = portfolioValueBeforeGrowth * preliminary.investmentReturnRate / 100;
-      additionalInvestmentPortfolio = portfolioValueBeforeGrowth + investmentReturnThisYear;
+    const additionalInvestmentThisYear = Math.max(0, cashFlowDifference);
+    
+    let portfolioValueBeforeGrowth: number;
+    
+    if (year === 1) {
+      portfolioValueBeforeGrowth = additionalInvestmentThisYear;
+      additionalInvestmentCostBasis = additionalInvestmentThisYear;
+    } else {
+      const previousPortfolioValue = previousBuyCalculation?.additionalInvestmentPortfolio || 0;
+      const previousCostBasis = previousBuyCalculation?.additionalInvestmentCostBasis || 0;
+      portfolioValueBeforeGrowth = previousPortfolioValue + additionalInvestmentThisYear;
+      additionalInvestmentCostBasis = previousCostBasis + additionalInvestmentThisYear;
     }
+    
+    const investmentReturnThisYear = portfolioValueBeforeGrowth * preliminary.investmentReturnRate / 100;
+    additionalInvestmentPortfolio = portfolioValueBeforeGrowth + investmentReturnThisYear;
   }
   
   // Net asset value calculations
