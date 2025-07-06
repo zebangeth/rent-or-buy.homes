@@ -144,7 +144,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
           ? {
               size: 8,
               strokeWidth: 0,
-              shape: "circle",
+              shape: "square",
               offsetX: -4,
             }
           : {
@@ -198,7 +198,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
       shared: true,
       intersect: false,
       custom: function ({ series, dataPointIndex, w }) {
-        const year = w.globals.categoryLabels[dataPointIndex];
+        const year = w.globals.categoryLabels[dataPointIndex] || years[dataPointIndex];
         
         // Both annual and cumulative now use the same 4-series structure
         const buyOnlyValue = series[0][dataPointIndex];
