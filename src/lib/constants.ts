@@ -38,16 +38,16 @@ export const SLIDER_LIMITS = {
 
 export const INVESTMENT_OPTIONS = {
   SPY: {
-    name: 'SPY',
-    returnRate: 8,
+    name: "SPY",
+    returnRate: 12.5,
   },
   QQQ: {
-    name: 'QQQ', 
-    returnRate: 9.25,
+    name: "QQQ",
+    returnRate: 16.5,
   },
   Custom: {
-    name: 'Custom',
-    returnRate: 0, // Will be set by user
+    name: "Custom",
+    returnRate: 10, // Will be set by user
   },
 } as const;
 

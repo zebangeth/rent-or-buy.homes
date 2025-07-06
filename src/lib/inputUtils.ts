@@ -17,12 +17,36 @@ export const parseFormattedNumber = (value: string): number => {
 };
 
 export const formatCurrency = (value: number): string => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
+  // For large numbers, use abbreviated formats (K, M, B)
+  if (Math.abs(value) >= 1000000000) {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 1,
+    }).format(value / 1000000000) + "B";
+  } else if (Math.abs(value) >= 1000000) {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value / 1000000) + "M";
+  } else if (Math.abs(value) >= 10000) {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value / 1000) + "K";
+  } else {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  }
 };
 
 export const formatPercentage = (value: number): string => {

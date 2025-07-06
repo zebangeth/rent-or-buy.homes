@@ -102,7 +102,7 @@ const defaultRentInputs: RentInputs = {
   rentGrowthRateAnnual: 3.5,
   sameAsHomeAppreciation: true,
   selectedInvestmentOption: "SPY",
-  customInvestmentReturn: 8,
+  customInvestmentReturn: 10,
   longTermCapitalGainsTaxRateInvestment: 15,
 };
 
@@ -124,8 +124,8 @@ const initialState: AppState = {
 // Helper function to get investment return rate
 export const getInvestmentReturnRate = (inputs: RentInputs): number => {
   const rates: Record<InvestmentOption, number> = {
-    SPY: 8,
-    QQQ: 9.25,
+    SPY: 12.5,
+    QQQ: 16.5,
     Custom: inputs.customInvestmentReturn,
   };
   return rates[inputs.selectedInvestmentOption];

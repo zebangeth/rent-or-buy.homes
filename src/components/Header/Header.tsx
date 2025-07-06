@@ -16,7 +16,7 @@ export default function Header({ currentLanguage = "en", onLanguageChange }: Hea
 
   const languages = [
     { code: "en", label: "🇺🇸 English" },
-    { code: "zh", label: "🇨🇳 中文" },
+    { code: "zh", label: "🇨🇳 中文 (开发中)" },
   ];
 
   return (
@@ -65,10 +65,7 @@ export default function Header({ currentLanguage = "en", onLanguageChange }: Hea
           </a>
         </div>
       </div>
-      <p className="text-dark-500 max-w-2xl">
-        This website helps you compare the financial outcomes of buying vs renting to see which option makes more
-        financial sense.
-      </p>
+      <p className="text-dark-500 max-w-2xl">Instantly see which option leaves you richer.</p>
     </header>
   );
 }
