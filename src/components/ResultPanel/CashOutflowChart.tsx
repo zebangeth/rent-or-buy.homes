@@ -15,8 +15,21 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
   const years = results.yearlyResults.map((r) => r.year);
 
   // Calculate annual cash outflows (always tax-adjusted)
-  const buyAnnualData = results.yearlyResults.map((r) => r.buy.adjustedCashOutflow);
-  const rentAnnualData = results.yearlyResults.map((r) => r.rent.cashOutflow);
+  const buyOnlyData = results.yearlyResults.map((r) => r.buy.adjustedCashOutflow);
+  const rentOnlyData = results.yearlyResults.map((r) => r.rent.cashOutflow);
+  
+  // Calculate investment for each scenario based on which costs more
+  const rentInvestmentData = results.yearlyResults.map((r) => {
+    const buyOutflow = r.buy.adjustedCashOutflow;
+    const rentOutflow = r.rent.cashOutflow;
+    return buyOutflow > rentOutflow ? buyOutflow - rentOutflow : 0;
+  });
+  
+  const buyInvestmentData = results.yearlyResults.map((r) => {
+    const buyOutflow = r.buy.adjustedCashOutflow;
+    const rentOutflow = r.rent.cashOutflow;
+    return rentOutflow > buyOutflow ? rentOutflow - buyOutflow : 0;
+  });
 
   // Calculate cumulative cash outflows
   const buyCumulativeData: number[] = [];
@@ -31,20 +44,17 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
     rentCumulativeData.push(rentRunningTotal);
   }
 
-  // Calculate investment differentials for annotation
-  const investmentDifferentials = results.yearlyResults.map((r) => {
-    const buyOutflow = r.buy.adjustedCashOutflow;
-    const rentOutflow = r.rent.cashOutflow;
-    return {
-      year: r.year,
-      difference: buyOutflow - rentOutflow,
-      additionalInvestment: r.rent.additionalInvestmentThisYear,
-      buyHasAdditionalInvestment: r.buy.additionalInvestmentPortfolio > 0,
-    };
-  });
-
-  const chartData = viewMode === "annual" ? buyAnnualData : buyCumulativeData;
-  const rentData = viewMode === "annual" ? rentAnnualData : rentCumulativeData;
+  // // Calculate investment differentials for annotation
+  // const investmentDifferentials = results.yearlyResults.map((r) => {
+  //   const buyOutflow = r.buy.adjustedCashOutflow;
+  //   const rentOutflow = r.rent.cashOutflow;
+  //   return {
+  //     year: r.year,
+  //     difference: buyOutflow - rentOutflow,
+  //     additionalInvestment: r.rent.additionalInvestmentThisYear,
+  //     buyHasAdditionalInvestment: r.buy.additionalInvestmentPortfolio > 0,
+  //   };
+  // });
 
   const formatValue = (value: number) => {
     if (value >= 1000000) {
@@ -77,8 +87,9 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
       },
       background: "transparent",
       fontFamily: 'Montserrat, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      stacked: viewMode === "annual",
     },
-    colors: ["#8b5cf6", "#10b981"],
+    colors: viewMode === "annual" ? ["#8b5cf6", "#6366f1", "#10b981", "#059669"] : ["#8b5cf6", "#10b981"],
     plotOptions:
       viewMode === "annual"
         ? {
@@ -102,7 +113,6 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
     stroke: {
       curve: viewMode === "annual" ? "straight" : "monotoneCubic",
       width: viewMode === "annual" ? 0 : 3,
-      colors: viewMode === "cumulative" ? ["#8b5cf6", "#10b981"] : undefined,
     },
     grid: {
       borderColor: "#e2e8f0",
@@ -189,56 +199,101 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
       theme: "light",
       shared: true,
       intersect: false,
-      custom: function ({ series, dataPointIndex }) {
-        const year = years[dataPointIndex];
-        const buyValue = series[0][dataPointIndex];
-        const rentValue = series[1][dataPointIndex];
-        const differential = investmentDifferentials[dataPointIndex];
+      custom: function ({ series, dataPointIndex, w }) {
+        const year = w.globals.categoryLabels[dataPointIndex];
 
-        // Sort by value (highest first)
-        const sortedData = [
-          { name: "Buy a Home", value: buyValue, color: "#8b5cf6" },
-          { name: "Rent + Invest", value: rentValue, color: "#10b981" },
-        ].sort((a, b) => b.value - a.value);
-
-        let differentialText = "";
         if (viewMode === "annual") {
-          if (differential.difference > 0) {
-            differentialText = `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb; color: #059669; font-size: 12px;">
-              💰 ${formatCurrency(differential.additionalInvestment)} can be invested
-            </div>`;
-          } else if (differential.difference < 0) {
-            differentialText = `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb; color: #dc2626; font-size: 12px;">
-              📈 Buy scenario gets ${formatCurrency(Math.abs(differential.difference))} extra investment
-            </div>`;
-          }
-        }
+          const buyOnlyValue = series[0][dataPointIndex];
+          const buyInvestmentValue = series[1][dataPointIndex];
+          const rentOnlyValue = series[2][dataPointIndex];
+          const rentInvestmentValue = series[3][dataPointIndex];
+          
+          const totalBuyValue = buyOnlyValue + buyInvestmentValue;
+          const totalRentValue = rentOnlyValue + rentInvestmentValue;
 
-        return `
-          <div style="background: white; padding: 12px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
-            <div style="font-weight: 600; margin-bottom: 8px; color: #374151;">Year ${year} ${
-          viewMode === "cumulative" ? "(Total)" : ""
-        }</div>
-            ${sortedData
-              .map(
-                (item) => `
+          return `
+            <div style="background: white; padding: 12px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+              <div style="font-weight: 600; margin-bottom: 8px; color: #374151;">Year ${year}</div>
+              
+              <!-- Buy Scenario -->
               <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                <div style="width: 12px; height: 12px; background-color: ${
-                  item.color
-                }; border-radius: 50%; margin-right: 8px;"></div>
+                <div style="width: 12px; height: 12px; background-color: #8b5cf6; border-radius: 50%; margin-right: 8px;"></div>
                 <div style="display: flex; justify-content: space-between; width: 100%; min-width: 140px;">
-                  <span style="color: #6b7280; font-size: 13px;">${item.name}:</span>
-                  <span style="color: #374151; font-weight: 500; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 13px;">${formatCurrency(
-                    item.value
-                  )}</span>
+                  <span style="color: #6b7280; font-size: 13px;">Buy Only:</span>
+                  <span style="color: #374151; font-weight: 500; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 13px;">${formatCurrency(buyOnlyValue)}</span>
                 </div>
               </div>
-            `
-              )
-              .join("")}
-            ${differentialText}
-          </div>
-        `;
+              ${buyInvestmentValue > 0 ? `
+                <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                  <div style="width: 12px; height: 12px; background-color: #6366f1; border-radius: 50%; margin-right: 8px;"></div>
+                  <div style="display: flex; justify-content: space-between; width: 100%; min-width: 140px;">
+                    <span style="color: #6b7280; font-size: 13px;">Buy Investment:</span>
+                    <span style="color: #374151; font-weight: 500; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 13px;">${formatCurrency(buyInvestmentValue)}</span>
+                  </div>
+                </div>
+              ` : ''}
+              
+              <!-- Rent Scenario -->
+              <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                <div style="width: 12px; height: 12px; background-color: #10b981; border-radius: 50%; margin-right: 8px;"></div>
+                <div style="display: flex; justify-content: space-between; width: 100%; min-width: 140px;">
+                  <span style="color: #6b7280; font-size: 13px;">Rent Only:</span>
+                  <span style="color: #374151; font-weight: 500; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 13px;">${formatCurrency(rentOnlyValue)}</span>
+                </div>
+              </div>
+              ${rentInvestmentValue > 0 ? `
+                <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                  <div style="width: 12px; height: 12px; background-color: #059669; border-radius: 50%; margin-right: 8px;"></div>
+                  <div style="display: flex; justify-content: space-between; width: 100%; min-width: 140px;">
+                    <span style="color: #6b7280; font-size: 13px;">Rent Investment:</span>
+                    <span style="color: #374151; font-weight: 500; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 13px;">${formatCurrency(rentInvestmentValue)}</span>
+                  </div>
+                </div>
+              ` : ''}
+              
+              <!-- Summary -->
+              <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb; font-size: 12px;">
+                <div style="color: #8b5cf6; margin-bottom: 2px;">💰 Total Buy: ${formatCurrency(totalBuyValue)}</div>
+                <div style="color: #10b981;">💰 Total Rent: ${formatCurrency(totalRentValue)}</div>
+              </div>
+            </div>
+          `;
+        } else {
+          // Cumulative view - original tooltip
+          const buyValue = series[0][dataPointIndex];
+          const rentValue = series[1][dataPointIndex];
+
+          // Sort by value (highest first)
+
+          // Sort by value (highest first)
+          const sortedData = [
+            { name: "Buy a Home", value: buyValue, color: "#8b5cf6" },
+            { name: "Rent + Invest", value: rentValue, color: "#10b981" },
+          ].sort((a, b) => b.value - a.value);
+
+          return `
+            <div style="background: white; padding: 12px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+              <div style="font-weight: 600; margin-bottom: 8px; color: #374151;">Year ${year} (Total)</div>
+              ${sortedData
+                .map(
+                  (item) => `
+                <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                  <div style="width: 12px; height: 12px; background-color: ${
+                    item.color
+                  }; border-radius: 50%; margin-right: 8px;"></div>
+                  <div style="display: flex; justify-content: space-between; width: 100%; min-width: 140px;">
+                    <span style="color: #6b7280; font-size: 13px;">${item.name}:</span>
+                    <span style="color: #374151; font-weight: 500; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 13px;">${formatCurrency(
+                      item.value
+                    )}</span>
+                  </div>
+                </div>
+              `
+                )
+                .join("")}
+            </div>
+          `;
+        }
       },
     },
     responsive: [
@@ -246,7 +301,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
         breakpoint: 768,
         options: {
           chart: {
-            height: 380,
+            height: 300,
           },
           legend: {
             position: "bottom",
@@ -257,16 +312,41 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
     ],
   };
 
-  const series = [
-    {
-      name: "Buy a Home",
-      data: chartData,
-    },
-    {
-      name: "Rent + Invest",
-      data: rentData,
-    },
-  ];
+  // Different series structure for annual vs cumulative
+  const series =
+    viewMode === "annual"
+      ? [
+          {
+            name: "Buy Only",
+            data: buyOnlyData,
+            group: "buy",
+          },
+          {
+            name: "Buy Investment",
+            data: buyInvestmentData,
+            group: "buy",
+          },
+          {
+            name: "Rent Only",
+            data: rentOnlyData,
+            group: "rent",
+          },
+          {
+            name: "Rent Investment",
+            data: rentInvestmentData,
+            group: "rent",
+          },
+        ]
+      : [
+          {
+            name: "Buy a Home",
+            data: buyCumulativeData,
+          },
+          {
+            name: "Rent + Invest",
+            data: rentCumulativeData,
+          },
+        ];
 
   return (
     <div className={`card p-6 ${className}`}>
@@ -275,7 +355,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
           <h3 className="text-xl font-semibold text-dark-800 mb-2">Cash Outflow Analysis</h3>
           <p className="text-sm text-dark-500">
             {viewMode === "annual"
-              ? "Annual cash outflows and investment opportunities"
+              ? "Annual cash outflows with investment opportunities visualized"
               : "Cumulative cash outflows over time"}
           </p>
         </div>
@@ -311,7 +391,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
         <p className="text-xs text-dark-600">
           <strong>Note:</strong>{" "}
           {viewMode === "annual"
-            ? "Tax-adjusted cash outflows include mortgage interest deduction savings. When one option costs more, the difference can be invested."
+            ? "Tax-adjusted cash outflows with stacked visualization. When one scenario costs more, the difference is invested in that scenario, creating equal total heights."
             : "Cumulative cash outflows show total money spent over time. This helps visualize the long-term cost difference between scenarios."}
         </p>
       </div>
