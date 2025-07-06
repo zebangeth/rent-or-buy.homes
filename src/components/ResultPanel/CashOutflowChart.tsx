@@ -32,18 +32,39 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
     return rentOutflow > buyOutflow ? rentOutflow - buyOutflow : 0;
   });
 
-  // Calculate cumulative cash outflows
-  const buyCumulativeData: number[] = [];
-  const rentCumulativeData: number[] = [];
-  let buyRunningTotal = 0;
-  let rentRunningTotal = 0;
+  // Calculate cumulative cash outflows with investment breakdown
+  const buyCumulativeOnlyData: number[] = [];
+  const rentCumulativeOnlyData: number[] = [];
+  const buyCumulativeInvestmentData: number[] = [];
+  const rentCumulativeInvestmentData: number[] = [];
+  
+  let buyOnlyRunningTotal = 0;
+  let rentOnlyRunningTotal = 0;
+  let buyInvestmentRunningTotal = 0;
+  let rentInvestmentRunningTotal = 0;
 
   for (const result of results.yearlyResults) {
-    buyRunningTotal += result.buy.adjustedCashOutflow;
-    rentRunningTotal += result.rent.cashOutflow;
-    buyCumulativeData.push(buyRunningTotal);
-    rentCumulativeData.push(rentRunningTotal);
+    const buyOutflow = result.buy.adjustedCashOutflow;
+    const rentOutflow = result.rent.cashOutflow;
+    
+    // Accumulate base outflows
+    buyOnlyRunningTotal += buyOutflow;
+    rentOnlyRunningTotal += rentOutflow;
+    
+    // Accumulate investments (when one scenario costs more)
+    if (rentOutflow > buyOutflow) {
+      buyInvestmentRunningTotal += (rentOutflow - buyOutflow);
+    } else if (buyOutflow > rentOutflow) {
+      rentInvestmentRunningTotal += (buyOutflow - rentOutflow);
+    }
+    
+    buyCumulativeOnlyData.push(buyOnlyRunningTotal);
+    rentCumulativeOnlyData.push(rentOnlyRunningTotal);
+    buyCumulativeInvestmentData.push(buyInvestmentRunningTotal);
+    rentCumulativeInvestmentData.push(rentInvestmentRunningTotal);
   }
+  
+  // Note: Total cumulative data is now represented by stacking the separate series
 
   // // Calculate investment differentials for annotation
   // const investmentDifferentials = results.yearlyResults.map((r) => {
@@ -63,7 +84,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
 
   const chartOptions: ApexOptions = {
     chart: {
-      type: viewMode === "annual" ? "bar" : "line",
+      type: "bar",
       height: 400,
       toolbar: {
         show: false,
@@ -73,32 +94,23 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
       },
       background: "transparent",
       fontFamily: theme.typography.fontFamily.sans,
-      stacked: viewMode === "annual",
+      stacked: true,
     },
-    colors: viewMode === "annual" ? theme.chartStyles.colors.cashFlow : theme.chartStyles.colors.netWorth,
-    plotOptions:
-      viewMode === "annual"
-        ? {
-            bar: {
-              horizontal: false,
-              columnWidth: "60%",
-              dataLabels: {
-                position: "top",
-              },
-            },
-          }
-        : {},
-    fill:
-      viewMode === "annual"
-        ? {
-            opacity: 0.8,
-          }
-        : {
-            opacity: 1,
-          },
+    colors: theme.chartStyles.colors.cashFlow,
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: "60%",
+        dataLabels: {
+          position: "top",
+        },
+      },
+    },
+    fill: {
+      opacity: 0.8,
+    },
     stroke: {
-      curve: viewMode === "annual" ? "straight" : "monotoneCubic",
-      width: viewMode === "annual" ? 0 : 3,
+      width: 0,
     },
     grid: {
       borderColor: theme.chartStyles.grid.borderColor,
@@ -187,29 +199,31 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
       intersect: false,
       custom: function ({ series, dataPointIndex, w }) {
         const year = w.globals.categoryLabels[dataPointIndex];
+        
+        // Both annual and cumulative now use the same 4-series structure
+        const buyOnlyValue = series[0][dataPointIndex];
+        const buyInvestmentValue = series[1][dataPointIndex];
+        const rentOnlyValue = series[2][dataPointIndex];
+        const rentInvestmentValue = series[3][dataPointIndex];
 
-        if (viewMode === "annual") {
-          const buyOnlyValue = series[0][dataPointIndex];
-          const buyInvestmentValue = series[1][dataPointIndex];
-          const rentOnlyValue = series[2][dataPointIndex];
-          const rentInvestmentValue = series[3][dataPointIndex];
+        const totalBuyValue = buyOnlyValue + buyInvestmentValue;
+        const totalRentValue = rentOnlyValue + rentInvestmentValue;
 
-          const totalBuyValue = buyOnlyValue + buyInvestmentValue;
-          const totalRentValue = rentOnlyValue + rentInvestmentValue;
-
-          const createTooltipItem = (color: string, label: string, value: number) => `
-            <div style="${theme.tooltipStyles.item}">
-              <div style="${theme.tooltipStyles.colorDot(color)}"></div>
-              <div style="${theme.tooltipStyles.itemText}">
-                <span style="${theme.tooltipStyles.label}">${label}:</span>
-                <span style="${theme.tooltipStyles.value}">${formatCurrency(value)}</span>
-              </div>
+        const createTooltipItem = (color: string, label: string, value: number) => `
+          <div style="${theme.tooltipStyles.item}">
+            <div style="${theme.tooltipStyles.colorDot(color)}"></div>
+            <div style="${theme.tooltipStyles.itemText}">
+              <span style="${theme.tooltipStyles.label}">${label}:</span>
+              <span style="${theme.tooltipStyles.value}">${formatCurrency(value)}</span>
             </div>
-          `;
-          
-          return `
-            <div style="${theme.tooltipStyles.container}">
-              <div style="${theme.tooltipStyles.title}">Year ${year}</div>
+          </div>
+        `;
+        
+        const modeLabel = viewMode === "annual" ? "" : " (Cumulative)";
+        
+        return `
+          <div style="${theme.tooltipStyles.container}">
+            <div style="${theme.tooltipStyles.title}">Year ${year}${modeLabel}</div>
               
               ${createTooltipItem(theme.colors.buy.primary, 'Buy Only', buyOnlyValue)}
               ${buyInvestmentValue > 0 ? createTooltipItem(theme.colors.buy.secondary, 'Buy Investment', buyInvestmentValue) : ''}
@@ -222,36 +236,6 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
               </div>
             </div>
           `;
-        } else {
-          // Cumulative view - original tooltip
-          const buyValue = series[0][dataPointIndex];
-          const rentValue = series[1][dataPointIndex];
-
-          // Sort by value (highest first)
-
-          // Sort by value (highest first)
-          const sortedData = [
-            { name: "Buy a Home", value: buyValue, color: theme.colors.buy.primary },
-            { name: "Rent + Invest", value: rentValue, color: theme.colors.rent.primary },
-          ].sort((a, b) => b.value - a.value);
-
-          const createTooltipItem = (color: string, label: string, value: number) => `
-            <div style="${theme.tooltipStyles.item}">
-              <div style="${theme.tooltipStyles.colorDot(color)}"></div>
-              <div style="${theme.tooltipStyles.itemText}">
-                <span style="${theme.tooltipStyles.label}">${label}:</span>
-                <span style="${theme.tooltipStyles.value}">${formatCurrency(value)}</span>
-              </div>
-            </div>
-          `;
-
-          return `
-            <div style="${theme.tooltipStyles.container}">
-              <div style="${theme.tooltipStyles.title}">Year ${year} (Total)</div>
-              ${sortedData.map(item => createTooltipItem(item.color, item.name, item.value)).join('')}
-            </div>
-          `;
-        }
       },
     },
     responsive: [
@@ -297,12 +281,24 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
         ]
       : [
           {
-            name: "Buy a Home",
-            data: buyCumulativeData,
+            name: "Buy Only",
+            data: buyCumulativeOnlyData,
+            group: "buy",
           },
           {
-            name: "Rent + Invest",
-            data: rentCumulativeData,
+            name: "Buy Investment",
+            data: buyCumulativeInvestmentData,
+            group: "buy",
+          },
+          {
+            name: "Rent Only",
+            data: rentCumulativeOnlyData,
+            group: "rent",
+          },
+          {
+            name: "Rent Investment",
+            data: rentCumulativeInvestmentData,
+            group: "rent",
           },
         ];
 
@@ -314,7 +310,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
           <p className="text-sm text-dark-500">
             {viewMode === "annual"
               ? "Annual cash outflows with investment opportunities visualized"
-              : "Cumulative cash outflows over time"}
+              : "Cumulative cash outflows and investments over time"}
           </p>
         </div>
 
@@ -342,7 +338,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
       </div>
 
       <div className="h-96" key={viewMode}>
-        <Chart options={chartOptions} series={series} type={viewMode === "annual" ? "bar" : "line"} height="100%" />
+        <Chart options={chartOptions} series={series} type="bar" height="100%" />
       </div>
 
       <div className="mt-4 p-4 bg-gray-50 rounded-lg">
@@ -350,7 +346,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
           <strong>Note:</strong>{" "}
           {viewMode === "annual"
             ? "Tax-adjusted cash outflows with stacked visualization. When one scenario costs more, the difference is invested in that scenario, creating equal total heights."
-            : "Cumulative cash outflows show total money spent over time. This helps visualize the long-term cost difference between scenarios."}
+            : "Cumulative view shows total money spent and investments accumulated over time. The stacked bars display both base outflows and additional investments, helping visualize long-term financial implications."}
         </p>
       </div>
     </div>
