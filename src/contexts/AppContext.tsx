@@ -1,5 +1,6 @@
 import { createContext, useContext, useReducer } from "react";
 import type { ReactNode } from "react";
+import type { YearlyCalculation } from "../lib/finance/types";
 
 // Types for investment options
 export type InvestmentOption = "SPY" | "QQQ" | "Custom";
@@ -50,52 +51,12 @@ export interface AppSettings {
   showYearlyMode: boolean;
 }
 
-// Calculated outputs for a single year
-export interface YearlyCalculation {
-  year: number;
-
-  // Buy scenario results
-  buy: {
-    currentPropertyValue: number;
-    cashOutflow: number;
-    adjustedCashOutflow: number;
-    annualInterestPaid: number;
-    annualPrincipalPaid: number;
-    remainingMortgageBalance: number;
-    netAssetValueNotCashOut: number;
-    netAssetValueCashOut: number;
-    totalHoldingCosts: number;
-  };
-
-  // Rent scenario results
-  rent: {
-    annualRentCost: number;
-    cashOutflow: number;
-    additionalInvestmentThisYear: number;
-    investmentPortfolioValue: number;
-    totalCashInvestedSoFar: number;
-    netAssetValueNotCashOut: number;
-    netAssetValueCashOut: number;
-  };
-}
-
-// Summary results
-export interface CalculationSummary {
-  projectionYears: number;
-  betterOption: "buy" | "rent";
-  buyNetWorth: number;
-  rentNetWorth: number;
-  difference: number;
-  differencePercentage: number;
-}
-
 // Complete app state
 export interface AppState {
   buyInputs: BuyInputs;
   rentInputs: RentInputs;
   appSettings: AppSettings;
   calculations: YearlyCalculation[];
-  summary: CalculationSummary;
   isCalculationValid: boolean;
 }
 
@@ -147,7 +108,7 @@ const defaultRentInputs: RentInputs = {
 
 const defaultAppSettings: AppSettings = {
   currentLanguage: "en",
-  projectionYears: 30,
+  projectionYears: 15,
   showCashOut: true,
   showYearlyMode: false,
 };
@@ -157,14 +118,6 @@ const initialState: AppState = {
   rentInputs: defaultRentInputs,
   appSettings: defaultAppSettings,
   calculations: [],
-  summary: {
-    projectionYears: 30,
-    betterOption: "buy",
-    buyNetWorth: 0,
-    rentNetWorth: 0,
-    difference: 0,
-    differencePercentage: 0,
-  },
   isCalculationValid: false,
 };
 
