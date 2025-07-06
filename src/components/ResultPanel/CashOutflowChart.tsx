@@ -37,7 +37,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
   const rentCumulativeOnlyData: number[] = [];
   const buyCumulativeInvestmentData: number[] = [];
   const rentCumulativeInvestmentData: number[] = [];
-  
+
   let buyOnlyRunningTotal = 0;
   let rentOnlyRunningTotal = 0;
   let buyInvestmentRunningTotal = 0;
@@ -46,24 +46,24 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
   for (const result of results.yearlyResults) {
     const buyOutflow = result.buy.adjustedCashOutflow;
     const rentOutflow = result.rent.cashOutflow;
-    
+
     // Accumulate base outflows
     buyOnlyRunningTotal += buyOutflow;
     rentOnlyRunningTotal += rentOutflow;
-    
+
     // Accumulate investments (when one scenario costs more)
     if (rentOutflow > buyOutflow) {
-      buyInvestmentRunningTotal += (rentOutflow - buyOutflow);
+      buyInvestmentRunningTotal += rentOutflow - buyOutflow;
     } else if (buyOutflow > rentOutflow) {
-      rentInvestmentRunningTotal += (buyOutflow - rentOutflow);
+      rentInvestmentRunningTotal += buyOutflow - rentOutflow;
     }
-    
+
     buyCumulativeOnlyData.push(buyOnlyRunningTotal);
     rentCumulativeOnlyData.push(rentOnlyRunningTotal);
     buyCumulativeInvestmentData.push(buyInvestmentRunningTotal);
     rentCumulativeInvestmentData.push(rentInvestmentRunningTotal);
   }
-  
+
   // Note: Total cumulative data is now represented by stacking the separate series
 
   // // Calculate investment differentials for annotation
@@ -100,7 +100,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: "60%",
+        columnWidth: "65%",
         dataLabels: {
           position: "top",
         },
@@ -136,7 +136,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
       fontSize: theme.chartStyles.legend.fontSize,
       fontWeight: theme.chartStyles.legend.fontWeight,
       itemMargin: {
-        horizontal: 10,
+        horizontal: 15,
         vertical: 0,
       },
       markers:
@@ -199,7 +199,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
       intersect: false,
       custom: function ({ series, dataPointIndex, w }) {
         const year = w.globals.categoryLabels[dataPointIndex] || years[dataPointIndex];
-        
+
         // Both annual and cumulative now use the same 4-series structure
         const buyOnlyValue = series[0][dataPointIndex];
         const buyInvestmentValue = series[1][dataPointIndex];
@@ -218,21 +218,33 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
             </div>
           </div>
         `;
-        
+
         const modeLabel = viewMode === "annual" ? "" : " (Cumulative)";
-        
+
         return `
           <div style="${theme.tooltipStyles.container}">
             <div style="${theme.tooltipStyles.title}">Year ${year}${modeLabel}</div>
               
-              ${createTooltipItem(theme.colors.buy.primary, 'Buy Only', buyOnlyValue)}
-              ${buyInvestmentValue > 0 ? createTooltipItem(theme.colors.buy.secondary, 'Buy Investment', buyInvestmentValue) : ''}
-              ${createTooltipItem(theme.colors.rent.primary, 'Rent Only', rentOnlyValue)}
-              ${rentInvestmentValue > 0 ? createTooltipItem(theme.colors.rent.secondary, 'Rent Investment', rentInvestmentValue) : ''}
+              ${createTooltipItem(theme.colors.buy.primary, "Home Ownership Costs", buyOnlyValue)}
+              ${
+                buyInvestmentValue > 0
+                  ? createTooltipItem(theme.colors.buy.secondary, "Buy + Extra Investment", buyInvestmentValue)
+                  : ""
+              }
+              ${createTooltipItem(theme.colors.rent.primary, "Rent Costs", rentOnlyValue)}
+              ${
+                rentInvestmentValue > 0
+                  ? createTooltipItem(theme.colors.rent.secondary, "Rent + Extra Investment", rentInvestmentValue)
+                  : ""
+              }
               
               <div style="${theme.tooltipStyles.separator}">
-                <div style="color: ${theme.colors.buy.primary}; margin-bottom: 2px;">💰 Total Buy: ${formatCurrency(totalBuyValue)}</div>
-                <div style="color: ${theme.colors.rent.primary};">💰 Total Rent: ${formatCurrency(totalRentValue)}</div>
+                <div style="color: ${
+                  theme.colors.buy.primary
+                }; margin-bottom: 2px;">🏠 Total Buy Scenario: ${formatCurrency(totalBuyValue)}</div>
+                <div style="color: ${theme.colors.rent.primary};">🏠 Total Rent Scenario: ${formatCurrency(
+          totalRentValue
+        )}</div>
               </div>
             </div>
           `;
@@ -259,44 +271,44 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
     viewMode === "annual"
       ? [
           {
-            name: "Buy Only",
+            name: "Home Ownership Costs",
             data: buyOnlyData,
             group: "buy",
           },
           {
-            name: "Buy Investment",
+            name: "Buy + Extra Investment",
             data: buyInvestmentData,
             group: "buy",
           },
           {
-            name: "Rent Only",
+            name: "Rent Costs",
             data: rentOnlyData,
             group: "rent",
           },
           {
-            name: "Rent Investment",
+            name: "Rent + Extra Investment",
             data: rentInvestmentData,
             group: "rent",
           },
         ]
       : [
           {
-            name: "Buy Only",
+            name: "Home Ownership Costs",
             data: buyCumulativeOnlyData,
             group: "buy",
           },
           {
-            name: "Buy Investment",
+            name: "Buy + Extra Investment",
             data: buyCumulativeInvestmentData,
             group: "buy",
           },
           {
-            name: "Rent Only",
+            name: "Rent Costs",
             data: rentCumulativeOnlyData,
             group: "rent",
           },
           {
-            name: "Rent Investment",
+            name: "Rent + Extra Investment",
             data: rentCumulativeInvestmentData,
             group: "rent",
           },
@@ -306,11 +318,11 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
     <div className={`card p-6 ${className}`}>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
-          <h3 className="text-xl font-semibold text-dark-800 mb-2">Cash Outflow Analysis</h3>
+          <h3 className="text-xl font-semibold text-dark-800 mb-2">Cash Outflow Comparison</h3>
           <p className="text-sm text-dark-500">
             {viewMode === "annual"
-              ? "Annual cash outflows with investment opportunities visualized"
-              : "Cumulative cash outflows and investments over time"}
+              ? "See how much cash you spend each year, with extra investment opportunities"
+              : "Track your total cash spent and investments accumulated over time"}
           </p>
         </div>
 
@@ -343,10 +355,10 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
 
       <div className="mt-4 p-4 bg-gray-50 rounded-lg">
         <p className="text-xs text-dark-600">
-          <strong>Note:</strong>{" "}
+          <strong>How to read this chart:</strong>{" "}
           {viewMode === "annual"
-            ? "Tax-adjusted cash outflows with stacked visualization. When one scenario costs more, the difference is invested in that scenario, creating equal total heights."
-            : "Cumulative view shows total money spent and investments accumulated over time. The stacked bars display both base outflows and additional investments, helping visualize long-term financial implications."}
+            ? "Each bar shows your yearly cash spending. When one option costs more, we invest the difference to make fair comparisons. Both scenarios reach the same total height because we're comparing equal cash commitments."
+            : "See how your total cash spending builds up over time. The chart shows both your base costs (rent or ownership) and extra investments. This helps you understand long-term cash flow patterns."}
         </p>
       </div>
     </div>
