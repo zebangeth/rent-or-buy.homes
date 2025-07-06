@@ -13,24 +13,24 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
 
   // Prepare chart data
   const years = results.yearlyResults.map((r) => r.year);
-  
+
   // Calculate annual cash outflows (always tax-adjusted)
   const buyAnnualData = results.yearlyResults.map((r) => r.buy.adjustedCashOutflow);
   const rentAnnualData = results.yearlyResults.map((r) => r.rent.cashOutflow);
-  
+
   // Calculate cumulative cash outflows
   const buyCumulativeData: number[] = [];
   const rentCumulativeData: number[] = [];
   let buyRunningTotal = 0;
   let rentRunningTotal = 0;
-  
+
   for (const result of results.yearlyResults) {
     buyRunningTotal += result.buy.adjustedCashOutflow;
     rentRunningTotal += result.rent.cashOutflow;
     buyCumulativeData.push(buyRunningTotal);
     rentCumulativeData.push(rentRunningTotal);
   }
-  
+
   // Calculate investment differentials for annotation
   const investmentDifferentials = results.yearlyResults.map((r) => {
     const buyOutflow = r.buy.adjustedCashOutflow;
@@ -39,7 +39,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
       year: r.year,
       difference: buyOutflow - rentOutflow,
       additionalInvestment: r.rent.additionalInvestmentThisYear,
-      buyHasAdditionalInvestment: r.buy.additionalInvestmentPortfolio > 0
+      buyHasAdditionalInvestment: r.buy.additionalInvestmentPortfolio > 0,
     };
   });
 
@@ -79,29 +79,30 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
       fontFamily: 'Montserrat, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
     },
     colors: ["#8b5cf6", "#10b981"],
-    plotOptions: viewMode === "annual" ? {
-      bar: {
-        horizontal: false,
-        columnWidth: "60%",
-        dataLabels: {
-          position: "top",
-        },
-      },
-    } : {},
-    fill: viewMode === "annual" ? {
-      opacity: 0.8,
-    } : {
-      type: "gradient",
-      gradient: {
-        shadeIntensity: 1,
-        opacityFrom: 0.4,
-        opacityTo: 0.1,
-        stops: [0, 90, 100],
-      },
-    },
+    plotOptions:
+      viewMode === "annual"
+        ? {
+            bar: {
+              horizontal: false,
+              columnWidth: "60%",
+              dataLabels: {
+                position: "top",
+              },
+            },
+          }
+        : {},
+    fill:
+      viewMode === "annual"
+        ? {
+            opacity: 0.8,
+          }
+        : {
+            opacity: 1,
+          },
     stroke: {
       curve: viewMode === "annual" ? "straight" : "monotoneCubic",
       width: viewMode === "annual" ? 0 : 3,
+      colors: viewMode === "cumulative" ? ["#8b5cf6", "#10b981"] : undefined,
     },
     grid: {
       borderColor: "#e2e8f0",
@@ -126,10 +127,23 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
       horizontalAlign: "right",
       fontSize: "14px",
       fontWeight: 500,
-      markers: {
-        size: 12,
-        strokeWidth: 0,
+      itemMargin: {
+        horizontal: 10,
+        vertical: 0,
       },
+      markers:
+        viewMode === "cumulative"
+          ? {
+              size: 8,
+              strokeWidth: 0,
+              shape: "circle",
+              offsetX: -4,
+            }
+          : {
+              size: 8,
+              strokeWidth: 0,
+              offsetX: -4,
+            },
     },
     xaxis: {
       categories: years,
@@ -175,18 +189,18 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
       theme: "light",
       shared: true,
       intersect: false,
-      custom: function({ series, dataPointIndex, w }) {
-        const year = w.globals.categoryLabels[dataPointIndex];
+      custom: function ({ series, dataPointIndex }) {
+        const year = years[dataPointIndex];
         const buyValue = series[0][dataPointIndex];
         const rentValue = series[1][dataPointIndex];
         const differential = investmentDifferentials[dataPointIndex];
-        
+
         // Sort by value (highest first)
         const sortedData = [
           { name: "Buy a Home", value: buyValue, color: "#8b5cf6" },
-          { name: "Rent + Invest", value: rentValue, color: "#10b981" }
+          { name: "Rent + Invest", value: rentValue, color: "#10b981" },
         ].sort((a, b) => b.value - a.value);
-        
+
         let differentialText = "";
         if (viewMode === "annual") {
           if (differential.difference > 0) {
@@ -199,19 +213,29 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
             </div>`;
           }
         }
-        
+
         return `
           <div style="background: white; padding: 12px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
-            <div style="font-weight: 600; margin-bottom: 8px; color: #374151;">Year ${year} ${viewMode === "cumulative" ? "(Total)" : ""}</div>
-            ${sortedData.map(item => `
+            <div style="font-weight: 600; margin-bottom: 8px; color: #374151;">Year ${year} ${
+          viewMode === "cumulative" ? "(Total)" : ""
+        }</div>
+            ${sortedData
+              .map(
+                (item) => `
               <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                <div style="width: 12px; height: 12px; background-color: ${item.color}; border-radius: 50%; margin-right: 8px;"></div>
+                <div style="width: 12px; height: 12px; background-color: ${
+                  item.color
+                }; border-radius: 50%; margin-right: 8px;"></div>
                 <div style="display: flex; justify-content: space-between; width: 100%; min-width: 140px;">
                   <span style="color: #6b7280; font-size: 13px;">${item.name}:</span>
-                  <span style="color: #374151; font-weight: 500; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 13px;">${formatCurrency(item.value)}</span>
+                  <span style="color: #374151; font-weight: 500; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 13px;">${formatCurrency(
+                    item.value
+                  )}</span>
                 </div>
               </div>
-            `).join('')}
+            `
+              )
+              .join("")}
             ${differentialText}
           </div>
         `;
@@ -222,7 +246,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
         breakpoint: 768,
         options: {
           chart: {
-            height: 300,
+            height: 380,
           },
           legend: {
             position: "bottom",
@@ -250,8 +274,8 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
         <div>
           <h3 className="text-xl font-semibold text-dark-800 mb-2">Cash Outflow Analysis</h3>
           <p className="text-sm text-dark-500">
-            {viewMode === "annual" 
-              ? "Annual cash outflows and investment opportunities" 
+            {viewMode === "annual"
+              ? "Annual cash outflows and investment opportunities"
               : "Cumulative cash outflows over time"}
           </p>
         </div>
@@ -262,9 +286,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
             <button
               onClick={() => setViewMode("annual")}
               className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-                viewMode === "annual"
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
+                viewMode === "annual" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"
               }`}
             >
               Annual
@@ -272,9 +294,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
             <button
               onClick={() => setViewMode("cumulative")}
               className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-                viewMode === "cumulative"
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
+                viewMode === "cumulative" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"
               }`}
             >
               Cumulative
@@ -284,21 +304,15 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
       </div>
 
       <div className="h-96" key={viewMode}>
-        <Chart 
-          options={chartOptions} 
-          series={series} 
-          type={viewMode === "annual" ? "bar" : "line"} 
-          height="100%" 
-        />
+        <Chart options={chartOptions} series={series} type={viewMode === "annual" ? "bar" : "line"} height="100%" />
       </div>
 
       <div className="mt-4 p-4 bg-gray-50 rounded-lg">
         <p className="text-xs text-dark-600">
           <strong>Note:</strong>{" "}
-          {viewMode === "annual" 
+          {viewMode === "annual"
             ? "Tax-adjusted cash outflows include mortgage interest deduction savings. When one option costs more, the difference can be invested."
-            : "Cumulative cash outflows show total money spent over time. This helps visualize the long-term cost difference between scenarios."
-          }
+            : "Cumulative cash outflows show total money spent over time. This helps visualize the long-term cost difference between scenarios."}
         </p>
       </div>
     </div>

@@ -71,9 +71,15 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
       horizontalAlign: "right",
       fontSize: "14px",
       fontWeight: 500,
+      itemMargin: {
+        horizontal: 10,
+        vertical: 0,
+      },
       markers: {
-        size: 12,
+        size: 8,
         strokeWidth: 0,
+        shape: "circle",
+        offsetX: -4,
       },
     },
     xaxis: {
@@ -177,7 +183,7 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
         breakpoint: 768,
         options: {
           chart: {
-            height: 300,
+            height: 380,
           },
           legend: {
             position: "bottom",
