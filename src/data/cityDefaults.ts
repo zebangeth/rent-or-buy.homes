@@ -11,36 +11,12 @@ export const cityDefaults: CityDefault[] = [
     id: "default",
     name: "City Presets",
     data: {
-      propertyPrice: 2500000,
+      propertyPrice: 1000000,
       downPaymentPercentage: 25,
       mortgageInterestRateAnnual: 6.75,
-      propertyTaxRateAnnual: 1.2,
+      propertyTaxRateAnnual: 0.8,
       currentMonthlyRentAmount: 6000,
-      rentGrowthRateAnnual: 5,
-    },
-  },
-  {
-    id: "sunnyvale",
-    name: "Sunnyvale, CA",
-    data: {
-      propertyPrice: 2350000,
-      downPaymentPercentage: 20,
-      mortgageInterestRateAnnual: 6.5,
-      propertyTaxRateAnnual: 1.22,
-      currentMonthlyRentAmount: 5800,
-      rentGrowthRateAnnual: 5.2,
-    },
-  },
-  {
-    id: "fremont",
-    name: "Fremont, CA",
-    data: {
-      propertyPrice: 1850000,
-      downPaymentPercentage: 20,
-      mortgageInterestRateAnnual: 6.5,
-      propertyTaxRateAnnual: 1.25,
-      currentMonthlyRentAmount: 4500,
-      rentGrowthRateAnnual: 4.8,
+      homeAppreciationCagr: 3.5,
     },
   },
   {
@@ -52,7 +28,7 @@ export const cityDefaults: CityDefault[] = [
       mortgageInterestRateAnnual: 6.75,
       propertyTaxRateAnnual: 1.2,
       currentMonthlyRentAmount: 6000,
-      rentGrowthRateAnnual: 5,
+      homeAppreciationCagr: 5,
     },
   },
   {
@@ -64,7 +40,19 @@ export const cityDefaults: CityDefault[] = [
       mortgageInterestRateAnnual: 6.25,
       propertyTaxRateAnnual: 0.92,
       currentMonthlyRentAmount: 3800,
-      rentGrowthRateAnnual: 4.5,
+      homeAppreciationCagr: 4.5,
+    },
+  },
+  {
+    id: "losangeles",
+    name: "Los Angeles, CA",
+    data: {
+      propertyPrice: 1200000,
+      downPaymentPercentage: 20,
+      mortgageInterestRateAnnual: 6.5,
+      propertyTaxRateAnnual: 0.8,
+      currentMonthlyRentAmount: 3800,
+      homeAppreciationCagr: 3.5,
     },
   },
   {
@@ -76,7 +64,7 @@ export const cityDefaults: CityDefault[] = [
       mortgageInterestRateAnnual: 6.1,
       propertyTaxRateAnnual: 1.8,
       currentMonthlyRentAmount: 2800,
-      rentGrowthRateAnnual: 3.9,
+      homeAppreciationCagr: 4.5,
     },
   },
   {
@@ -88,7 +76,7 @@ export const cityDefaults: CityDefault[] = [
       mortgageInterestRateAnnual: 6.38,
       propertyTaxRateAnnual: 1.15,
       currentMonthlyRentAmount: 3900,
-      rentGrowthRateAnnual: 4.2,
+      homeAppreciationCagr: 3.5,
     },
   },
   {
@@ -100,19 +88,7 @@ export const cityDefaults: CityDefault[] = [
       mortgageInterestRateAnnual: 6.4,
       propertyTaxRateAnnual: 0.85,
       currentMonthlyRentAmount: 5500,
-      rentGrowthRateAnnual: 5.5,
-    },
-  },
-  {
-    id: "toronto",
-    name: "Toronto, ON",
-    data: {
-      propertyPrice: 1450000,
-      downPaymentPercentage: 20,
-      mortgageInterestRateAnnual: 5.85,
-      propertyTaxRateAnnual: 0.65,
-      currentMonthlyRentAmount: 3500,
-      rentGrowthRateAnnual: 4.0,
+      homeAppreciationCagr: 1.5,
     },
   },
 ];
