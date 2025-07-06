@@ -228,13 +228,13 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
               ${createTooltipItem(theme.colors.buy.primary, "Home Ownership Costs", buyOnlyValue)}
               ${
                 buyInvestmentValue > 0
-                  ? createTooltipItem(theme.colors.buy.secondary, "Buy + Extra Investment", buyInvestmentValue)
+                  ? createTooltipItem(theme.colors.buy.tertiary, "Investment (Buy)", buyInvestmentValue)
                   : ""
               }
               ${createTooltipItem(theme.colors.rent.primary, "Rent Costs", rentOnlyValue)}
               ${
                 rentInvestmentValue > 0
-                  ? createTooltipItem(theme.colors.rent.secondary, "Rent + Extra Investment", rentInvestmentValue)
+                  ? createTooltipItem(theme.colors.rent.tertiary, "Investment (Rent)", rentInvestmentValue)
                   : ""
               }
               
@@ -276,7 +276,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
             group: "buy",
           },
           {
-            name: "Buy + Extra Investment",
+            name: "Investment (Buy)",
             data: buyInvestmentData,
             group: "buy",
           },
@@ -286,7 +286,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
             group: "rent",
           },
           {
-            name: "Rent + Extra Investment",
+            name: "Investment (Rent)",
             data: rentInvestmentData,
             group: "rent",
           },
@@ -298,7 +298,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
             group: "buy",
           },
           {
-            name: "Buy + Extra Investment",
+            name: "Investment (Buy)",
             data: buyCumulativeInvestmentData,
             group: "buy",
           },
@@ -308,7 +308,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
             group: "rent",
           },
           {
-            name: "Rent + Extra Investment",
+            name: "Investment (Rent)",
             data: rentCumulativeInvestmentData,
             group: "rent",
           },
