@@ -2,6 +2,7 @@ import Chart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
 import { useCalculations } from "../../hooks/useCalculations";
 import { useApp } from "../../contexts";
+import { theme } from "../../lib/design-system";
 
 interface NetWorthChartProps {
   className?: string;
@@ -141,39 +142,24 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
 
         // Sort by value (highest first)
         const sortedData = [
-          { name: "Buy a Home", value: buyValue, color: "#8b5cf6" },
-          { name: "Rent + Invest", value: rentValue, color: "#10b981" },
+          { name: "Buy a Home", value: buyValue, color: theme.colors.buy.primary },
+          { name: "Rent + Invest", value: rentValue, color: theme.colors.rent.primary },
         ].sort((a, b) => b.value - a.value);
-
-        const formatValue = (value: number) => {
-          return new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-          }).format(value);
-        };
-
+        
+        const createTooltipItem = (color: string, label: string, value: number) => `
+          <div style="${theme.tooltipStyles.item}">
+            <div style="${theme.tooltipStyles.colorDot(color)}"></div>
+            <div style="${theme.tooltipStyles.itemText}">
+              <span style="${theme.tooltipStyles.label}">${label}:</span>
+              <span style="${theme.tooltipStyles.value}">${theme.formatters.currency(value)}</span>
+            </div>
+          </div>
+        `;
+        
         return `
-          <div style="background: white; padding: 12px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
-            <div style="font-weight: 600; margin-bottom: 8px; color: #374151;">Year ${year}</div>
-            ${sortedData
-              .map(
-                (item) => `
-              <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                <div style="width: 12px; height: 12px; background-color: ${
-                  item.color
-                }; border-radius: 50%; margin-right: 8px;"></div>
-                <div style="display: flex; justify-content: space-between; width: 100%; min-width: 140px;">
-                  <span style="color: #6b7280; font-size: 13px;">${item.name}:</span>
-                  <span style="color: #374151; font-weight: 500; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 13px;">${formatValue(
-                    item.value
-                  )}</span>
-                </div>
-              </div>
-            `
-              )
-              .join("")}
+          <div style="${theme.tooltipStyles.container}">
+            <div style="${theme.tooltipStyles.title}">Year ${year}</div>
+            ${sortedData.map(item => createTooltipItem(item.color, item.name, item.value)).join('')}
           </div>
         `;
       },

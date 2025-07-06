@@ -2,6 +2,7 @@ import { useState } from "react";
 import Chart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
 import { useCalculations } from "../../hooks/useCalculations";
+import { theme } from "../../lib/design-system";
 
 interface CashOutflowChartProps {
   className?: string;
@@ -17,14 +18,14 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
   // Calculate annual cash outflows (always tax-adjusted)
   const buyOnlyData = results.yearlyResults.map((r) => r.buy.adjustedCashOutflow);
   const rentOnlyData = results.yearlyResults.map((r) => r.rent.cashOutflow);
-  
+
   // Calculate investment for each scenario based on which costs more
   const rentInvestmentData = results.yearlyResults.map((r) => {
     const buyOutflow = r.buy.adjustedCashOutflow;
     const rentOutflow = r.rent.cashOutflow;
     return buyOutflow > rentOutflow ? buyOutflow - rentOutflow : 0;
   });
-  
+
   const buyInvestmentData = results.yearlyResults.map((r) => {
     const buyOutflow = r.buy.adjustedCashOutflow;
     const rentOutflow = r.rent.cashOutflow;
@@ -56,24 +57,9 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
   //   };
   // });
 
-  const formatValue = (value: number) => {
-    if (value >= 1000000) {
-      return `$${(value / 1000000).toFixed(1)}M`;
-    } else if (value >= 1000) {
-      return `$${(value / 1000).toFixed(0)}K`;
-    } else {
-      return `$${value.toFixed(0)}`;
-    }
-  };
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
+  const { formatters } = theme;
+  const formatValue = formatters.compactCurrency;
+  const formatCurrency = formatters.currency;
 
   const chartOptions: ApexOptions = {
     chart: {
@@ -86,10 +72,10 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
         enabled: false,
       },
       background: "transparent",
-      fontFamily: 'Montserrat, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      fontFamily: theme.typography.fontFamily.sans,
       stacked: viewMode === "annual",
     },
-    colors: viewMode === "annual" ? ["#8b5cf6", "#6366f1", "#10b981", "#059669"] : ["#8b5cf6", "#10b981"],
+    colors: viewMode === "annual" ? theme.chartStyles.colors.cashFlow : theme.chartStyles.colors.netWorth,
     plotOptions:
       viewMode === "annual"
         ? {
@@ -115,8 +101,8 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
       width: viewMode === "annual" ? 0 : 3,
     },
     grid: {
-      borderColor: "#e2e8f0",
-      strokeDashArray: 5,
+      borderColor: theme.chartStyles.grid.borderColor,
+      strokeDashArray: theme.chartStyles.grid.strokeDashArray,
       xaxis: {
         lines: {
           show: false,
@@ -135,8 +121,8 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
       show: true,
       position: "top",
       horizontalAlign: "right",
-      fontSize: "14px",
-      fontWeight: 500,
+      fontSize: theme.chartStyles.legend.fontSize,
+      fontWeight: theme.chartStyles.legend.fontWeight,
       itemMargin: {
         horizontal: 10,
         vertical: 0,
@@ -160,15 +146,15 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
       title: {
         text: "Years",
         style: {
-          fontSize: "14px",
-          fontWeight: 600,
-          color: "#64748b",
+          fontSize: theme.chartStyles.axis.titleFontSize,
+          fontWeight: theme.chartStyles.axis.fontWeight,
+          color: theme.chartStyles.axis.titleColor,
         },
       },
       labels: {
         style: {
-          fontSize: "12px",
-          colors: "#64748b",
+          fontSize: theme.chartStyles.axis.fontSize,
+          colors: theme.chartStyles.axis.labelColor,
         },
       },
       axisBorder: {
@@ -182,15 +168,15 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
       title: {
         text: viewMode === "annual" ? "Annual Cash Outflow" : "Cumulative Cash Outflow",
         style: {
-          fontSize: "14px",
-          fontWeight: 600,
-          color: "#64748b",
+          fontSize: theme.chartStyles.axis.titleFontSize,
+          fontWeight: theme.chartStyles.axis.fontWeight,
+          color: theme.chartStyles.axis.titleColor,
         },
       },
       labels: {
         style: {
-          fontSize: "12px",
-          colors: "#64748b",
+          fontSize: theme.chartStyles.axis.fontSize,
+          colors: theme.chartStyles.axis.labelColor,
         },
         formatter: formatValue,
       },
@@ -207,54 +193,32 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
           const buyInvestmentValue = series[1][dataPointIndex];
           const rentOnlyValue = series[2][dataPointIndex];
           const rentInvestmentValue = series[3][dataPointIndex];
-          
+
           const totalBuyValue = buyOnlyValue + buyInvestmentValue;
           const totalRentValue = rentOnlyValue + rentInvestmentValue;
 
+          const createTooltipItem = (color: string, label: string, value: number) => `
+            <div style="${theme.tooltipStyles.item}">
+              <div style="${theme.tooltipStyles.colorDot(color)}"></div>
+              <div style="${theme.tooltipStyles.itemText}">
+                <span style="${theme.tooltipStyles.label}">${label}:</span>
+                <span style="${theme.tooltipStyles.value}">${formatCurrency(value)}</span>
+              </div>
+            </div>
+          `;
+          
           return `
-            <div style="background: white; padding: 12px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
-              <div style="font-weight: 600; margin-bottom: 8px; color: #374151;">Year ${year}</div>
+            <div style="${theme.tooltipStyles.container}">
+              <div style="${theme.tooltipStyles.title}">Year ${year}</div>
               
-              <!-- Buy Scenario -->
-              <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                <div style="width: 12px; height: 12px; background-color: #8b5cf6; border-radius: 50%; margin-right: 8px;"></div>
-                <div style="display: flex; justify-content: space-between; width: 100%; min-width: 140px;">
-                  <span style="color: #6b7280; font-size: 13px;">Buy Only:</span>
-                  <span style="color: #374151; font-weight: 500; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 13px;">${formatCurrency(buyOnlyValue)}</span>
-                </div>
-              </div>
-              ${buyInvestmentValue > 0 ? `
-                <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                  <div style="width: 12px; height: 12px; background-color: #6366f1; border-radius: 50%; margin-right: 8px;"></div>
-                  <div style="display: flex; justify-content: space-between; width: 100%; min-width: 140px;">
-                    <span style="color: #6b7280; font-size: 13px;">Buy Investment:</span>
-                    <span style="color: #374151; font-weight: 500; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 13px;">${formatCurrency(buyInvestmentValue)}</span>
-                  </div>
-                </div>
-              ` : ''}
+              ${createTooltipItem(theme.colors.buy.primary, 'Buy Only', buyOnlyValue)}
+              ${buyInvestmentValue > 0 ? createTooltipItem(theme.colors.buy.secondary, 'Buy Investment', buyInvestmentValue) : ''}
+              ${createTooltipItem(theme.colors.rent.primary, 'Rent Only', rentOnlyValue)}
+              ${rentInvestmentValue > 0 ? createTooltipItem(theme.colors.rent.secondary, 'Rent Investment', rentInvestmentValue) : ''}
               
-              <!-- Rent Scenario -->
-              <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                <div style="width: 12px; height: 12px; background-color: #10b981; border-radius: 50%; margin-right: 8px;"></div>
-                <div style="display: flex; justify-content: space-between; width: 100%; min-width: 140px;">
-                  <span style="color: #6b7280; font-size: 13px;">Rent Only:</span>
-                  <span style="color: #374151; font-weight: 500; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 13px;">${formatCurrency(rentOnlyValue)}</span>
-                </div>
-              </div>
-              ${rentInvestmentValue > 0 ? `
-                <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                  <div style="width: 12px; height: 12px; background-color: #059669; border-radius: 50%; margin-right: 8px;"></div>
-                  <div style="display: flex; justify-content: space-between; width: 100%; min-width: 140px;">
-                    <span style="color: #6b7280; font-size: 13px;">Rent Investment:</span>
-                    <span style="color: #374151; font-weight: 500; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 13px;">${formatCurrency(rentInvestmentValue)}</span>
-                  </div>
-                </div>
-              ` : ''}
-              
-              <!-- Summary -->
-              <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb; font-size: 12px;">
-                <div style="color: #8b5cf6; margin-bottom: 2px;">💰 Total Buy: ${formatCurrency(totalBuyValue)}</div>
-                <div style="color: #10b981;">💰 Total Rent: ${formatCurrency(totalRentValue)}</div>
+              <div style="${theme.tooltipStyles.separator}">
+                <div style="color: ${theme.colors.buy.primary}; margin-bottom: 2px;">💰 Total Buy: ${formatCurrency(totalBuyValue)}</div>
+                <div style="color: ${theme.colors.rent.primary};">💰 Total Rent: ${formatCurrency(totalRentValue)}</div>
               </div>
             </div>
           `;
@@ -267,30 +231,24 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
 
           // Sort by value (highest first)
           const sortedData = [
-            { name: "Buy a Home", value: buyValue, color: "#8b5cf6" },
-            { name: "Rent + Invest", value: rentValue, color: "#10b981" },
+            { name: "Buy a Home", value: buyValue, color: theme.colors.buy.primary },
+            { name: "Rent + Invest", value: rentValue, color: theme.colors.rent.primary },
           ].sort((a, b) => b.value - a.value);
 
+          const createTooltipItem = (color: string, label: string, value: number) => `
+            <div style="${theme.tooltipStyles.item}">
+              <div style="${theme.tooltipStyles.colorDot(color)}"></div>
+              <div style="${theme.tooltipStyles.itemText}">
+                <span style="${theme.tooltipStyles.label}">${label}:</span>
+                <span style="${theme.tooltipStyles.value}">${formatCurrency(value)}</span>
+              </div>
+            </div>
+          `;
+
           return `
-            <div style="background: white; padding: 12px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
-              <div style="font-weight: 600; margin-bottom: 8px; color: #374151;">Year ${year} (Total)</div>
-              ${sortedData
-                .map(
-                  (item) => `
-                <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                  <div style="width: 12px; height: 12px; background-color: ${
-                    item.color
-                  }; border-radius: 50%; margin-right: 8px;"></div>
-                  <div style="display: flex; justify-content: space-between; width: 100%; min-width: 140px;">
-                    <span style="color: #6b7280; font-size: 13px;">${item.name}:</span>
-                    <span style="color: #374151; font-weight: 500; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 13px;">${formatCurrency(
-                      item.value
-                    )}</span>
-                  </div>
-                </div>
-              `
-                )
-                .join("")}
+            <div style="${theme.tooltipStyles.container}">
+              <div style="${theme.tooltipStyles.title}">Year ${year} (Total)</div>
+              ${sortedData.map(item => createTooltipItem(item.color, item.name, item.value)).join('')}
             </div>
           `;
         }
