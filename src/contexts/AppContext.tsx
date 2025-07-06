@@ -74,7 +74,7 @@ export type AppAction =
 // Default values
 const defaultBuyInputs: BuyInputs = {
   // Essential
-  propertyPrice: 2500000,
+  propertyPrice: 1500000,
   downPaymentPercentage: 25,
   mortgageInterestRateAnnual: 6.75,
   mortgageTermYears: 30,
@@ -98,7 +98,7 @@ const defaultBuyInputs: BuyInputs = {
 };
 
 const defaultRentInputs: RentInputs = {
-  currentMonthlyRentAmount: 6000,
+  currentMonthlyRentAmount: 4000,
   rentGrowthRateAnnual: 3.5,
   sameAsHomeAppreciation: true,
   selectedInvestmentOption: "SPY",

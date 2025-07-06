@@ -51,8 +51,7 @@ export default function KeyAssumptions() {
         <div className="flex items-center">
           <i className="fas fa-arrow-trend-up text-secondary-500 mr-2"></i>
           <span>
-            Rent increase:{" "}
-            <span className="font-bold text-secondary-700">{formatPercentage(rentInputs.rentGrowthRateAnnual)}/yr</span>
+            Rent increase: <span className="font-medium">{formatPercentage(rentInputs.rentGrowthRateAnnual)}/yr</span>
           </span>
         </div>
       </div>
