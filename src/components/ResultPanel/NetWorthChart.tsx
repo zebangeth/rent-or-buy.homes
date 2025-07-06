@@ -224,7 +224,7 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
                 />
               </div>
             </div>
-            <span className="ml-3 text-sm font-medium text-dark-700">Cash Out Scenario</span>
+            <span className="ml-3 text-sm font-medium text-dark-700">Cash Out</span>
           </label>
         </div>
       </div>

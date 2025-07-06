@@ -72,6 +72,53 @@ export function useCalculations() {
     }
     return null; // No break-even within projection period
   };
+
+  // Cash flow analysis helpers
+  const getCashFlowData = (adjusted: boolean = true) => {
+    return results.yearlyResults.map(result => ({
+      year: result.year,
+      buyAnnual: adjusted ? result.buy.adjustedCashOutflow : result.buy.cashOutflow,
+      rentAnnual: result.rent.cashOutflow,
+      difference: (adjusted ? result.buy.adjustedCashOutflow : result.buy.cashOutflow) - result.rent.cashOutflow,
+      additionalInvestment: result.rent.additionalInvestmentThisYear,
+      buyHasAdditionalInvestment: result.buy.additionalInvestmentPortfolio > 0
+    }));
+  };
+
+  const getCumulativeCashFlowData = (adjusted: boolean = true) => {
+    let buyRunningTotal = 0;
+    let rentRunningTotal = 0;
+    
+    return results.yearlyResults.map(result => {
+      buyRunningTotal += adjusted ? result.buy.adjustedCashOutflow : result.buy.cashOutflow;
+      rentRunningTotal += result.rent.cashOutflow;
+      
+      return {
+        year: result.year,
+        buyCumulative: buyRunningTotal,
+        rentCumulative: rentRunningTotal,
+        difference: buyRunningTotal - rentRunningTotal
+      };
+    });
+  };
+
+  const getCashFlowSummary = (adjusted: boolean = true) => {
+    const cashFlowData = getCashFlowData(adjusted);
+    const totalBuyOutflow = cashFlowData.reduce((sum, data) => sum + data.buyAnnual, 0);
+    const totalRentOutflow = cashFlowData.reduce((sum, data) => sum + data.rentAnnual, 0);
+    const totalAdditionalInvestment = cashFlowData.reduce((sum, data) => sum + data.additionalInvestment, 0);
+    
+    return {
+      totalBuyOutflow,
+      totalRentOutflow,
+      totalDifference: totalBuyOutflow - totalRentOutflow,
+      totalAdditionalInvestment,
+      averageAnnualBuyOutflow: totalBuyOutflow / results.projectionYears,
+      averageAnnualRentOutflow: totalRentOutflow / results.projectionYears,
+      yearsWithInvestmentOpportunity: cashFlowData.filter(data => data.additionalInvestment > 0).length,
+      largestAnnualDifference: Math.max(...cashFlowData.map(data => Math.abs(data.difference)))
+    };
+  };
   
   return {
     results,
@@ -80,6 +127,9 @@ export function useCalculations() {
     getNetWorthComparison,
     getTotalCashOutflowComparison,
     getBreakEvenYear,
+    getCashFlowData,
+    getCumulativeCashFlowData,
+    getCashFlowSummary,
     isCalculated: true
   };
 }
