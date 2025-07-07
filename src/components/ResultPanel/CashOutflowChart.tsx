@@ -247,7 +247,8 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
         )}</div>
               </div>
             </div>
-          `;
+          </div>
+        `;
       },
     },
     responsive: [
@@ -255,11 +256,28 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
         breakpoint: 768,
         options: {
           chart: {
-            height: 300,
+            height: 380,
           },
           legend: {
             position: "bottom",
             horizontalAlign: "center",
+            fontSize: "14px",
+            fontWeight: "500",
+            itemMargin: {
+              horizontal: 8,
+              vertical: 4,
+            },
+            markers: {
+              size: 6,
+              strokeWidth: 0,
+              shape: "square",
+              offsetX: -2,
+            },
+          },
+          plotOptions: {
+            bar: {
+              columnWidth: "70%",
+            },
           },
         },
       },
