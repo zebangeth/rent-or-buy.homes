@@ -369,7 +369,7 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
       )}
 
       {/* Calculate Button */}
-      <div className="pt-4">
+      <div className="pt-0">
         <button className="w-full py-3.5 px-4 text-white font-medium rounded-xl bg-gradient-to-r from-secondary-600 to-secondary-500 hover:from-secondary-700 hover:to-secondary-600 transition duration-300 shadow-md">
           <i className="fas fa-calculator mr-2"></i> Calculate Result
         </button>

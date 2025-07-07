@@ -405,7 +405,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
             {/* Marginal Tax Rate */}
             <div className="flex justify-between items-center">
               <label className="text-xs font-medium text-dark-600 flex items-center">
-                Your Marginal Income Tax Rate
+                Marginal Income Tax Rate
                 <div className="relative group ml-1">
                   <i className="fas fa-info-circle text-primary-400 text-xs"></i>
                   <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-60 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
@@ -430,7 +430,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
             {/* Mortgage Interest Deduction Toggle */}
             <div className="flex justify-between items-center">
               <label className="text-xs font-medium text-dark-600 flex items-center">
-                Claim Mortgage Interest Deduction?
+                Claim Mortgage Interest Deduction
                 <div className="relative group ml-1">
                   <i className="fas fa-info-circle text-primary-400 text-xs"></i>
                   <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-60 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
@@ -528,7 +528,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
       )}
 
       {/* Calculate Button */}
-      <div className="pt-4">
+      <div className="pt-0">
         <button className="w-full py-3.5 px-4 text-white font-medium rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 transition duration-300 shadow-md">
           <i className="fas fa-calculator mr-2"></i> Calculate Result
         </button>

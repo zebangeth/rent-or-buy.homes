@@ -27,7 +27,7 @@ export default function InputPanel() {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-semibold text-dark-800">
           <i className="fas fa-sliders-h text-gray-500 mr-2"></i>
-          Parameters
+          Inputs
         </h2>
         <div className="relative inline-block">
           <select

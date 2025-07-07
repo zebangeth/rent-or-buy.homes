@@ -261,7 +261,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
           legend: {
             position: "bottom",
             horizontalAlign: "center",
-            fontSize: "14px",
+            fontSize: "12px",
             fontWeight: "500",
             itemMargin: {
               horizontal: 8,
@@ -277,6 +277,68 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
           plotOptions: {
             bar: {
               columnWidth: "70%",
+            },
+          },
+        },
+      },
+      {
+        breakpoint: 480,
+        options: {
+          chart: {
+            height: 380,
+          },
+          legend: {
+            position: "bottom",
+            horizontalAlign: "center",
+            fontSize: "12px",
+            fontWeight: "500",
+            itemMargin: {
+              horizontal: 6,
+              vertical: 6,
+            },
+            markers: {
+              size: 5,
+              strokeWidth: 0,
+              shape: "square",
+              offsetX: -2,
+            },
+          },
+          plotOptions: {
+            bar: {
+              columnWidth: "75%",
+            },
+          },
+          yaxis: {
+            title: {
+              text: viewMode === "annual" ? "Annual Cash" : "Cumulative Cash",
+              style: {
+                fontSize: "12px",
+                fontWeight: theme.chartStyles.axis.fontWeight,
+                color: theme.chartStyles.axis.titleColor,
+              },
+            },
+            labels: {
+              style: {
+                fontSize: "10px",
+                colors: theme.chartStyles.axis.labelColor,
+              },
+              formatter: formatValue,
+            },
+          },
+          xaxis: {
+            title: {
+              text: "Years",
+              style: {
+                fontSize: "11px",
+                fontWeight: theme.chartStyles.axis.fontWeight,
+                color: theme.chartStyles.axis.titleColor,
+              },
+            },
+            labels: {
+              style: {
+                fontSize: "10px",
+                colors: theme.chartStyles.axis.labelColor,
+              },
             },
           },
         },
