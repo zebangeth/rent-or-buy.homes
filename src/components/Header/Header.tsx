@@ -31,7 +31,7 @@ export default function Header({ currentLanguage = "en", onLanguageChange }: Hea
             <span className="font-medium text-dark-500"> a House?</span>
           </h1>
         </div>
-        <div className="flex flex-col items-end space-y-2">
+        <div className="flex flex-col sm:flex-row items-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
           {/* Language Switch */}
           <div className="relative">
             <select
