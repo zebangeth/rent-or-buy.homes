@@ -163,6 +163,14 @@ function appReducer(state: AppState, action: AppAction): AppState {
         };
       }
 
+      // Sync capital gains tax rates between buy and rent inputs
+      if (action.field === "longTermCapitalGainsTaxRateProperty") {
+        newRentInputs = {
+          ...newRentInputs,
+          longTermCapitalGainsTaxRateInvestment: action.value as number,
+        };
+      }
+
       return {
         ...state,
         buyInputs: newBuyInputs,
@@ -182,8 +190,18 @@ function appReducer(state: AppState, action: AppAction): AppState {
         newRentInputs.rentGrowthRateAnnual = state.buyInputs.homeAppreciationCagr;
       }
 
+      // Sync capital gains tax rates between buy and rent inputs
+      let newBuyInputs = state.buyInputs;
+      if (action.field === "longTermCapitalGainsTaxRateInvestment") {
+        newBuyInputs = {
+          ...state.buyInputs,
+          longTermCapitalGainsTaxRateProperty: action.value as number,
+        };
+      }
+
       return {
         ...state,
+        buyInputs: newBuyInputs,
         rentInputs: newRentInputs,
         isCalculationValid: false,
       };

@@ -6,7 +6,7 @@ import {
   parseFormattedNumber,
   type InputValidationConfig,
 } from "../../lib/inputUtils";
-import { SLIDER_LIMITS, MORTGAGE_TERMS, VALIDATION_LIMITS } from "../../lib/constants";
+import { SLIDER_LIMITS, MORTGAGE_TERMS, TAX_RATES, VALIDATION_LIMITS } from "../../lib/constants";
 import { SliderInput, ButtonGroup } from "./shared";
 
 interface BuyInputsProps {
@@ -87,7 +87,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Property Price */}
       <div>
         <div className="flex justify-between items-center mb-3">
@@ -246,11 +246,10 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
             </>
           );
         })()}
-        <div className="text-xs text-dark-400 mt-1 italic">Based on historical average in your selected area</div>
       </div>
 
       {/* Advanced Options Toggle */}
-      <div className="mt-4 border-t border-gray-100 pt-4">
+      <div className="border-t border-gray-100 pt-4">
         <button
           onClick={() => setShowAdvanced(!showAdvanced)}
           className="flex w-full items-center justify-between text-dark-600 hover:text-primary-600 transition"
@@ -463,52 +462,115 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
             </div>
 
             {/* Capital Gains Tax Rate */}
-            <div className="flex justify-between items-center">
-              <label className="text-xs font-medium text-dark-600">Capital Gains Tax Rate</label>
-              <div className="flex space-x-2 items-center">
-                <input
-                  type="number"
-                  value={getDisplayValue("longTermCapitalGainsTaxRateProperty")}
-                  onChange={(e) =>
-                    handleNumberInputChange("longTermCapitalGainsTaxRateProperty", e.target.value, (val) => Number(val))
-                  }
-                  onBlur={() => handleNumberInputBlur("longTermCapitalGainsTaxRateProperty", (val) => Number(val))}
-                  className="w-14 p-1 text-xs text-center border rounded-lg"
-                  min="0"
-                  max="100"
-                />
-                <span className="text-xs text-dark-500">%</span>
+            <div>
+              <div className="flex justify-between mb-2">
+                <label className="text-xs font-medium text-dark-600 flex items-center">
+                  Capital Gains Tax Rate
+                  <div className="relative group ml-1">
+                    <i className="fas fa-info-circle text-primary-400 text-xs"></i>
+                    <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-96 p-3 bg-dark-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 max-h-96 overflow-y-auto">
+                      <p className="mb-2">
+                        Tax rate on profits when property is sold. Based on your income and filing status:
+                      </p>
+                      <table className="w-full text-xs border-collapse">
+                        <thead className="bg-dark-700">
+                          <tr>
+                            <th className="p-1 text-left">Filing Status</th>
+                            <th className="p-1 text-left">Income Range</th>
+                            <th className="p-1 text-right">Rate</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="border-b border-dark-600">
+                            <td className="p-1 font-medium" rowSpan={4}>
+                              Single
+                            </td>
+                            <td className="p-1">$0 – $48,350</td>
+                            <td className="p-1 text-right">0%</td>
+                          </tr>
+                          <tr className="border-b border-dark-600">
+                            <td className="p-1">$48,351 – $200,000</td>
+                            <td className="p-1 text-right">15%</td>
+                          </tr>
+                          <tr className="border-b border-dark-600">
+                            <td className="p-1">$200,001 – $533,400</td>
+                            <td className="p-1 text-right">18.8%</td>
+                          </tr>
+                          <tr className="border-b border-dark-600">
+                            <td className="p-1">Over $533,400</td>
+                            <td className="p-1 text-right">23.8%</td>
+                          </tr>
+                          <tr className="border-b border-dark-600">
+                            <td className="p-1 font-medium" rowSpan={4}>
+                              Married Filing Jointly
+                            </td>
+                            <td className="p-1">$0 – $96,700</td>
+                            <td className="p-1 text-right">0%</td>
+                          </tr>
+                          <tr className="border-b border-dark-600">
+                            <td className="p-1">$96,701 – $250,000</td>
+                            <td className="p-1 text-right">15%</td>
+                          </tr>
+                          <tr className="border-b border-dark-600">
+                            <td className="p-1">$250,001 – $600,050</td>
+                            <td className="p-1 text-right">18.8%</td>
+                          </tr>
+                          <tr className="border-b border-dark-600">
+                            <td className="p-1">Over $600,050</td>
+                            <td className="p-1 text-right">23.8%</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <p className="mt-2 text-xs">
+                        Includes Long-Term Capital Gains Tax + Net Investment Income Tax where applicable.
+                      </p>
+                    </div>
+                  </div>
+                </label>
               </div>
+
+              {/* Tax Rate Selection Buttons */}
+              <ButtonGroup
+                options={TAX_RATES.CAPITAL_GAINS.map((rate) => ({
+                  value: rate,
+                  label: `${rate}%`,
+                }))}
+                value={buyInputs.longTermCapitalGainsTaxRateProperty}
+                onChange={(value) => handleInputChange("longTermCapitalGainsTaxRateProperty", value)}
+                className="grid grid-cols-4 gap-2"
+                buttonClassName="px-2 py-1 rounded-lg text-xs font-medium transition-colors"
+                activeClassName="bg-primary-500 text-white"
+                inactiveClassName="bg-gray-200 text-dark-600 hover:bg-gray-200"
+              />
             </div>
 
             {/* Filing Status */}
-            <div className="flex justify-between items-center">
-              <label className="text-xs font-medium text-dark-600 flex items-center">
-                Tax-Free Capital Gain Amount (Home Sale)
-                <div className="relative group ml-1">
-                  <i className="fas fa-info-circle text-primary-400 text-xs"></i>
-                  <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-60 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
-                    $250,000 for single filers, $500,000 for married filing jointly in the US.
+            <div>
+              <div className="flex justify-between mb-2">
+                <label className="text-xs font-medium text-dark-600 flex items-center">
+                  Filing Status
+                  <div className="relative group ml-1">
+                    <i className="fas fa-info-circle text-primary-400 text-xs"></i>
+                    <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-60 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+                      Tax-free capital gains amount for single filers: $250,000. For married filing jointly: $500,000.
+                    </div>
                   </div>
-                </div>
-              </label>
-              <div className="flex space-x-2">
-                <div className="flex bg-gray-100 rounded-lg overflow-hidden">
-                  {(["Married", "Single"] as const).map((status) => (
-                    <button
-                      key={status}
-                      onClick={() => handleInputChange("filingStatus", status)}
-                      className={`px-2 py-1 text-xs font-medium transition-colors ${
-                        buyInputs.filingStatus === status
-                          ? "bg-primary-600 text-white"
-                          : "text-dark-600 hover:bg-gray-200"
-                      }`}
-                    >
-                      {status}
-                    </button>
-                  ))}
-                </div>
+                </label>
               </div>
+
+              {/* Filing Status Selection Buttons */}
+              <ButtonGroup
+                options={[
+                  { value: "Married" as const, label: "Married" },
+                  { value: "Single" as const, label: "Single" },
+                ]}
+                value={buyInputs.filingStatus}
+                onChange={(value) => handleInputChange("filingStatus", value)}
+                className="grid grid-cols-2 gap-2"
+                buttonClassName="px-2 py-1 rounded-lg text-xs font-medium transition-colors"
+                activeClassName="bg-primary-500 text-white"
+                inactiveClassName="bg-gray-200 text-dark-600 hover:bg-gray-200"
+              />
             </div>
           </div>
         )}
