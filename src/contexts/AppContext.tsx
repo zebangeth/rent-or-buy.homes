@@ -109,7 +109,7 @@ const defaultRentInputs: RentInputs = {
 const defaultAppSettings: AppSettings = {
   currentLanguage: "en",
   projectionYears: 15,
-  showCashOut: true,
+  showCashOut: false,
   showYearlyMode: false,
 };
 

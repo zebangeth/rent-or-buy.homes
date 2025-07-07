@@ -25,8 +25,6 @@ export default function NetAssetValueCards() {
     portfolioValue: targetResult?.rent.portfolioValueEndOfYear ?? 0,
   };
 
-  const investmentGrowth = Math.max(0, rentData.portfolioValue - rentData.totalInvested);
-
   return (
     <>
       {/* Buy Option */}
@@ -38,19 +36,18 @@ export default function NetAssetValueCards() {
 
         {/* Main Net Worth Display */}
         <div className="text-center mb-4 p-3 bg-primary-50 rounded-lg">
-          <div className="text-xs text-primary-600 font-medium mb-1">Net Asset Value</div>
+          <div className="text-xs text-primary-600 font-medium mb-1">
+            Net Worth in {appSettings.projectionYears} Years
+          </div>
           <div className="text-2xl font-bold text-primary-600">{formatCurrency(buyData.netWorth)}</div>
         </div>
 
         {/* Breakdown */}
         <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-dark-500">Property value:</span>
-            <span className="font-medium">{formatCurrency(buyData.propertyValue)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-dark-500">Mortgage balance:</span>
-            <span className="font-medium text-red-600">-{formatCurrency(buyData.mortgageBalance)}</span>
+          <div className="text-dark-500">
+            You own a <span className="font-bold text-primary-700">{formatCurrency(buyData.propertyValue)}</span> home
+            and owe <span className="font-bold text-red-700">{formatCurrency(buyData.mortgageBalance)}</span> on your
+            mortgage.
           </div>
         </div>
       </div>
@@ -64,19 +61,18 @@ export default function NetAssetValueCards() {
 
         {/* Main Net Worth Display */}
         <div className="text-center mb-4 p-3 bg-secondary-50 rounded-lg">
-          <div className="text-xs text-secondary-600 font-medium mb-1">Portfolio Value</div>
+          <div className="text-xs text-secondary-600 font-medium mb-1">
+            Net Worth in {appSettings.projectionYears} Years
+          </div>
           <div className="text-2xl font-bold text-secondary-600">{formatCurrency(rentData.netWorth)}</div>
         </div>
 
         {/* Breakdown */}
         <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-dark-500">Total invested:</span>
-            <span className="font-medium">{formatCurrency(rentData.totalInvested)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-dark-500">Investment growth:</span>
-            <span className="font-medium text-green-600">+{formatCurrency(investmentGrowth)}</span>
+          <div className="text-dark-500">
+            You have invested{" "}
+            <span className="font-bold text-secondary-700">{formatCurrency(rentData.totalInvested)}</span> and now it's
+            worth <span className="font-bold text-secondary-700">{formatCurrency(rentData.portfolioValue)}</span>.
           </div>
         </div>
       </div>
