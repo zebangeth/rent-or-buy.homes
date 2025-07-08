@@ -21,6 +21,32 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
   const rentData = results.yearlyResults.map((r) =>
     showCashOut ? r.rent.netAssetValueCashOut : r.rent.netAssetValueNotCashOut
   );
+  
+  // Helper function to generate filtered year labels for mobile
+  const getFilteredYearLabels = (years: number[]): (string | number)[] => {
+    const totalYears = years.length;
+    
+    if (totalYears <= 15) {
+      return years;
+    }
+    
+    const filteredLabels: (string | number)[] = new Array(totalYears).fill("");
+    
+    if (totalYears <= 20) {
+      // Show every 2 years not starting with 1: 2, 4, 6, 8, 10, 12, 14, 16, 18, 20
+      for (let i = 1; i < totalYears; i += 2) {
+        filteredLabels[i] = years[i];
+      }
+    } else {
+      // Show every 5 years starting with 1: 1, 5, 10, 15, 20, 25, 30...
+      filteredLabels[0] = years[0]; // Always show year 1
+      for (let i = 4; i < totalYears; i += 5) {
+        filteredLabels[i] = years[i];
+      }
+    }
+    
+    return filteredLabels;
+  };
 
   const chartOptions: ApexOptions = {
     chart: {
@@ -98,6 +124,7 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
           fontSize: "12px",
           colors: "#64748b",
         },
+        rotate: 0,
       },
       axisBorder: {
         show: false,
@@ -136,7 +163,7 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
       shared: true,
       intersect: false,
       custom: function ({ series, dataPointIndex, w }) {
-        const year = w.globals.categoryLabels[dataPointIndex];
+        const year = w.globals.categoryLabels[dataPointIndex] || years[dataPointIndex];
         const buyValue = series[0][dataPointIndex];
         const rentValue = series[1][dataPointIndex];
 
@@ -174,6 +201,128 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
           legend: {
             position: "bottom",
             horizontalAlign: "center",
+            fontSize: "12px",
+            fontWeight: "500",
+            itemMargin: {
+              horizontal: 8,
+              vertical: 4,
+            },
+            markers: {
+              size: 6,
+              strokeWidth: 0,
+              shape: "circle",
+              offsetX: -2,
+            },
+          },
+          xaxis: {
+            categories: getFilteredYearLabels(years),
+            title: {
+              text: "Years",
+              style: {
+                fontSize: "12px",
+                fontWeight: 600,
+                color: "#64748b",
+              },
+            },
+            labels: {
+              style: {
+                fontSize: "11px",
+                colors: "#64748b",
+              },
+              rotate: 0,
+            },
+          },
+          yaxis: {
+            title: {
+              text: "Net Worth",
+              style: {
+                fontSize: "12px",
+                fontWeight: 600,
+                color: "#64748b",
+              },
+            },
+            labels: {
+              style: {
+                fontSize: "10px",
+                colors: "#64748b",
+              },
+              formatter: (value: number) => {
+                if (value >= 1000000) {
+                  return `$${(value / 1000000).toFixed(1)}M`;
+                } else if (value >= 1000) {
+                  return `$${(value / 1000).toFixed(0)}K`;
+                } else {
+                  return `$${value.toFixed(0)}`;
+                }
+              },
+            },
+          },
+        },
+      },
+      {
+        breakpoint: 480,
+        options: {
+          chart: {
+            height: 380,
+          },
+          legend: {
+            position: "bottom",
+            horizontalAlign: "center",
+            fontSize: "12px",
+            fontWeight: "500",
+            itemMargin: {
+              horizontal: 6,
+              vertical: 6,
+            },
+            markers: {
+              size: 5,
+              strokeWidth: 0,
+              shape: "circle",
+              offsetX: -2,
+            },
+          },
+          xaxis: {
+            categories: getFilteredYearLabels(years),
+            title: {
+              text: "Years",
+              style: {
+                fontSize: "11px",
+                fontWeight: 600,
+                color: "#64748b",
+              },
+            },
+            labels: {
+              style: {
+                fontSize: "10px",
+                colors: "#64748b",
+              },
+              rotate: 0,
+            },
+          },
+          yaxis: {
+            title: {
+              text: "Net Worth",
+              style: {
+                fontSize: "12px",
+                fontWeight: 600,
+                color: "#64748b",
+              },
+            },
+            labels: {
+              style: {
+                fontSize: "10px",
+                colors: "#64748b",
+              },
+              formatter: (value: number) => {
+                if (value >= 1000000) {
+                  return `$${(value / 1000000).toFixed(1)}M`;
+                } else if (value >= 1000) {
+                  return `$${(value / 1000).toFixed(0)}K`;
+                } else {
+                  return `$${value.toFixed(0)}`;
+                }
+              },
+            },
           },
         },
       },

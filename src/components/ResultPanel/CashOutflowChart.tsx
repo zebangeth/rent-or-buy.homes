@@ -15,6 +15,32 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
   // Prepare chart data
   const years = results.yearlyResults.map((r) => r.year);
 
+  // Helper function to generate filtered year labels for mobile
+  const getFilteredYearLabels = (years: number[]): (string | number)[] => {
+    const totalYears = years.length;
+
+    if (totalYears <= 15) {
+      return years;
+    }
+
+    const filteredLabels: (string | number)[] = new Array(totalYears).fill("");
+
+    if (totalYears <= 20) {
+      // Show every 2 years not starting with 1: 2, 4, 6, 8, 10, 12, 14, 16, 18, 20
+      for (let i = 1; i < totalYears; i += 2) {
+        filteredLabels[i] = years[i];
+      }
+    } else {
+      // Show every 5 years starting with 1: 1, 5, 10, 15, 20, 25, 30...
+      filteredLabels[0] = years[0]; // Always show year 1
+      for (let i = 4; i < totalYears; i += 5) {
+        filteredLabels[i] = years[i];
+      }
+    }
+
+    return filteredLabels;
+  };
+
   // Calculate annual cash outflows (always tax-adjusted)
   const buyOnlyData = results.yearlyResults.map((r) => r.buy.adjustedCashOutflow);
   const rentOnlyData = results.yearlyResults.map((r) => r.rent.cashOutflow);
@@ -168,6 +194,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
           fontSize: theme.chartStyles.axis.fontSize,
           colors: theme.chartStyles.axis.labelColor,
         },
+        rotate: 0,
       },
       axisBorder: {
         show: false,
@@ -279,6 +306,9 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
               columnWidth: "70%",
             },
           },
+          xaxis: {
+            categories: getFilteredYearLabels(years),
+          },
         },
       },
       {
@@ -326,6 +356,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
             },
           },
           xaxis: {
+            categories: getFilteredYearLabels(years),
             title: {
               text: "Years",
               style: {
@@ -339,6 +370,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
                 fontSize: "10px",
                 colors: theme.chartStyles.axis.labelColor,
               },
+              rotate: 0,
             },
           },
         },
