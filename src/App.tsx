@@ -2,6 +2,7 @@ import Header from "./components/Header";
 import HeroSection from "./components/HeroSection";
 import InputPanel from "./components/InputPanel";
 import ResultPanel from "./components/ResultPanel";
+import Footer from "./components/Footer";
 import { AppProvider, useApp } from "./contexts";
 
 function AppContent() {
@@ -31,6 +32,9 @@ function AppContent() {
           {/* Right Section: Results Panel */}
           <ResultPanel />
         </div>
+        
+        {/* Footer */}
+        <Footer />
       </div>
     </div>
   );

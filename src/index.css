@@ -1,12 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  html,
   body {
-    font-family: 'Montserrat', sans-serif;
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: "Montserrat", sans-serif;
     background-color: #f8fafc;
   }
 }
@@ -15,25 +20,25 @@
   .card {
     @apply rounded-2xl bg-white shadow-lg border border-gray-100 transition-all duration-300;
   }
-  
+
   .card:hover {
     @apply -translate-y-1 shadow-xl;
   }
-  
+
   .glow-primary {
     box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
   }
-  
+
   .glow-secondary {
     box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
   }
-  
+
   .tab-active {
     @apply relative;
   }
-  
+
   .tab-active::after {
-    content: '';
+    content: "";
     @apply absolute -bottom-2 left-0 w-full h-0.5 bg-primary-500 rounded-full;
   }
 
@@ -41,39 +46,39 @@
   .custom-range {
     @apply w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer;
   }
-  
+
   .custom-range::-webkit-slider-track {
     @apply w-full h-2 bg-gray-200 rounded-lg;
   }
-  
+
   .custom-range::-webkit-slider-thumb {
     @apply appearance-none w-5 h-5 bg-primary-500 rounded-full cursor-pointer border-2 border-white shadow-lg transition-all duration-200;
   }
-  
+
   .custom-range::-webkit-slider-thumb:hover {
     @apply bg-primary-600 scale-110;
   }
-  
+
   .custom-range::-webkit-slider-thumb:active {
     @apply bg-primary-700 scale-105;
   }
-  
+
   .custom-range::-moz-range-track {
     @apply w-full h-2 bg-gray-200 rounded-lg border-0;
   }
-  
+
   .custom-range::-moz-range-thumb {
     @apply w-5 h-5 bg-primary-500 rounded-full cursor-pointer border-2 border-white shadow-lg appearance-none transition-all duration-200;
   }
-  
+
   .custom-range::-moz-range-thumb:hover {
     @apply bg-primary-600 scale-110;
   }
-  
+
   .custom-range::-moz-range-thumb:active {
     @apply bg-primary-700 scale-105;
   }
-  
+
   .custom-range:focus {
     @apply outline-none;
   }
@@ -82,19 +87,19 @@
   .custom-range-secondary {
     @apply w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer;
   }
-  
+
   .custom-range-secondary::-webkit-slider-thumb {
     @apply appearance-none w-5 h-5 bg-secondary-500 rounded-full cursor-pointer border-2 border-white shadow-lg transition-all duration-200;
   }
-  
+
   .custom-range-secondary::-webkit-slider-thumb:hover {
     @apply bg-secondary-600 scale-110;
   }
-  
+
   .custom-range-secondary::-moz-range-thumb {
     @apply w-5 h-5 bg-secondary-500 rounded-full cursor-pointer border-2 border-white shadow-lg appearance-none transition-all duration-200;
   }
-  
+
   .custom-range-secondary::-moz-range-thumb:hover {
     @apply bg-secondary-600 scale-110;
   }
@@ -104,7 +109,7 @@
   .animate-fade-in-out {
     animation: fadeInOut 3.5s ease-in-out;
   }
-  
+
   @keyframes fadeInOut {
     0% {
       opacity: 0;
