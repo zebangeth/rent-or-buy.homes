@@ -9,7 +9,7 @@
    <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
    <img src="https://img.shields.io/badge/Vite-4d55e1?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
    <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
-   <img src="https://img.shields.io/badge/Claude-d85d3c?style=for-the-badge&logo=claude&logoColor=white" alt="Claude Code" />
+   <img src="https://img.shields.io/badge/Claude_Code-d85d3c?style=for-the-badge&logo=claude&logoColor=white" alt="Claude Code" />
 </p>
 
 <div align="center">
@@ -27,30 +27,35 @@
 
 </div>
 
----
+<div align="center">
+  <sub>Thank you for checking out rent-or-buy.homes! If you find it useful or interesting, consider giving this repository a <strong>star</strong> ⭐. It helps others discover the project too.</sub>
+</div>
 
-> <div align="center">
->   <sub>Thank you for checking out Rent or Buy Calculator! If you find it useful or interesting, consider giving this repository a <strong>star</strong> ⭐. It helps others discover the project too.</sub>
-> </div>
+---
 
 <div id="english">
 
 <h2 align="center">🏠 <a href="https://rent-or-buy.homes">rent-or-buy.homes</a></h2>
+<p align="center"><sub><i>Instantly see which option leaves you richer.</i></sub></p>
 
-<p align="center"><i>Instantly see which option leaves you richer.</i></p>
+<img src="public/demo.png" alt="Screenshot" width="100%" />
 
-### 🎯 What It Does
+<br>
 
-Buying a house is one of the biggest financial decisions in our lifetime. Yet surprisingly, many focus on _which_ house to buy while skipping the more fundamental question: **should I buy a house at all?**
+Buying a house is one of the biggest financial decisions in our lifetime. Yet surprisingly, many focus on _which_ house to buy while skipping the more fundamental question:
+
+<p align="center"><strong><i>Should I buy a house at all?</i></strong></p>
 
 This web app helps you answer that question by showing you exactly how choosing to buy versus rent could impact your net worth over 10 or 20 years. We're talking about differences that can reach hundreds of thousands or even millions of dollars.
+
+### 🎯 What It Does
 
 - 🏠 **Beyond monthly payments**: Compare the true long-term wealth impact, not just monthly costs
 - 📊 **Data-driven decisions**: See real projections with interactive charts and breakdowns
 - 💰 **Opportunity cost**: Understand what you gain or lose by tying up money in a home vs. investing it
 - 🎯 **Personalized results**: Input your specific situation, location, and financial assumptions
 
-The tool considers everything from mortgage payments and property taxes to investment returns and capital gains—giving you a clear picture of which path builds more wealth for your unique situation.
+The app considers everything from mortgage payments and property taxes to investment returns and capital gains—giving you a clear picture of which path builds more wealth for your unique situation.
 
 **No sign-up, no ads, no data stored on our servers—just instant, transparent math.**
 
@@ -123,6 +128,9 @@ This method captures the true opportunity cost of homeownership by accounting fo
 - Growth assumptions for both property and investments
 
 All calculations are pure TypeScript functions (see [src/lib/finance/](src/lib/finance/)). No external APIs touch your data; everything runs in the browser.
+
+> [!NOTE]
+> Highlights information that users should take into account, even when skimming.
 
 > [!NOTE]
 > If you are interested in the calculation logic, there is also an Excel version of this calculator under [reference/validate.xlsx](reference/validate.xlsx). You can use it to calculate the results manually as well.
