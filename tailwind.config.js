@@ -3,6 +3,10 @@ export default {
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      fontSize: {
+        "2xs": "0.625rem",
+        "3xs": "0.5rem",
+      },
       colors: {
         primary: {
           50: "#f5f3ff",

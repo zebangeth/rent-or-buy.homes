@@ -9,7 +9,7 @@ export interface CityDefault {
 export const cityDefaults: CityDefault[] = [
   {
     id: "default",
-    name: "City Presets",
+    name: "Default",
     data: {
       propertyPrice: 1000000,
       downPaymentPercentage: 25,
