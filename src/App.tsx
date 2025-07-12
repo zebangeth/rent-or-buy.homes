@@ -4,6 +4,7 @@ import InputPanel from "./components/InputPanel";
 import ResultPanel from "./components/ResultPanel";
 import Footer from "./components/Footer";
 import { AppProvider, useApp } from "./contexts";
+import { Analytics } from "@vercel/analytics/react";
 
 function AppContent() {
   const { state, updateAppSetting } = useApp();
@@ -32,7 +33,7 @@ function AppContent() {
           {/* Right Section: Results Panel */}
           <ResultPanel />
         </div>
-        
+
         {/* Footer */}
         <Footer />
       </div>
@@ -44,6 +45,7 @@ function App() {
   return (
     <AppProvider>
       <AppContent />
+      <Analytics />
     </AppProvider>
   );
 }
