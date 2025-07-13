@@ -201,7 +201,7 @@ The app will be available at `http://localhost:5173`
 #### 🔮 Work in Progress
 
 - [ ] **Advanced Charts**: More detailed financial projections
-- [ ] **Shareable Links**: Share the results with others
+- [x] **Shareable Links**: Share the results with others
 - [x] **City Presets**: Refine the city presets numbers and add more cities
 - [ ] **PDF Export**: Generate detailed reports
 
@@ -378,7 +378,7 @@ npm run dev
 #### 🔮 开发中功能
 
 - [ ] **高级图表**: 更详细的财务预测
-- [ ] **生成分享链接**: 生成分享链接，与他人分享结果
+- [x] **生成分享链接**: 生成分享链接，与他人分享结果
 - [x] **城市预设**: 完善城市预设数据并添加更多城市
 - [ ] **PDF 导出**: 生成详细报告
 

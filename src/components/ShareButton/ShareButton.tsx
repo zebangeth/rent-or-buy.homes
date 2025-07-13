@@ -1,78 +1,86 @@
-import { useState } from 'react';
-import { useURLSync } from '../../hooks/useURLSync';
+import { useState } from "react";
+import { useURLSync } from "../../hooks/useURLSync";
 
 interface ShareButtonProps {
   className?: string;
-  variant?: 'primary' | 'secondary';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: "primary" | "secondary";
+  size?: "sm" | "md" | "lg";
 }
 
-export function ShareButton({ 
-  className = '', 
-  variant = 'secondary', 
-  size = 'md' 
-}: ShareButtonProps) {
+export function ShareButton({ className = "", variant = "secondary", size = "md" }: ShareButtonProps) {
   const { shareCurrentState } = useURLSync();
   const [isSharing, setIsSharing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
   const handleShare = async () => {
     setIsSharing(true);
-    
+
     try {
       const success = await shareCurrentState();
-      
+
       if (success) {
         setShowSuccess(true);
         // Hide success message after 2 seconds
         setTimeout(() => setShowSuccess(false), 2000);
       } else {
         // Fallback: show an alert if clipboard API fails
-        alert('Failed to copy link to clipboard');
+        alert("Failed to copy link to clipboard");
       }
     } catch (error) {
-      console.error('Share failed:', error);
-      alert('Failed to copy link to clipboard');
+      console.error("Share failed:", error);
+      alert("Failed to copy link to clipboard");
     } finally {
       setIsSharing(false);
     }
   };
 
   // Base styles that work with any layout
-  const baseStyles = 'inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
-  
+  const baseStyles =
+    "inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
+
   // Variant styles
   const variantStyles = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500',
-    secondary: 'bg-gray-100 hover:bg-gray-200 text-gray-700 focus:ring-gray-500 border border-gray-300',
+    primary: "bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500",
+    secondary: "bg-gray-100 hover:bg-gray-200 text-gray-700 focus:ring-gray-500 border border-gray-300",
   };
 
   // Size styles (only padding and text size, no width overrides)
   const sizeStyles = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base',
+    sm: "px-3 py-1.5 text-sm",
+    md: "px-4 py-2 text-sm",
+    lg: "px-6 py-3 text-base",
   };
 
   // Extract flex-related classes from className to apply to wrapper
-  const flexClasses = className?.split(' ').filter(cls => 
-    cls.startsWith('flex') || cls.startsWith('w-') || cls.startsWith('min-w') || cls.startsWith('max-w')
-  ).join(' ') || '';
-  
+  const flexClasses =
+    className
+      ?.split(" ")
+      .filter(
+        (cls) => cls.startsWith("flex") || cls.startsWith("w-") || cls.startsWith("min-w") || cls.startsWith("max-w")
+      )
+      .join(" ") || "";
+
   // Remove flex classes from button className to avoid duplication
-  const buttonOnlyClasses = className?.split(' ').filter(cls => 
-    !cls.startsWith('flex') && !cls.startsWith('w-') && !cls.startsWith('min-w') && !cls.startsWith('max-w')
-  ).join(' ') || '';
+  const buttonOnlyClasses =
+    className
+      ?.split(" ")
+      .filter(
+        (cls) =>
+          !cls.startsWith("flex") && !cls.startsWith("w-") && !cls.startsWith("min-w") && !cls.startsWith("max-w")
+      )
+      .join(" ") || "";
 
   // Combine styles for the button (excluding flex/width classes which go on wrapper)
   const finalButtonClasses = [
     baseStyles,
-    'w-full', // Make button take full width of its container
-    !buttonOnlyClasses?.includes('bg-') && variantStyles[variant],
-    !buttonOnlyClasses?.includes('px-') && !buttonOnlyClasses?.includes('py-') && sizeStyles[size],
-    !buttonOnlyClasses?.includes('rounded') && 'rounded-lg',
+    "w-full", // Make button take full width of its container
+    !buttonOnlyClasses?.includes("bg-") && variantStyles[variant],
+    !buttonOnlyClasses?.includes("px-") && !buttonOnlyClasses?.includes("py-") && sizeStyles[size],
+    !buttonOnlyClasses?.includes("rounded") && "rounded-lg",
     buttonOnlyClasses,
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div className={`relative ${flexClasses}`}>
@@ -85,14 +93,7 @@ export function ShareButton({
         {isSharing ? (
           <>
             <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path
                 className="opacity-75"
                 fill="currentColor"
@@ -111,7 +112,7 @@ export function ShareButton({
                 d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
               />
             </svg>
-            Share Result
+            Share This Result
           </>
         )}
       </button>
@@ -122,12 +123,7 @@ export function ShareButton({
           <div className="bg-green-600 text-white text-sm px-3 py-2 rounded-md shadow-lg whitespace-nowrap">
             <div className="flex items-center gap-2">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               Link copied to clipboard!
             </div>
