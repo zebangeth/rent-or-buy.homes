@@ -35,7 +35,7 @@ export default function NetAssetValueCards() {
         </div>
 
         {/* Main Net Worth Display */}
-        <div className="text-center mb-4 p-3 bg-primary-50 rounded-lg">
+        <div className="text-center mb-2 p-2 bg-primary-50 rounded-lg">
           <div className="text-xs text-primary-600 font-medium mb-1">
             Net Worth in {appSettings.projectionYears} Years
           </div>
@@ -60,7 +60,7 @@ export default function NetAssetValueCards() {
         </div>
 
         {/* Main Net Worth Display */}
-        <div className="text-center mb-4 p-3 bg-secondary-50 rounded-lg">
+        <div className="text-center mb-2 p-2 bg-secondary-50 rounded-lg">
           <div className="text-xs text-secondary-600 font-medium mb-1">
             Net Worth in {appSettings.projectionYears} Years
           </div>
