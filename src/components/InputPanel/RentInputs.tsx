@@ -2,6 +2,7 @@ import { useApp, type RentInputs as RentInputsType, type InvestmentOption } from
 import { useInputHandlers, parseFormattedNumber, type InputValidationConfig } from "../../lib/inputUtils";
 import { SLIDER_LIMITS, INVESTMENT_OPTIONS, TAX_RATES, VALIDATION_LIMITS } from "../../lib/constants";
 import { SliderInput, ButtonGroup } from "./shared";
+import CalculationStatus from "./CalculationStatus";
 
 interface RentInputsProps {
   onSwitchToBuy?: () => void;
@@ -368,12 +369,8 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
         </div>
       )}
 
-      {/* Calculate Button */}
-      <div className="pt-0">
-        <button className="w-full py-3.5 px-4 text-white font-medium rounded-xl bg-gradient-to-r from-secondary-600 to-secondary-500 hover:from-secondary-700 hover:to-secondary-600 transition duration-300 shadow-md">
-          <i className="fas fa-calculator mr-2"></i> Calculate Result
-        </button>
-      </div>
+      {/* Calculation Status */}
+      <CalculationStatus />
     </div>
   );
 }
