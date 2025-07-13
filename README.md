@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/title3.png" alt="Job Worth Calculator" width="400" />
+<img src="public/title3.png" alt="Buy vs Rent Calculator" width="400" />
 <br><br>
 
 <p>
@@ -83,7 +83,7 @@ Choose how far into the future you want to project (10, 15, 20, 30 years). And c
 **Step 4: Review Your Results**
 
 - Hero banner tells you which scenario leaves you wealthier and by how much.
-- Net-Worth chart visualises the wealth difference over time.
+- Net-Worth chart visualizes the wealth difference over time.
 - Cash-Outflow chart reveals where your money actually goes.
 
 <br>
@@ -202,7 +202,7 @@ The app will be available at `http://localhost:5173`
 
 - [ ] **Advanced Charts**: More detailed financial projections
 - [ ] **Shareable Links**: Share the results with others
-- [ ] **City Presets**: Refine the city presets numbers and add more cities
+- [x] **City Presets**: Refine the city presets numbers and add more cities
 - [ ] **PDF Export**: Generate detailed reports
 
 <br />
@@ -379,7 +379,7 @@ npm run dev
 
 - [ ] **高级图表**: 更详细的财务预测
 - [ ] **生成分享链接**: 生成分享链接，与他人分享结果
-- [ ] **城市预设**: 完善城市预设数据并添加更多城市
+- [x] **城市预设**: 完善城市预设数据并添加更多城市
 - [ ] **PDF 导出**: 生成详细报告
 
 <br />

@@ -4,10 +4,14 @@ import InputPanel from "./components/InputPanel";
 import ResultPanel from "./components/ResultPanel";
 import Footer from "./components/Footer";
 import { AppProvider, useApp } from "./contexts";
+import { useURLSync } from "./hooks/useURLSync";
 import { Analytics } from "@vercel/analytics/react";
 
 function AppContent() {
   const { state, updateAppSetting } = useApp();
+  
+  // Initialize URL synchronization
+  useURLSync();
 
   const handleLanguageChange = (language: string) => {
     updateAppSetting("currentLanguage", language);

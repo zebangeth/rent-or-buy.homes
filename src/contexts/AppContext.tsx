@@ -69,7 +69,8 @@ export type AppAction =
   | { type: "TOGGLE_CASH_OUT_MODE" }
   | { type: "TOGGLE_YEARLY_MODE" }
   | { type: "RECALCULATE" }
-  | { type: "LOAD_CITY_DEFAULTS"; cityData: Partial<BuyInputs & RentInputs> };
+  | { type: "LOAD_CITY_DEFAULTS"; cityData: Partial<BuyInputs & RentInputs> }
+  | { type: "LOAD_STATE_FROM_URL"; state: { buyInputs?: Partial<BuyInputs>; rentInputs?: Partial<RentInputs>; appSettings?: Partial<AppSettings> } };
 
 // Default values
 const defaultBuyInputs: BuyInputs = {
@@ -255,6 +256,15 @@ function appReducer(state: AppState, action: AppAction): AppState {
           ...state.rentInputs,
           ...action.cityData,
         },
+        isCalculationValid: false,
+      };
+
+    case "LOAD_STATE_FROM_URL":
+      return {
+        ...state,
+        ...(action.state.buyInputs && { buyInputs: { ...state.buyInputs, ...action.state.buyInputs } }),
+        ...(action.state.rentInputs && { rentInputs: { ...state.rentInputs, ...action.state.rentInputs } }),
+        ...(action.state.appSettings && { appSettings: { ...state.appSettings, ...action.state.appSettings } }),
         isCalculationValid: false,
       };
 
