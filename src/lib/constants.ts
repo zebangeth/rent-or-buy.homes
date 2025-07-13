@@ -38,12 +38,12 @@ export const SLIDER_LIMITS = {
 
 export const INVESTMENT_OPTIONS = {
   SPY: {
-    name: "SPY",
-    returnRate: 12.5,
+    name: "S&P 500",
+    returnRate: 13,
   },
   QQQ: {
-    name: "QQQ",
-    returnRate: 16.5,
+    name: "Nasdaq 100",
+    returnRate: 18,
   },
   Custom: {
     name: "Custom",

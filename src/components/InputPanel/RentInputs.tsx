@@ -246,13 +246,33 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
         <ButtonGroup
           options={Object.keys(INVESTMENT_OPTIONS).map((key) => ({
             value: key as InvestmentOption,
-            label: key,
+            label: INVESTMENT_OPTIONS[key as InvestmentOption].name,
           }))}
           value={rentInputs.selectedInvestmentOption}
           onChange={(value) => handleInputChange("selectedInvestmentOption", value)}
           className="grid grid-cols-3 gap-2 mb-3"
           activeClassName="bg-secondary-500 text-white"
+          buttonClassName="text-sm font-medium px-0 py-2 rounded-lg"
         />
+
+        {/* Investment Option Description */}
+        {(rentInputs.selectedInvestmentOption === "SPY" || rentInputs.selectedInvestmentOption === "QQQ") && (
+          <div className="text-2xs text-dark-400 leading-relaxed">
+            <p>
+              {INVESTMENT_OPTIONS[rentInputs.selectedInvestmentOption].name} returns based on 2015-2024 total return
+              CAGR. <br />
+              Source:{" "}
+              <a
+                href="https://portfolioslab.com/tools/stock-comparison/SPY/QQQ"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-secondary-500 hover:text-secondary-600 underline"
+              >
+                portfolioslab.com
+              </a>
+            </p>
+          </div>
+        )}
 
         {/* Custom Investment Return Slider */}
         {rentInputs.selectedInvestmentOption === "Custom" && (
