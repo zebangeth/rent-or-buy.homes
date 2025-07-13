@@ -16,6 +16,8 @@ export default function NetAssetValueCards() {
     netWorth: comparison.buy,
     propertyValue: targetResult?.buy.propertyValue ?? 0,
     mortgageBalance: targetResult?.buy.remainingMortgageBalance ?? 0,
+    additionalInvestmentPortfolio: targetResult?.buy.additionalInvestmentPortfolio ?? 0,
+    additionalInvestmentCostBasis: targetResult?.buy.additionalInvestmentCostBasis ?? 0,
   };
 
   const rentData = {
@@ -49,6 +51,19 @@ export default function NetAssetValueCards() {
             and owe <span className="font-bold text-red-700">{formatCurrency(buyData.mortgageBalance)}</span> on your
             mortgage.
           </div>
+          {buyData.additionalInvestmentPortfolio > 0 && (
+            <div className="text-dark-500">
+              You have also invested{" "}
+              <span className="font-bold text-primary-700">
+                {formatCurrency(buyData.additionalInvestmentCostBasis)}
+              </span>{" "}
+              and now it's worth{" "}
+              <span className="font-bold text-primary-700">
+                {formatCurrency(buyData.additionalInvestmentPortfolio)}
+              </span>
+              .
+            </div>
+          )}
         </div>
       </div>
 
