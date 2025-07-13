@@ -89,7 +89,8 @@ export default function InputPanel() {
               </div>
               <div className="border-t border-gray-100 px-3 py-2 bg-gray-50 rounded-b-lg">
                 <p className="text-2xs text-gray-500 leading-relaxed">
-                  Data sourced from Zillow, Redfin, and government websites. Collected by Gemini Deep Research.
+                  City presets based on median single-family home prices, rents, and housing trends from the past
+                  decade. Data from Zillow, Redfin, and government sources. Does not predict future market conditions.
                 </p>
               </div>
             </div>
