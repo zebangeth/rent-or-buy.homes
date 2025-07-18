@@ -18,10 +18,7 @@
   "hero": {
     "conclusion": {
       "buying": "买房",
-      "renting": "租房",
-      "winsByLabel": "会让你多",
-      "overLabel": "美元",
-      "yearsLabel": "年"
+      "renting": "租房"
     },
     "timeHorizon": {
       "label": "查看未来：",

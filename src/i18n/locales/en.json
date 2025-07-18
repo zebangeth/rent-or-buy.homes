@@ -19,7 +19,7 @@
     "conclusion": {
       "buying": "Buying",
       "renting": "Renting",
-      "winsByLabel": "will make you richer by",
+      "winsByLabel": "wins by",
       "overLabel": "in",
       "yearsLabel": "years"
     },
@@ -74,7 +74,7 @@
   "inputs": {
     "title": "Inputs",
     "cityPresets": "City Presets",
-    "cityPresetsDescription": "City presets based on median single-family home prices, rents, and housing trends from the past decade. Data collected from Zillow, Redfin, and government sources by Gemini Deep Research. Does NOT predict future market conditions.",
+    "cityPresetsDescription": "City preset data based on median single-family home prices, rents, and housing trends from the past 10 years. Data collected from Zillow, Redfin, and government sources by Gemini Deep Research. Does NOT predict future market conditions.",
     "tabs": {
       "buy": "Buy",
       "rent": "Rent & Invest"
