@@ -54,8 +54,8 @@
       "years": "年后）",
       "buyExplanation": {
         "youOwn": "你有一套价值",
-        "homeAndOwe": "的房子，还欠",
-        "onMortgage": "房贷",
+        "homeAndOwe": "的房子，剩余",
+        "onMortgage": "房贷未还清",
         "alsoInvested": "你还累计投资了",
         "nowWorth": "，现在价值"
       },

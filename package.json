@@ -13,6 +13,7 @@
     "@vercel/analytics": "^1.5.0",
     "apexcharts": "^4.7.0",
     "i18next": "^25.2.1",
+    "i18next-browser-languagedetector": "^8.2.0",
     "lz-string": "^1.5.0",
     "react": "^19.1.0",
     "react-apexcharts": "^1.7.0",
