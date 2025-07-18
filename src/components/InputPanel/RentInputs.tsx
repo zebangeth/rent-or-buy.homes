@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useApp, type RentInputs as RentInputsType, type InvestmentOption } from "../../contexts";
 import { useInputHandlers, parseFormattedNumber, type InputValidationConfig } from "../../lib/inputUtils";
 import { SLIDER_LIMITS, INVESTMENT_OPTIONS, TAX_RATES, VALIDATION_LIMITS } from "../../lib/constants";
@@ -9,6 +10,7 @@ interface RentInputsProps {
 }
 
 export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
+  const { t } = useTranslation();
   const { state, updateRentInput } = useApp();
   const { rentInputs, buyInputs } = state;
 
@@ -86,7 +88,7 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
       {/* Monthly Rent */}
       <div>
         <div className="flex justify-between items-center mb-3">
-          <label className="text-sm font-medium text-dark-700">Monthly Rent</label>
+          <label className="text-sm font-medium text-dark-700">{t('inputs.rent.monthlyRent')}</label>
           <div className="flex items-center space-x-2">
             <span className="text-xs text-dark-500">$</span>
             <input
@@ -122,7 +124,7 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
       {/* Rent Increase */}
       <div>
         <div className="flex justify-between items-center mb-3">
-          <label className="text-sm font-medium text-dark-700">Expected Annual Rent Increase</label>
+          <label className="text-sm font-medium text-dark-700">{t('inputs.rent.rentIncrease')}</label>
           <div className="flex items-center space-x-2">
             <input
               type="number"
@@ -171,7 +173,7 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
             className="mr-2"
           />
           <label htmlFor="sameAsAppreciationRate" className="text-xs text-dark-500">
-            Same as home appreciation rate
+{t('inputs.rent.sameAsAppreciation')}
           </label>
         </div>
       </div>
@@ -180,7 +182,7 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
       <div>
         <div className="flex justify-between items-center mb-3">
           <label className="text-sm font-medium text-dark-700 flex items-center">
-            Annual Investment Return
+{t('inputs.rent.investmentReturn')}
             <div className="relative group ml-1">
               <i className="fas fa-info-circle text-secondary-400 text-xs"></i>
               <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-60 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
@@ -298,7 +300,7 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
       <div>
         <div className="flex justify-between mb-3">
           <label className="text-sm font-medium text-dark-700 flex items-center">
-            Capital Gains Tax Rate
+{t('inputs.rent.capitalGainsTax')}
             <div className="relative group ml-1">
               <i className="fas fa-info-circle text-secondary-400 text-xs"></i>
               <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-96 p-3 bg-dark-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 max-h-96 overflow-y-auto">
@@ -384,7 +386,7 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
             className="w-full py-2.5 px-4 text-primary-600 font-medium rounded-lg border border-primary-200 bg-primary-50 hover:bg-primary-100 transition duration-200 flex items-center justify-center"
           >
             <i className="fas fa-exchange-alt mr-2"></i>
-            Switch to Buy
+{t('inputs.rent.switchToBuy')}
           </button>
         </div>
       )}

@@ -1,8 +1,10 @@
+import { useTranslation } from "react-i18next";
 import { useApp } from "../../contexts";
 import { useCalculations } from "../../hooks/useCalculations";
 import { formatCurrency } from "../../lib/inputUtils";
 
 export default function ConclusionBadge() {
+  const { t } = useTranslation();
   const { state } = useApp();
   const calculations = useCalculations();
   
@@ -22,7 +24,7 @@ export default function ConclusionBadge() {
       <div className="flex items-center font-bold">
         <i className="fas fa-trophy mr-2"></i>
         <span>
-          {isBuyBetter ? "Buying" : "Renting"} wins by {formatCurrency(difference)} over {state.appSettings.projectionYears} years
+          {isBuyBetter ? t('hero.conclusion.buying') : t('hero.conclusion.renting')} {t('hero.conclusion.winsByLabel')} {formatCurrency(difference)} {t('hero.conclusion.overLabel')} {state.appSettings.projectionYears} {t('hero.conclusion.yearsLabel')}
         </span>
       </div>
     </div>

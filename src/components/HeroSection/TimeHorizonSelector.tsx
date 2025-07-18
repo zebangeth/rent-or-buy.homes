@@ -1,20 +1,22 @@
+import { useTranslation } from "react-i18next";
 import { useApp } from "../../contexts";
 
 interface TimeHorizonOption {
   years: number;
-  label: string;
+  key: string;
 }
 
-const TIME_HORIZON_OPTIONS: TimeHorizonOption[] = [
-  { years: 10, label: "10 years" },
-  { years: 15, label: "15 years" },
-  { years: 20, label: "20 years" },
-  { years: 30, label: "30 years" }
-];
-
 export default function TimeHorizonSelector() {
+  const { t } = useTranslation();
   const { state, dispatch } = useApp();
   const currentYears = state.appSettings.projectionYears;
+
+  const TIME_HORIZON_OPTIONS: TimeHorizonOption[] = [
+    { years: 10, key: "10" },
+    { years: 15, key: "15" },
+    { years: 20, key: "20" },
+    { years: 30, key: "30" }
+  ];
 
   const handleYearChange = (years: number) => {
     dispatch({ type: "SET_PROJECTION_YEARS", years });
@@ -23,9 +25,9 @@ export default function TimeHorizonSelector() {
   return (
     <div className="mb-6">
       <div className="flex items-center space-x-3 mb-3">
-        <span className="text-sm font-medium text-dark-600">View projection for:</span>
+        <span className="text-sm font-medium text-dark-600">{t('hero.timeHorizon.label')}</span>
         <div className="flex bg-gray-100 rounded-lg p-1">
-          {TIME_HORIZON_OPTIONS.map(({ years, label }) => (
+          {TIME_HORIZON_OPTIONS.map(({ years, key }) => (
             <button
               key={years}
               onClick={() => handleYearChange(years)}
@@ -35,7 +37,7 @@ export default function TimeHorizonSelector() {
                   : "text-dark-600 hover:bg-gray-200"
               }`}
             >
-              {label}
+              {t(`hero.timeHorizon.options.${key}`)}
             </button>
           ))}
         </div>

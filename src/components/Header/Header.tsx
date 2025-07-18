@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface HeaderProps {
   currentLanguage?: string;
@@ -6,6 +7,7 @@ interface HeaderProps {
 }
 
 export default function Header({ currentLanguage = "en", onLanguageChange }: HeaderProps) {
+  const { t } = useTranslation();
   const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage);
 
   const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -15,8 +17,8 @@ export default function Header({ currentLanguage = "en", onLanguageChange }: Hea
   };
 
   const languages = [
-    { code: "en", label: "🇺🇸 English" },
-    { code: "zh", label: "🇨🇳 中文 (开发中)" },
+    { code: "en", label: t('header.language.english') },
+    { code: "zh", label: t('header.language.chinese') },
   ];
 
   return (
@@ -24,11 +26,11 @@ export default function Header({ currentLanguage = "en", onLanguageChange }: Hea
       <div className="flex justify-between items-start mb-4">
         <div>
           <h1 className="text-3xl sm:text-3xl lg:text-4xl font-bold text-dark-800 inline-block">
-            <span className="font-medium text-dark-500">Should I </span>
-            <span className="text-primary-600">Buy</span>
-            <span className="font-medium text-dark-500"> or </span>
-            <span className="text-secondary-600">Rent</span>
-            <span className="font-medium text-dark-500"> a House?</span>
+            <span className="font-medium text-dark-500">{t('header.title.prefix')}</span>
+            <span className="text-primary-600">{t('header.title.buy')}</span>
+            <span className="font-medium text-dark-500">{t('header.title.middle')}</span>
+            <span className="text-secondary-600">{t('header.title.rent')}</span>
+            <span className="font-medium text-dark-500">{t('header.title.suffix')}</span>
           </h1>
         </div>
         <div className="flex flex-col sm:flex-row items-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
@@ -59,13 +61,13 @@ export default function Header({ currentLanguage = "en", onLanguageChange }: Hea
             target="_blank"
             rel="noopener noreferrer"
             className="bg-dark-800 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-dark-700 transition flex items-center"
-            title="View on GitHub"
+            title={t('header.githubTitle')}
           >
-            <i className="fab fa-github mr-1"></i> GitHub
+            <i className="fab fa-github mr-1"></i> {t('header.github')}
           </a>
         </div>
       </div>
-      <p className="text-dark-500 max-w-2xl text-sm sm:text-base">Instantly see which option leaves you richer.</p>
+      <p className="text-dark-500 max-w-2xl text-sm sm:text-base">{t('header.description')}</p>
     </header>
   );
 }

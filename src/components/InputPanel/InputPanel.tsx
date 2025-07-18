@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useApp } from "../../contexts";
 import { cityDefaults, getCityDefault } from "../../data/cityDefaults";
 import BuyInputs from "./BuyInputs";
@@ -7,6 +8,7 @@ import RentInputs from "./RentInputs";
 type ActiveTab = "buy" | "rent";
 
 export default function InputPanel() {
+  const { t } = useTranslation();
   const { loadCityDefaults } = useApp();
   const [activeTab, setActiveTab] = useState<ActiveTab>("buy");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -43,14 +45,14 @@ export default function InputPanel() {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-semibold text-dark-800">
           <i className="fas fa-sliders-h text-gray-500 mr-2"></i>
-          Inputs
+          {t('inputs.title')}
         </h2>
         <div className="relative inline-block" ref={dropdownRef}>
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className="appearance-none text-xs font-medium text-dark-700 bg-gray-100 pl-7 pr-8 py-1 rounded-full cursor-pointer hover:bg-gray-200 transition focus:outline-none"
           >
-            {selectedCity.id === "default" ? "City Presets" : selectedCity.name}
+            {selectedCity.id === "default" ? t('inputs.cityPresets') : selectedCity.name}
           </button>
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
             <i className="fas fa-map-marker-alt text-dark-600"></i>
@@ -89,9 +91,7 @@ export default function InputPanel() {
               </div>
               <div className="border-t border-gray-100 px-3 py-2 bg-gray-50 rounded-b-lg">
                 <p className="text-2xs text-gray-500 leading-relaxed">
-                  City presets based on median single-family home prices, rents, and housing trends from the past
-                  decade. Data collected from Zillow, Redfin, and government sources by Gemini Deep Research. Does NOT
-                  predict future market conditions.
+                  {t('inputs.cityPresetsDescription')}
                 </p>
               </div>
             </div>
@@ -109,7 +109,7 @@ export default function InputPanel() {
             }`}
           >
             <i className="fas fa-home"></i>
-            <span>Buy</span>
+            <span>{t('inputs.tabs.buy')}</span>
           </button>
           <button
             onClick={() => setActiveTab("rent")}
@@ -118,7 +118,7 @@ export default function InputPanel() {
             }`}
           >
             <i className="fas fa-chart-line"></i>
-            <span>Rent & Invest</span>
+            <span>{t('inputs.tabs.rent')}</span>
           </button>
         </div>
       </div>

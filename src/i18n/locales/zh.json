@@ -1,0 +1,157 @@
+{
+  "header": {
+    "title": {
+      "prefix": "我该",
+      "buy": "买房",
+      "middle": "还是",
+      "rent": "租房",
+      "suffix": "？"
+    },
+    "description": "比较哪种选择让您更富有",
+    "language": {
+      "english": "🇺🇸 English",
+      "chinese": "🇨🇳 中文"
+    },
+    "github": "GitHub",
+    "githubTitle": "在 GitHub 上查看"
+  },
+  "hero": {
+    "conclusion": {
+      "buying": "买房",
+      "renting": "租房",
+      "winsByLabel": "胜出",
+      "overLabel": "在",
+      "yearsLabel": "年内"
+    },
+    "timeHorizon": {
+      "label": "查看未来：",
+      "options": {
+        "10": "10年",
+        "15": "15年",
+        "20": "20年",
+        "30": "30年"
+      }
+    },
+    "explanation": {
+      "buyPrefix": "如果您今天购买一套",
+      "buyMiddle": "的房子（首付",
+      "buyDownPayment": "），在",
+      "buyMiddle2": "年后增值到",
+      "buySuffix": "，您的净资产将达到",
+      "rentPrefix": "如果您每月支付",
+      "rentSuffix": "租金并投资差额，您的净资产将达到"
+    },
+    "assumptions": {
+      "title": "关键假设",
+      "homeValue": "房屋价值：",
+      "currentRent": "当前租金：",
+      "downPayment": "首付款：",
+      "investmentReturns": "投资回报：",
+      "homeAppreciation": "房屋增值：",
+      "rentIncrease": "租金上涨："
+    },
+    "netWorth": {
+      "buyTitle": "买房",
+      "rentTitle": "租房 + 投资",
+      "netWorthIn": "净资产（",
+      "years": "年后）",
+      "buyExplanation": {
+        "youOwn": "您拥有一套价值",
+        "homeAndOwe": "的房子，还欠",
+        "onMortgage": "房贷。",
+        "alsoInvested": "您还投资了",
+        "nowWorth": "，现在价值"
+      },
+      "rentExplanation": {
+        "youInvested": "您投资了",
+        "nowWorth": "，现在价值"
+      }
+    },
+    "cta": {
+      "editInputs": "编辑输入参数"
+    }
+  },
+  "inputs": {
+    "title": "输入参数",
+    "cityPresets": "城市预设",
+    "cityPresetsDescription": "数据基于各城市过去十年的中位数房价、租金和增长趋势。数据来自 Zillow、Redfin 和政府网站，由 Gemini Deep Research 收集。数据仅供参考，不代表未来市场状况。",
+    "tabs": {
+      "buy": "买房",
+      "rent": "租房 + 投资"
+    },
+    "buy": {
+      "homePrice": "房屋价格",
+      "downPayment": "首付款",
+      "mortgageRate": "房贷利率",
+      "mortgageTerm": "贷款期限",
+      "homeAppreciation": "年房价涨幅",
+      "advancedOptions": "更多选项",
+      "transactionCosts": "交易成本",
+      "closingCosts": "过户费用（当前购买）",
+      "sellingCosts": "出售费用（未来出售）",
+      "holdingCosts": "年度持有成本",
+      "propertyTax": "房产税率",
+      "insuranceMaintenance": "保险与维护费率",
+      "hoaFee": "HOA 管理费",
+      "taxImplications": "税务影响",
+      "marginalTaxRate": "边际所得税率",
+      "mortgageDeduction": "开启房贷利息抵税",
+      "capitalGainsTax": "资本利得税率",
+      "filingStatus": "申报状态",
+      "married": "已婚",
+      "single": "单身",
+      "switchToRent": "切换到租房 + 投资",
+      "years": "年"
+    },
+    "rent": {
+      "monthlyRent": "月租金",
+      "rentIncrease": "年租金涨幅",
+      "sameAsAppreciation": "与房价涨幅相同",
+      "investmentReturn": "年投资回报率",
+      "capitalGainsTax": "资本利得税率",
+      "switchToBuy": "切换到买房"
+    },
+    "status": {
+      "updating": "正在更新计算...",
+      "upToDate": "结果已是最新"
+    }
+  },
+  "share": {
+    "title": "分享这个结果",
+    "copying": "复制中...",
+    "copied": "分享链接已复制到剪贴板！",
+    "failed": "复制链接到剪贴板失败"
+  },
+  "charts": {
+    "netWorth": {
+      "title": "净资产预测",
+      "description": "比较两种选择下净资产随时间的变化",
+      "cashOut": "现金套现",
+      "years": "年份",
+      "netWorthLabel": "净资产",
+      "buySeriesName": "买房",
+      "rentSeriesName": "租房 + 投资"
+    },
+    "cashFlow": {
+      "title": "现金支出比较",
+      "annualDescription": "两种选择下每年的支出",
+      "cumulativeDescription": "随时间累积的总支出",
+      "viewModes": {
+        "annual": "年度",
+        "cumulative": "累计"
+      },
+      "years": "年份",
+      "annualOutflow": "年度现金流出",
+      "cumulativeOutflow": "累计现金流出",
+      "series": {
+        "homeCosts": "房屋持有成本",
+        "investmentBuy": "投资（买房）",
+        "rentCosts": "租房成本",
+        "investmentRent": "投资（租房）"
+      }
+    }
+  },
+  "footer": {
+    "copyright": "© 2025 买房vs租房财务计算器"
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "header": {
+    "title": {
+      "prefix": "Should I ",
+      "buy": "Buy",
+      "middle": " or ",
+      "rent": "Rent",
+      "suffix": " a House?"
+    },
+    "description": "Instantly see which option leaves you richer.",
+    "language": {
+      "english": "🇺🇸 English",
+      "chinese": "🇨🇳 中文"
+    },
+    "github": "GitHub",
+    "githubTitle": "View on GitHub"
+  },
+  "hero": {
+    "conclusion": {
+      "buying": "Buying",
+      "renting": "Renting",
+      "winsByLabel": "wins by",
+      "overLabel": "over",
+      "yearsLabel": "years"
+    },
+    "timeHorizon": {
+      "label": "View projection for:",
+      "options": {
+        "10": "10 years",
+        "15": "15 years",
+        "20": "20 years",
+        "30": "30 years"
+      }
+    },
+    "explanation": {
+      "buyPrefix": "If you buy a",
+      "buyMiddle": "home today (with",
+      "buyDownPayment": "down payment) and it grows to",
+      "buyMiddle2": "in",
+      "buySuffix": "years, your net worth would be",
+      "rentPrefix": "If you rent for",
+      "rentSuffix": "/month and invest the difference, your net worth would be"
+    },
+    "assumptions": {
+      "title": "Key Assumptions",
+      "homeValue": "Home value:",
+      "currentRent": "Current rent:",
+      "downPayment": "Down payment:",
+      "investmentReturns": "Investment returns:",
+      "homeAppreciation": "Home appreciation:",
+      "rentIncrease": "Rent increase:"
+    },
+    "netWorth": {
+      "buyTitle": "Buy a Home",
+      "rentTitle": "Rent + Invest",
+      "netWorthIn": "Net Worth in",
+      "years": "Years",
+      "buyExplanation": {
+        "youOwn": "You own a",
+        "homeAndOwe": "home and owe",
+        "onMortgage": "on your mortgage.",
+        "alsoInvested": "You have also invested",
+        "nowWorth": "and now it's worth"
+      },
+      "rentExplanation": {
+        "youInvested": "You have invested",
+        "nowWorth": "and now it's worth"
+      }
+    },
+    "cta": {
+      "editInputs": "Edit My Inputs"
+    }
+  },
+  "inputs": {
+    "title": "Inputs",
+    "cityPresets": "City Presets",
+    "cityPresetsDescription": "City presets based on median single-family home prices, rents, and housing trends from the past decade. Data collected from Zillow, Redfin, and government sources by Gemini Deep Research. Does NOT predict future market conditions.",
+    "tabs": {
+      "buy": "Buy",
+      "rent": "Rent & Invest"
+    },
+    "buy": {
+      "homePrice": "Home Price",
+      "downPayment": "Down Payment",
+      "mortgageRate": "Mortgage Interest Rate",
+      "mortgageTerm": "Mortgage Term",
+      "homeAppreciation": "Expected Annual Home Appreciation",
+      "advancedOptions": "Advanced Options",
+      "transactionCosts": "Buying/Selling Transaction Costs",
+      "closingCosts": "Closing Costs (Current Buy)",
+      "sellingCosts": "Selling Costs (Future Sale)",
+      "holdingCosts": "Holding Costs (Annual)",
+      "propertyTax": "Property Tax Rate",
+      "insuranceMaintenance": "Insurance & Maintenance",
+      "hoaFee": "HOA Fee",
+      "taxImplications": "Tax Implications",
+      "marginalTaxRate": "Marginal Income Tax Rate",
+      "mortgageDeduction": "Claim Mortgage Interest Deduction",
+      "capitalGainsTax": "Capital Gains Tax Rate",
+      "filingStatus": "Filing Status",
+      "married": "Married",
+      "single": "Single",
+      "switchToRent": "Switch to Rent & Invest",
+      "years": "Years"
+    },
+    "rent": {
+      "monthlyRent": "Monthly Rent",
+      "rentIncrease": "Expected Annual Rent Increase",
+      "sameAsAppreciation": "Same as home appreciation rate",
+      "investmentReturn": "Annual Investment Return",
+      "capitalGainsTax": "Capital Gains Tax Rate",
+      "switchToBuy": "Switch to Buy"
+    },
+    "status": {
+      "updating": "Updating calculations...",
+      "upToDate": "Results are up to date"
+    }
+  },
+  "share": {
+    "title": "Share This Result",
+    "copying": "Copying...",
+    "copied": "Link copied to clipboard!",
+    "failed": "Failed to copy link to clipboard"
+  },
+  "charts": {
+    "netWorth": {
+      "title": "Net Worth Projection",
+      "description": "Compare long-term financial outcomes over time",
+      "cashOut": "Cash Out",
+      "years": "Years",
+      "netWorthLabel": "Net Worth",
+      "buySeriesName": "Buy a Home",
+      "rentSeriesName": "Rent + Invest"
+    },
+    "cashFlow": {
+      "title": "Cash Outflow Comparison",
+      "annualDescription": "How much you spend each year in both scenarios",
+      "cumulativeDescription": "Total amount spent over time in both scenarios",
+      "viewModes": {
+        "annual": "Annual",
+        "cumulative": "Cumulative"
+      },
+      "years": "Years",
+      "annualOutflow": "Annual Cash Outflow",
+      "cumulativeOutflow": "Cumulative Cash Outflow",
+      "series": {
+        "homeCosts": "Home Ownership Costs",
+        "investmentBuy": "Investment (Buy)",
+        "rentCosts": "Rent Costs",
+        "investmentRent": "Investment (Rent)"
+      }
+    }
+  },
+  "footer": {
+    "copyright": "© 2025 Buy vs. Rent Financial Calculator"
+  }
+}

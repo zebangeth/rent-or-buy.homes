@@ -9,6 +9,7 @@ This is a buy vs rent calculator web application that helps users compare long-t
 ## Implementation Progress Summary
 
 ### ✅ Completed Components
+
 - **Core Architecture**: React Context state management with TypeScript
 - **App State Management**: Complete AppContext with buy/rent inputs, calculations, and settings
 - **Financial Engine**: Comprehensive calculation functions for mortgage, investments, and tax scenarios
@@ -16,23 +17,27 @@ This is a buy vs rent calculator web application that helps users compare long-t
 - **Header Component**: Language selector and branding
 - **Hero Section**: Main conclusion display with time horizon selector, net worth breakdown cards, and CTA buttons
 - **Debug Panel**: Development tool for testing calculations and state
-
-### 🚧 In Progress / Needs Implementation
 - **Result Panel**: Charts, visualizations, and summary cards
 - **URL Synchronization**: Shareable links with state persistence
-- **Internationalization**: i18next integration for multi-language support
 - **Advanced Input Sections**: Some advanced tax and cost inputs
 - **City Defaults**: Pre-configured settings for different markets
 
+### 🚧 In Progress / Needs Implementation
+
+- **Internationalization**: i18next integration for multi-language support
+
 ### 📋 Current State
+
 The application has a solid foundation with:
+
 - ✅ Complete state management architecture
-- ✅ Sophisticated financial calculation engine  
+- ✅ Sophisticated financial calculation engine
 - ✅ Professional input UI components
 - ✅ Hero section with conclusions and net worth breakdown
 - ✅ TypeScript types for all data structures
-- ❌ Results visualization (charts/graphs)
-- ❌ URL state persistence
+- ✅ Results visualization (charts/graphs)
+- ✅ URL state persistence
+- ❌ Chinese language support
 
 **Target UI**: Complete mockup available in `UI_mockup/UI_1.html` showing the intended final design
 
@@ -46,18 +51,21 @@ The application has a solid foundation with:
 ## Tech Stack & Architecture
 
 ### Core Technologies
+
 - **React 19** with **TypeScript** - Component framework with strict typing
 - **Vite** - Build tool and development server
 - **Tailwind CSS** - Utility-first styling framework
 - **ESLint** - Code linting with React-specific rules
 
 ### Key Dependencies (Planned)
+
 - `react-router-dom` - Client-side routing and URL synchronization
 - `i18next` + `react-i18next` - Internationalization (English/Chinese)
 - `lz-string` - URL compression for shareable links
 - Chart library (TBD) - For financial projections visualization
 
 ### Implemented Architecture
+
 ```
 ┌──────────────┐     state updates      ┌──────────────┐
 │  InputPanel  │ ────────────────────►  │   AppContext │
@@ -83,7 +91,7 @@ src/
 │   │   └── shared/      ✅ Reusable UI components
 │   ├── DebugPanel/      ✅ Development tool
 │   ├── HeroSection/     ✅ Complete with all sub-components
-│   ├── ResultPanel/     ❌ Not implemented  
+│   ├── ResultPanel/     ❌ Not implemented
 │   └── Footer/          ❌ Not implemented
 ├── lib/
 │   ├── finance/         ✅ Complete calculation engine
@@ -107,10 +115,11 @@ src/
 ## Financial Calculation Features
 
 ### ✅ Implemented Calculations
+
 - **Mortgage Amortization**: PMT formula with full amortization schedule
 - **Property Appreciation**: Compound annual growth with customizable rates
 - **Investment Growth**: Portfolio growth with reinvestment of cash flow differences
-- **Tax Calculations**: 
+- **Tax Calculations**:
   - Mortgage interest deduction
   - Property capital gains (with exemptions)
   - Investment capital gains
@@ -119,6 +128,7 @@ src/
 - **Net Worth Projections**: Both liquid (cash-out) and illiquid scenarios
 
 ### 🔧 Key Calculation Logic
+
 - Handles mortgage payoff scenarios (loan paid before projection end)
 - Differential cash flow investment (when one scenario costs more, difference is invested)
 - Advanced tax scenarios including filing status and exemption amounts

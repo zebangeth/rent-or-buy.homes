@@ -1,5 +1,6 @@
 import Chart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
+import { useTranslation } from "react-i18next";
 import { useCalculations } from "../../hooks/useCalculations";
 import { useApp } from "../../contexts";
 import { theme } from "../../lib/design-system";
@@ -9,6 +10,7 @@ interface NetWorthChartProps {
 }
 
 export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
+  const { t } = useTranslation();
   const { state, dispatch } = useApp();
   const { results } = useCalculations();
   const showCashOut = state.appSettings.showCashOut;
@@ -112,7 +114,7 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
     xaxis: {
       categories: years,
       title: {
-        text: "Years",
+        text: t('charts.netWorth.years'),
         style: {
           fontSize: "14px",
           fontWeight: 600,
@@ -135,7 +137,7 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
     },
     yaxis: {
       title: {
-        text: "Net Worth",
+        text: t('charts.netWorth.netWorthLabel'),
         style: {
           fontSize: "14px",
           fontWeight: 600,
@@ -217,7 +219,7 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
           xaxis: {
             categories: getFilteredYearLabels(years),
             title: {
-              text: "Years",
+              text: t('charts.netWorth.years'),
               style: {
                 fontSize: "12px",
                 fontWeight: 600,
@@ -234,7 +236,7 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
           },
           yaxis: {
             title: {
-              text: "Net Worth",
+              text: t('charts.netWorth.netWorthLabel'),
               style: {
                 fontSize: "12px",
                 fontWeight: 600,
@@ -284,7 +286,7 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
           xaxis: {
             categories: getFilteredYearLabels(years),
             title: {
-              text: "Years",
+              text: t('charts.netWorth.years'),
               style: {
                 fontSize: "11px",
                 fontWeight: 600,
@@ -301,7 +303,7 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
           },
           yaxis: {
             title: {
-              text: "Net Worth",
+              text: t('charts.netWorth.netWorthLabel'),
               style: {
                 fontSize: "12px",
                 fontWeight: 600,
@@ -331,11 +333,11 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
 
   const series = [
     {
-      name: "Buy a Home",
+      name: t('charts.netWorth.buySeriesName'),
       data: buyData,
     },
     {
-      name: "Rent + Invest",
+      name: t('charts.netWorth.rentSeriesName'),
       data: rentData,
     },
   ];
@@ -344,8 +346,8 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
     <div className={`card p-6 ${className}`}>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
-          <h3 className="text-xl font-semibold text-dark-800 mb-2">Net Worth Projection</h3>
-          <p className="text-sm text-dark-500">Compare long-term financial outcomes over time</p>
+          <h3 className="text-xl font-semibold text-dark-800 mb-2">{t('charts.netWorth.title')}</h3>
+          <p className="text-sm text-dark-500">{t('charts.netWorth.description')}</p>
         </div>
 
         <div className="flex items-center mt-4 sm:mt-0">
@@ -365,7 +367,7 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
                 />
               </div>
             </div>
-            <span className="ml-3 text-sm font-medium text-dark-700">Cash Out</span>
+            <span className="ml-3 text-sm font-medium text-dark-700">{t('charts.netWorth.cashOut')}</span>
           </label>
         </div>
       </div>
