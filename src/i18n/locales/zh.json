@@ -7,7 +7,7 @@
       "rent": "租房",
       "suffix": "？"
     },
-    "description": "比较哪种选择让您更富有",
+    "description": "比较哪种选择让未来的你更富有",
     "language": {
       "english": "🇺🇸 English",
       "chinese": "🇨🇳 中文"
@@ -19,9 +19,9 @@
     "conclusion": {
       "buying": "买房",
       "renting": "租房",
-      "winsByLabel": "胜出",
-      "overLabel": "在",
-      "yearsLabel": "年内"
+      "winsByLabel": "会让你多",
+      "overLabel": "美元",
+      "yearsLabel": "年"
     },
     "timeHorizon": {
       "label": "查看未来：",
@@ -33,13 +33,13 @@
       }
     },
     "explanation": {
-      "buyPrefix": "如果您今天购买一套",
+      "buyPrefix": "如果你今天购买一套",
       "buyMiddle": "的房子（首付",
       "buyDownPayment": "），在",
       "buyMiddle2": "年后增值到",
-      "buySuffix": "，您的净资产将达到",
-      "rentPrefix": "如果您每月支付",
-      "rentSuffix": "租金并投资差额，您的净资产将达到"
+      "buySuffix": "，你的净资产将达到",
+      "rentPrefix": "如果你每月支付",
+      "rentSuffix": "租金并投资差额，你的净资产将达到"
     },
     "assumptions": {
       "title": "关键假设",
@@ -56,14 +56,14 @@
       "netWorthIn": "净资产（",
       "years": "年后）",
       "buyExplanation": {
-        "youOwn": "您拥有一套价值",
+        "youOwn": "你拥有一套价值",
         "homeAndOwe": "的房子，还欠",
         "onMortgage": "房贷。",
-        "alsoInvested": "您还投资了",
+        "alsoInvested": "你还投资了",
         "nowWorth": "，现在价值"
       },
       "rentExplanation": {
-        "youInvested": "您投资了",
+        "youInvested": "你投资了",
         "nowWorth": "，现在价值"
       }
     },
@@ -133,22 +133,25 @@
       "rentSeriesName": "租房 + 投资"
     },
     "cashFlow": {
-      "title": "现金支出比较",
-      "annualDescription": "两种选择下每年的支出",
-      "cumulativeDescription": "随时间累积的总支出",
+      "title": "现金支出对比",
+      "annualDescription": "对比两种选择下每年的支出",
+      "cumulativeDescription": "对比两种选择下的累积支出",
       "viewModes": {
         "annual": "年度",
         "cumulative": "累计"
       },
       "years": "年份",
-      "annualOutflow": "年度现金流出",
-      "cumulativeOutflow": "累计现金流出",
+      "annualOutflow": "年度现金支出",
+      "cumulativeOutflow": "累计现金支出",
       "series": {
-        "homeCosts": "房屋持有成本",
+        "homeCosts": "买房所需支出",
         "investmentBuy": "投资（买房）",
-        "rentCosts": "租房成本",
+        "rentCosts": "租房所需支出",
         "investmentRent": "投资（租房）"
-      }
+      },
+      "explanationTitle": "说明：",
+      "annualExplanation": "柱状图显示你每年的现金支出。当一种选择的支出更高时，我们将多出的差额视作另一种选择的额外投资，以此来确保两种选择下你投入的现金始终是相同的。",
+      "cumulativeExplanation": "柱状图显示你累计的现金支出。对于每一年，当一种选择的支出更高时，我们将多出的差额视作另一种选择的额外投资，以此来确保两种选择下你投入的现金始终是相同的。"
     }
   },
   "footer": {

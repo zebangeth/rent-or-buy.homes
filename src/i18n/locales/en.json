@@ -7,7 +7,7 @@
       "rent": "Rent",
       "suffix": " a House?"
     },
-    "description": "Instantly see which option leaves you richer.",
+    "description": "Instantly see which option leaves you richer in the future.",
     "language": {
       "english": "🇺🇸 English",
       "chinese": "🇨🇳 中文"
@@ -19,8 +19,8 @@
     "conclusion": {
       "buying": "Buying",
       "renting": "Renting",
-      "winsByLabel": "wins by",
-      "overLabel": "over",
+      "winsByLabel": "will make you richer by",
+      "overLabel": "in",
       "yearsLabel": "years"
     },
     "timeHorizon": {
@@ -148,7 +148,10 @@
         "investmentBuy": "Investment (Buy)",
         "rentCosts": "Rent Costs",
         "investmentRent": "Investment (Rent)"
-      }
+      },
+      "explanationTitle": "How to read this chart:",
+      "annualExplanation": "Each bar shows your yearly cash spending. When one option costs more, we treat the difference as extra investment in the other option. This ensures that the total cash spent in both options is the same.",
+      "cumulativeExplanation": "Each bar shows your cumulative cash spending. For each year, when one option costs more, we treat the difference as extra investment in the other option. This ensures that the total cash spent in both options is the same."
     }
   },
   "footer": {

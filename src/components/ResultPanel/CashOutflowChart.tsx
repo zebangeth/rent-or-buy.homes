@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Chart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
 import { useCalculations } from "../../hooks/useCalculations";
@@ -9,6 +10,7 @@ interface CashOutflowChartProps {
 }
 
 export default function CashOutflowChart({ className = "" }: CashOutflowChartProps) {
+  const { t } = useTranslation();
   const { results } = useCalculations();
   const [viewMode, setViewMode] = useState<"annual" | "cumulative">("annual");
 
@@ -90,20 +92,6 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
     rentCumulativeInvestmentData.push(rentInvestmentRunningTotal);
   }
 
-  // Note: Total cumulative data is now represented by stacking the separate series
-
-  // // Calculate investment differentials for annotation
-  // const investmentDifferentials = results.yearlyResults.map((r) => {
-  //   const buyOutflow = r.buy.adjustedCashOutflow;
-  //   const rentOutflow = r.rent.cashOutflow;
-  //   return {
-  //     year: r.year,
-  //     difference: buyOutflow - rentOutflow,
-  //     additionalInvestment: r.rent.additionalInvestmentThisYear,
-  //     buyHasAdditionalInvestment: r.buy.additionalInvestmentPortfolio > 0,
-  //   };
-  // });
-
   const { formatters } = theme;
   const formatValue = formatters.compactCurrency;
   const formatCurrency = formatters.currency;
@@ -182,7 +170,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
     xaxis: {
       categories: years,
       title: {
-        text: "Years",
+        text: t('charts.cashFlow.years'),
         style: {
           fontSize: theme.chartStyles.axis.titleFontSize,
           fontWeight: theme.chartStyles.axis.fontWeight,
@@ -205,7 +193,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
     },
     yaxis: {
       title: {
-        text: viewMode === "annual" ? "Annual Cash Outflow" : "Cumulative Cash Outflow",
+        text: viewMode === "annual" ? t('charts.cashFlow.annualOutflow') : t('charts.cashFlow.cumulativeOutflow'),
         style: {
           fontSize: theme.chartStyles.axis.titleFontSize,
           fontWeight: theme.chartStyles.axis.fontWeight,
@@ -252,16 +240,16 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
           <div style="${theme.tooltipStyles.container}">
             <div style="${theme.tooltipStyles.title}">Year ${year}${modeLabel}</div>
               
-              ${createTooltipItem(theme.colors.buy.primary, "Home Ownership Costs", buyOnlyValue)}
+              ${createTooltipItem(theme.colors.buy.primary, t('charts.cashFlow.series.homeCosts'), buyOnlyValue)}
               ${
                 buyInvestmentValue > 0
-                  ? createTooltipItem(theme.colors.buy.tertiary, "Investment (Buy)", buyInvestmentValue)
+                  ? createTooltipItem(theme.colors.buy.tertiary, t('charts.cashFlow.series.investmentBuy'), buyInvestmentValue)
                   : ""
               }
-              ${createTooltipItem(theme.colors.rent.primary, "Rent Costs", rentOnlyValue)}
+              ${createTooltipItem(theme.colors.rent.primary, t('charts.cashFlow.series.rentCosts'), rentOnlyValue)}
               ${
                 rentInvestmentValue > 0
-                  ? createTooltipItem(theme.colors.rent.tertiary, "Investment (Rent)", rentInvestmentValue)
+                  ? createTooltipItem(theme.colors.rent.tertiary, t('charts.cashFlow.series.investmentRent'), rentInvestmentValue)
                   : ""
               }
               
@@ -340,7 +328,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
           },
           yaxis: {
             title: {
-              text: viewMode === "annual" ? "Annual Cash" : "Cumulative Cash",
+              text: viewMode === "annual" ? t('charts.cashFlow.annualOutflow') : t('charts.cashFlow.cumulativeOutflow'),
               style: {
                 fontSize: "12px",
                 fontWeight: theme.chartStyles.axis.fontWeight,
@@ -358,7 +346,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
           xaxis: {
             categories: getFilteredYearLabels(years),
             title: {
-              text: "Years",
+              text: t('charts.cashFlow.years'),
               style: {
                 fontSize: "11px",
                 fontWeight: theme.chartStyles.axis.fontWeight,
@@ -383,44 +371,44 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
     viewMode === "annual"
       ? [
           {
-            name: "Home Ownership Costs",
+            name: t('charts.cashFlow.series.homeCosts'),
             data: buyOnlyData,
             group: "buy",
           },
           {
-            name: "Investment (Buy)",
+            name: t('charts.cashFlow.series.investmentBuy'),
             data: buyInvestmentData,
             group: "buy",
           },
           {
-            name: "Rent Costs",
+            name: t('charts.cashFlow.series.rentCosts'),
             data: rentOnlyData,
             group: "rent",
           },
           {
-            name: "Investment (Rent)",
+            name: t('charts.cashFlow.series.investmentRent'),
             data: rentInvestmentData,
             group: "rent",
           },
         ]
       : [
           {
-            name: "Home Ownership Costs",
+            name: t('charts.cashFlow.series.homeCosts'),
             data: buyCumulativeOnlyData,
             group: "buy",
           },
           {
-            name: "Investment (Buy)",
+            name: t('charts.cashFlow.series.investmentBuy'),
             data: buyCumulativeInvestmentData,
             group: "buy",
           },
           {
-            name: "Rent Costs",
+            name: t('charts.cashFlow.series.rentCosts'),
             data: rentCumulativeOnlyData,
             group: "rent",
           },
           {
-            name: "Investment (Rent)",
+            name: t('charts.cashFlow.series.investmentRent'),
             data: rentCumulativeInvestmentData,
             group: "rent",
           },
@@ -430,11 +418,11 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
     <div className={`card p-6 ${className}`}>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
-          <h3 className="text-xl font-semibold text-dark-800 mb-2">Cash Outflow Comparison</h3>
+          <h3 className="text-xl font-semibold text-dark-800 mb-2">{t('charts.cashFlow.title')}</h3>
           <p className="text-sm text-dark-500">
             {viewMode === "annual"
-              ? "See how much cash you spend each year, with extra investment opportunities"
-              : "Track your total cash spent and investments accumulated over time"}
+              ? t('charts.cashFlow.annualDescription')
+              : t('charts.cashFlow.cumulativeDescription')}
           </p>
         </div>
 
@@ -447,7 +435,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
                 viewMode === "annual" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"
               }`}
             >
-              Annual
+{t('charts.cashFlow.viewModes.annual')}
             </button>
             <button
               onClick={() => setViewMode("cumulative")}
@@ -455,7 +443,7 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
                 viewMode === "cumulative" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"
               }`}
             >
-              Cumulative
+{t('charts.cashFlow.viewModes.cumulative')}
             </button>
           </div>
         </div>
@@ -467,10 +455,10 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
 
       <div className="mt-4 p-4 bg-gray-50 rounded-lg">
         <p className="text-xs text-dark-600">
-          <strong>How to read this chart:</strong>{" "}
+          <strong>{t('charts.cashFlow.explanationTitle')}</strong>{" "}
           {viewMode === "annual"
-            ? "Each bar shows your yearly cash spending. When one option costs more, we invest the difference to make fair comparisons. Both scenarios reach the same total height because we're comparing equal cash commitments."
-            : "See how your total cash spending builds up over time. The chart shows both your base costs (rent or ownership) and extra investments. This helps you understand long-term cash flow patterns."}
+            ? t('charts.cashFlow.annualExplanation')
+            : t('charts.cashFlow.cumulativeExplanation')}
         </p>
       </div>
     </div>
