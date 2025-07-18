@@ -94,7 +94,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
       {/* Property Price */}
       <div>
         <div className="flex justify-between items-center mb-3">
-          <label className="text-sm font-medium text-dark-700">{t('inputs.buy.homePrice')}</label>
+          <label className="text-sm font-medium text-dark-700">{t("inputs.buy.homePrice")}</label>
           <div className="flex items-center space-x-2">
             <span className="text-xs text-dark-500">$</span>
             <input
@@ -129,7 +129,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
       {/* Down Payment */}
       <div>
         <div className="flex justify-between items-center mb-3">
-          <label className="text-sm font-medium text-dark-700">{t('inputs.buy.downPayment')}</label>
+          <label className="text-sm font-medium text-dark-700">{t("inputs.buy.downPayment")}</label>
           <div className="flex items-center space-x-2">
             <input
               type="number"
@@ -159,7 +159,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
       {/* Interest Rate */}
       <div>
         <div className="flex justify-between items-center mb-3">
-          <label className="text-sm font-medium text-dark-700">{t('inputs.buy.mortgageRate')}</label>
+          <label className="text-sm font-medium text-dark-700">{t("inputs.buy.mortgageRate")}</label>
           <div className="flex items-center space-x-2">
             <input
               type="number"
@@ -200,10 +200,10 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
       {/* Mortgage Term */}
       <div>
         <div className="flex justify-between mb-3">
-          <label className="text-sm font-medium text-dark-700">{t('inputs.buy.mortgageTerm')}</label>
+          <label className="text-sm font-medium text-dark-700">{t("inputs.buy.mortgageTerm")}</label>
         </div>
         <ButtonGroup
-          options={MORTGAGE_TERMS.map((term) => ({ value: term, label: `${term} ${t('inputs.buy.years')}` }))}
+          options={MORTGAGE_TERMS.map((term) => ({ value: term, label: `${term} ${t("inputs.buy.years")}` }))}
           value={buyInputs.mortgageTermYears}
           onChange={(value) => handleInputChange("mortgageTermYears", value)}
           className="grid grid-cols-3 gap-2"
@@ -213,7 +213,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
       {/* Expected Annual Home Appreciation */}
       <div>
         <div className="flex justify-between items-center mb-3">
-          <label className="text-sm font-medium text-dark-700">{t('inputs.buy.homeAppreciation')}</label>
+          <label className="text-sm font-medium text-dark-700">{t("inputs.buy.homeAppreciation")}</label>
           <div className="flex items-center space-x-2">
             <input
               type="number"
@@ -257,7 +257,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
           onClick={() => setShowAdvanced(!showAdvanced)}
           className="flex w-full items-center justify-between text-dark-600 hover:text-primary-600 transition"
         >
-          <span className="font-medium text-sm">{t('inputs.buy.advancedOptions')}</span>
+          <span className="font-medium text-sm">{t("inputs.buy.advancedOptions")}</span>
           <i className={`fas ${showAdvanced ? "fa-chevron-up" : "fa-chevron-down"} text-xs`}></i>
         </button>
 
@@ -265,12 +265,12 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
         {showAdvanced && (
           <div className="mt-4 space-y-4 bg-gray-50 p-4 rounded-xl">
             {/* Transaction Costs Section */}
-            <div className="text-xs font-semibold text-dark-600 mb-2">{t('inputs.buy.transactionCosts')}</div>
+            <div className="text-xs font-semibold text-dark-600 mb-2">{t("inputs.buy.transactionCosts")}</div>
 
             {/* Closing Costs */}
             <div className="flex justify-between items-center">
               <label className="text-xs font-medium text-dark-600 flex items-center">
-{t('inputs.buy.closingCosts')}
+                {t("inputs.buy.closingCosts")}
                 <div className="relative group ml-1">
                   <i className="fas fa-info-circle text-primary-400 text-xs"></i>
                   <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-52 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
@@ -297,7 +297,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
             {/* Selling Costs */}
             <div className="flex justify-between items-center">
               <label className="text-xs font-medium text-dark-600 flex items-center">
-{t('inputs.buy.sellingCosts')}
+                {t("inputs.buy.sellingCosts")}
                 <div className="relative group ml-1">
                   <i className="fas fa-info-circle text-primary-400 text-xs"></i>
                   <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-52 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
@@ -322,12 +322,12 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
             </div>
 
             {/* Holding Costs Section */}
-            <div className="text-xs font-semibold text-dark-600 mb-2 mt-4">{t('inputs.buy.holdingCosts')}</div>
+            <div className="text-xs font-semibold text-dark-600 mb-2 mt-4">{t("inputs.buy.holdingCosts")}</div>
 
             {/* Property Tax Rate */}
             <div className="flex justify-between items-center">
               <label className="text-xs font-medium text-dark-600 flex items-center">
-{t('inputs.buy.propertyTax')}
+                {t("inputs.buy.propertyTax")}
                 <div className="relative group ml-1">
                   <i className="fas fa-info-circle text-primary-400 text-xs"></i>
                   <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-52 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
@@ -355,7 +355,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
             {/* Insurance & Maintenance */}
             <div className="flex justify-between items-center">
               <label className="text-xs font-medium text-dark-600 flex items-center">
-{t('inputs.buy.insuranceMaintenance')}
+                {t("inputs.buy.insuranceMaintenance")}
                 <div className="relative group ml-1">
                   <i className="fas fa-info-circle text-primary-400 text-xs"></i>
                   <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-52 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
@@ -382,7 +382,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
 
             {/* HOA Fee */}
             <div className="flex justify-between items-center">
-              <label className="text-xs font-medium text-dark-600">{t('inputs.buy.hoaFee')}</label>
+              <label className="text-xs font-medium text-dark-600">{t("inputs.buy.hoaFee")}</label>
               <div className="flex space-x-2 items-center">
                 <span className="text-xs text-dark-500">$</span>
                 <input
@@ -402,12 +402,12 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
             </div>
 
             {/* Tax Implications Section */}
-            <div className="text-xs font-semibold text-dark-600 mb-2 mt-4">{t('inputs.buy.taxImplications')}</div>
+            <div className="text-xs font-semibold text-dark-600 mb-2 mt-4">{t("inputs.buy.taxImplications")}</div>
 
             {/* Marginal Tax Rate */}
             <div className="flex justify-between items-center">
               <label className="text-xs font-medium text-dark-600 flex items-center">
-{t('inputs.buy.marginalTaxRate')}
+                {t("inputs.buy.marginalTaxRate")}
                 <div className="relative group ml-1">
                   <i className="fas fa-info-circle text-primary-400 text-xs"></i>
                   <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-60 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
@@ -432,7 +432,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
             {/* Mortgage Interest Deduction Toggle */}
             <div className="flex justify-between items-center">
               <label className="text-xs font-medium text-dark-600 flex items-center">
-{t('inputs.buy.mortgageDeduction')}
+                {t("inputs.buy.mortgageDeduction")}
                 <div className="relative group ml-1">
                   <i className="fas fa-info-circle text-primary-400 text-xs"></i>
                   <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-60 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
@@ -468,7 +468,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
             <div>
               <div className="flex justify-between mb-2">
                 <label className="text-xs font-medium text-dark-600 flex items-center">
-{t('inputs.buy.capitalGainsTax')}
+                  {t("inputs.buy.capitalGainsTax")}
                   <div className="relative group ml-1">
                     <i className="fas fa-info-circle text-primary-400 text-xs"></i>
                     <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-96 p-3 bg-dark-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 max-h-96 overflow-y-auto">
@@ -551,7 +551,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
             <div>
               <div className="flex justify-between mb-2">
                 <label className="text-xs font-medium text-dark-600 flex items-center">
-{t('inputs.buy.filingStatus')}
+                  {t("inputs.buy.filingStatus")}
                   <div className="relative group ml-1">
                     <i className="fas fa-info-circle text-primary-400 text-xs"></i>
                     <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-60 p-2 bg-dark-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
@@ -564,8 +564,8 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
               {/* Filing Status Selection Buttons */}
               <ButtonGroup
                 options={[
-                  { value: "Married" as const, label: t('inputs.buy.married') },
-                  { value: "Single" as const, label: t('inputs.buy.single') },
+                  { value: "Married" as const, label: t("inputs.buy.married") },
+                  { value: "Single" as const, label: t("inputs.buy.single") },
                 ]}
                 value={buyInputs.filingStatus}
                 onChange={(value) => handleInputChange("filingStatus", value)}
@@ -587,7 +587,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
             className="w-full py-2.5 px-4 text-secondary-600 font-medium rounded-lg border border-secondary-200 bg-secondary-50 hover:bg-secondary-100 transition duration-200 flex items-center justify-center"
           >
             <i className="fas fa-exchange-alt mr-2"></i>
-{t('inputs.buy.switchToRent')}
+            {t("inputs.buy.switchToRent")}
           </button>
         </div>
       )}

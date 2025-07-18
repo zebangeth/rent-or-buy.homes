@@ -40,12 +40,12 @@
     },
     "assumptions": {
       "title": "关键假设",
-      "homeValue": "房屋价值：",
+      "homeValue": "当前房屋价格：",
       "currentRent": "当前租金：",
-      "downPayment": "首付款：",
+      "downPayment": "首付比例：",
       "investmentReturns": "投资回报：",
-      "homeAppreciation": "房屋增值：",
-      "rentIncrease": "租金上涨："
+      "homeAppreciation": "年房价涨幅：",
+      "rentIncrease": "年租金涨幅："
     },
     "netWorth": {
       "buyTitle": "买房",
@@ -53,14 +53,14 @@
       "netWorthIn": "净资产（",
       "years": "年后）",
       "buyExplanation": {
-        "youOwn": "你拥有一套价值",
+        "youOwn": "你有一套价值",
         "homeAndOwe": "的房子，还欠",
-        "onMortgage": "房贷。",
-        "alsoInvested": "你还投资了",
+        "onMortgage": "房贷",
+        "alsoInvested": "你还累计投资了",
         "nowWorth": "，现在价值"
       },
       "rentExplanation": {
-        "youInvested": "你投资了",
+        "youInvested": "你累计投资了",
         "nowWorth": "，现在价值"
       }
     },

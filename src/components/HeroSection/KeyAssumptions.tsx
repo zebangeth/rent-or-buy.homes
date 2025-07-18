@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useApp } from "../../contexts";
 import { formatCurrency, formatPercentage } from "../../lib/inputUtils";
 import { getInvestmentReturnRate } from "../../contexts/AppContext";
 
 export default function KeyAssumptions() {
+  const { t } = useTranslation();
   const { state } = useApp();
   const { buyInputs, rentInputs } = state;
   const [isExpanded, setIsExpanded] = useState(false);
@@ -30,7 +32,7 @@ export default function KeyAssumptions() {
           isExpanded ? "mb-2" : ""
         }`}
       >
-        <span>Key Assumptions</span>
+        <span>{t("hero.assumptions.title")}</span>
         <i className={`fas fa-chevron-down transform transition-transform ${isExpanded ? "rotate-180" : ""}`}></i>
       </button>
       <div
@@ -41,35 +43,35 @@ export default function KeyAssumptions() {
         <div className="flex items-center">
           <i className="fas fa-home text-primary-500 mr-2"></i>
           <span>
-            Home value: <span className="font-medium">{formatCurrency(buyInputs.propertyPrice)}</span>
+            {t("hero.assumptions.homeValue")} <span className="font-medium">{formatCurrency(buyInputs.propertyPrice)}</span>
           </span>
         </div>
 
         <div className="flex items-center">
           <i className="fas fa-building text-secondary-500 mr-2"></i>
           <span>
-            Current rent: <span className="font-medium">{formatCurrency(rentInputs.currentMonthlyRentAmount)}/mo</span>
+            {t("hero.assumptions.currentRent")} <span className="font-medium">{formatCurrency(rentInputs.currentMonthlyRentAmount)}/mo</span>
           </span>
         </div>
 
         <div className="flex items-center">
           <i className="fas fa-coins text-primary-500 mr-2"></i>
           <span>
-            Down payment: <span className="font-medium">{formatPercentage(buyInputs.downPaymentPercentage)}</span>
+            {t("hero.assumptions.downPayment")} <span className="font-medium">{formatPercentage(buyInputs.downPaymentPercentage)}</span>
           </span>
         </div>
 
         <div className="flex items-center">
           <i className="fas fa-chart-line text-secondary-500 mr-2"></i>
           <span>
-            Investment returns: <span className="font-medium">{formatPercentage(investmentReturn)}/yr</span>
+            {t("hero.assumptions.investmentReturns")} <span className="font-medium">{formatPercentage(investmentReturn)}/yr</span>
           </span>
         </div>
 
         <div className="flex items-center">
           <i className="fas fa-arrow-trend-up text-primary-500 mr-2"></i>
           <span>
-            Home appreciation:{" "}
+            {t("hero.assumptions.homeAppreciation")}{" "}
             <span className="font-medium">{formatPercentage(buyInputs.homeAppreciationCagr)}/yr</span>
           </span>
         </div>
@@ -77,7 +79,7 @@ export default function KeyAssumptions() {
         <div className="flex items-center">
           <i className="fas fa-arrow-trend-up text-secondary-500 mr-2"></i>
           <span>
-            Rent increase: <span className="font-medium">{formatPercentage(rentInputs.rentGrowthRateAnnual)}/yr</span>
+            {t("hero.assumptions.rentIncrease")} <span className="font-medium">{formatPercentage(rentInputs.rentGrowthRateAnnual)}/yr</span>
           </span>
         </div>
       </div>
