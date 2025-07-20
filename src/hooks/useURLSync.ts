@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { 
   getStateFromURL, 
@@ -12,19 +12,16 @@ export function useURLSync() {
   const isInitialLoadRef = useRef(true);
   const lastStateRef = useRef<string>('');
 
-  // Load state from URL on initial mount
-  useEffect(() => {
+  // Load state from URL on initial mount - use useLayoutEffect for synchronous loading
+  useLayoutEffect(() => {
     if (isInitialLoadRef.current) {
       const urlState = getStateFromURL();
       
       if (urlState) {
         // Apply URL state to context using the new action
         dispatch({ type: 'LOAD_STATE_FROM_URL', state: urlState });
-
-        // Trigger recalculation after loading URL state
-        setTimeout(() => {
-          dispatch({ type: 'RECALCULATE' });
-        }, 0);
+        // Trigger recalculation immediately (no setTimeout needed)
+        dispatch({ type: 'RECALCULATE' });
       }
 
       isInitialLoadRef.current = false;
@@ -40,6 +37,7 @@ export function useURLSync() {
         appSettings: {
           projectionYears: state.appSettings.projectionYears,
           showCashOut: state.appSettings.showCashOut,
+          currentLanguage: state.appSettings.currentLanguage,
         },
       });
 
