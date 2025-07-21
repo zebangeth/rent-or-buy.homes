@@ -25,7 +25,7 @@ export const cityDefaults: CityDefault[] = [
     data: {
       propertyPrice: 1950000,
       propertyTaxRateAnnual: 1.1,
-      currentMonthlyRentAmount: 4500,
+      currentMonthlyRentAmount: 4800,
       homeAppreciationCagr: 6.0,
       rentGrowthRateAnnual: 4.5,
       sameAsHomeAppreciation: false,
@@ -37,7 +37,7 @@ export const cityDefaults: CityDefault[] = [
     data: {
       propertyPrice: 1100000,
       propertyTaxRateAnnual: 1.2,
-      currentMonthlyRentAmount: 3500,
+      currentMonthlyRentAmount: 3800,
       homeAppreciationCagr: 6.5,
       rentGrowthRateAnnual: 5.0,
       sameAsHomeAppreciation: false,
@@ -49,7 +49,7 @@ export const cityDefaults: CityDefault[] = [
     data: {
       propertyPrice: 1350000,
       propertyTaxRateAnnual: 1.1,
-      currentMonthlyRentAmount: 3700,
+      currentMonthlyRentAmount: 4000,
       homeAppreciationCagr: 6.5,
       rentGrowthRateAnnual: 5.0,
       sameAsHomeAppreciation: false,

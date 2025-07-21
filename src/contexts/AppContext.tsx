@@ -70,7 +70,10 @@ export type AppAction =
   | { type: "TOGGLE_YEARLY_MODE" }
   | { type: "RECALCULATE" }
   | { type: "LOAD_CITY_DEFAULTS"; cityData: Partial<BuyInputs & RentInputs> }
-  | { type: "LOAD_STATE_FROM_URL"; state: { buyInputs?: Partial<BuyInputs>; rentInputs?: Partial<RentInputs>; appSettings?: Partial<AppSettings> } };
+  | {
+      type: "LOAD_STATE_FROM_URL";
+      state: { buyInputs?: Partial<BuyInputs>; rentInputs?: Partial<RentInputs>; appSettings?: Partial<AppSettings> };
+    };
 
 // Default values
 const defaultBuyInputs: BuyInputs = {
@@ -99,7 +102,7 @@ const defaultBuyInputs: BuyInputs = {
 };
 
 const defaultRentInputs: RentInputs = {
-  currentMonthlyRentAmount: 4000,
+  currentMonthlyRentAmount: 5000,
   rentGrowthRateAnnual: 3.5,
   sameAsHomeAppreciation: true,
   selectedInvestmentOption: "SPY",
