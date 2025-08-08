@@ -71,7 +71,7 @@
   "inputs": {
     "title": "输入参数",
     "cityPresets": "城市预设",
-    "cityPresetsDescription": "数据基于各城市过去十年的中位数房价、租金和增长趋势。数据来自 Zillow、Redfin 和政府网站，由 Gemini Deep Research 收集。数据仅供参考，不代表未来市场状况。",
+    "cityPresetsDescription": "数据基于近10年的历史中位数。默认房价为 2025 年中位数；CAGR 按 2015–2025 年中位数计算。湾区城市数据来自 CRMLS （Single Family Home；3+卧；1+卫），其他地区使用 Zillow/Redfin 的独栋价格中位数。数据仅供参考，不代表未来市场状况。",
     "tabs": {
       "buy": "买房",
       "rent": "租房 + 投资"
@@ -152,6 +152,8 @@
     }
   },
   "footer": {
-    "copyright": "© 2025 买房vs租房财务计算器"
+    "copyright": "© 2025 买房vs租房财务计算器",
+    "dataCreditsPrefix": "湾区房价数据由 ",
+    "dataCreditsSuffix": " 提供"
   }
 }

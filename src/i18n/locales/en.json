@@ -74,7 +74,7 @@
   "inputs": {
     "title": "Inputs",
     "cityPresets": "City Presets",
-    "cityPresetsDescription": "City preset data based on median single-family home prices, rents, and housing trends from the past 10 years. Data collected from Zillow, Redfin, and government sources by Gemini Deep Research. Does NOT predict future market conditions.",
+    "cityPresetsDescription": "City presets use historical medians from the last 10 years. Default price is the 2025 median; CAGR is computed from 2015–2025 medians. Bay Area cities use CRMLS (Single Family Home; 3+ beds; 1+ bath). Other regions use Zillow/Redfin single-family medians for the same window. Does NOT predict future market conditions.",
     "tabs": {
       "buy": "Buy",
       "rent": "Rent & Invest"
@@ -155,6 +155,8 @@
     }
   },
   "footer": {
-    "copyright": "© 2025 Buy vs. Rent Financial Calculator"
+    "copyright": "© 2025 Buy vs. Rent Financial Calculator",
+    "dataCreditsPrefix": "Bay Area housing data courtesy of ",
+    "dataCreditsSuffix": ""
   }
 }

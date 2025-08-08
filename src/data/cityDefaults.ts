@@ -4,6 +4,7 @@ export interface CityDefault {
   id: string;
   name: string;
   data: Partial<BuyInputs & RentInputs>;
+  children?: CityDefault[];
 }
 
 export const cityDefaults: CityDefault[] = [
@@ -30,6 +31,41 @@ export const cityDefaults: CityDefault[] = [
       rentGrowthRateAnnual: 4.5,
       sameAsHomeAppreciation: false,
     },
+    children: [
+      {
+        id: "bayarea-scc",
+        name: "Santa Clara County",
+        data: {
+          propertyPrice: 2090000, // 2025 median
+          propertyTaxRateAnnual: 1.1,
+          homeAppreciationCagr: 8.0, // 10-year CAGR (2015→2025)
+          rentGrowthRateAnnual: 4.5,
+          sameAsHomeAppreciation: false,
+        },
+      },
+      {
+        id: "bayarea-cupertino",
+        name: "Cupertino",
+        data: {
+          propertyPrice: 3575000, // 2025 median
+          propertyTaxRateAnnual: 1.1,
+          homeAppreciationCagr: 6.8, // 10-year CAGR (2015→2025)
+          rentGrowthRateAnnual: 4.5,
+          sameAsHomeAppreciation: false,
+        },
+      },
+      {
+        id: "bayarea-sunnyvale",
+        name: "Sunnyvale",
+        data: {
+          propertyPrice: 2700000, // 2025 median
+          propertyTaxRateAnnual: 1.1,
+          homeAppreciationCagr: 6.7, // 10-year CAGR (2015→2025)
+          rentGrowthRateAnnual: 4.5,
+          sameAsHomeAppreciation: false,
+        },
+      },
+    ],
   },
   {
     id: "losangeles",
@@ -154,5 +190,17 @@ export const cityDefaults: CityDefault[] = [
 ];
 
 export function getCityDefault(id: string): CityDefault | undefined {
-  return cityDefaults.find((city) => city.id === id);
+  const stack: CityDefault[] = [...cityDefaults];
+  while (stack.length > 0) {
+    const current = stack.pop() as CityDefault;
+    if (current.id === id) {
+      return current;
+    }
+    if (current.children && current.children.length > 0) {
+      for (const child of current.children) {
+        stack.push(child);
+      }
+    }
+  }
+  return undefined;
 }

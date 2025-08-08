@@ -14,6 +14,11 @@ export default function InputPanel() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedCity, setSelectedCity] = useState(cityDefaults[0]);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
+
+  const toggleGroup = (id: string) => {
+    setExpandedGroups((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const handleCitySelect = (cityId: string) => {
     const cityData = getCityDefault(cityId);
@@ -45,14 +50,14 @@ export default function InputPanel() {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-semibold text-dark-800">
           <i className="fas fa-sliders-h text-gray-500 mr-2"></i>
-          {t('inputs.title')}
+          {t("inputs.title")}
         </h2>
         <div className="relative inline-block" ref={dropdownRef}>
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className="appearance-none text-xs font-medium text-dark-700 bg-gray-100 pl-7 pr-8 py-1 rounded-full cursor-pointer hover:bg-gray-200 transition focus:outline-none"
           >
-            {selectedCity.id === "default" ? t('inputs.cityPresets') : selectedCity.name}
+            {selectedCity.id === "default" ? t("inputs.cityPresets") : selectedCity.name}
           </button>
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
             <i className="fas fa-map-marker-alt text-dark-600"></i>
@@ -66,33 +71,92 @@ export default function InputPanel() {
           </div>
 
           {isDropdownOpen && (
-            <div className="absolute top-full right-0 mt-1 w-52 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+            <div className="absolute top-full right-0 mt-1 w-60 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
               <div className="py-1">
                 {cityDefaults.map((city) => (
-                  <button
+                  <div
                     key={city.id}
-                    onClick={() => handleCitySelect(city.id)}
-                    className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 transition flex items-center space-x-2 ${
-                      selectedCity.id === city.id ? "bg-gray-50 text-primary-700 font-medium" : "text-gray-700"
-                    }`}
+                    onMouseEnter={() => {
+                      if (city.children && city.children.length > 0) {
+                        setExpandedGroups((prev) => ({ ...prev, [city.id]: true }));
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (city.children && city.children.length > 0) {
+                        setExpandedGroups((prev) => ({ ...prev, [city.id]: false }));
+                      }
+                    }}
                   >
-                    <i
-                      className={`text-xs text-gray-400 ${
-                        city.id === "default"
-                          ? "fas fa-minus"
-                          : selectedCity.id === city.id
-                          ? "fas fa-map-marker-alt text-primary-600"
-                          : "fas fa-map-marker-alt"
-                      }`}
-                    ></i>
-                    <p className="text-sm">{city.name}</p>
-                  </button>
+                    {city.children && city.children.length > 0 ? (
+                      <button
+                        onClick={() => toggleGroup(city.id)}
+                        className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 transition flex items-center justify-between ${
+                          selectedCity.id === city.id ? "bg-gray-50 text-primary-700 font-medium" : "text-gray-700"
+                        }`}
+                      >
+                        <span className="flex items-center space-x-2">
+                          <i
+                            className={`text-xs text-gray-400 ${
+                              selectedCity.id === city.id
+                                ? "fas fa-map-marker-alt text-primary-600"
+                                : "fas fa-layer-group"
+                            }`}
+                          ></i>
+                          <span className="text-sm">{city.name}</span>
+                        </span>
+                        <i
+                          className={`fas ${
+                            expandedGroups[city.id] ? "fa-chevron-down" : "fa-chevron-right"
+                          } text-2xs text-gray-500`}
+                        ></i>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleCitySelect(city.id)}
+                        className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 transition flex items-center space-x-2 ${
+                          selectedCity.id === city.id ? "bg-gray-50 text-primary-700 font-medium" : "text-gray-700"
+                        }`}
+                      >
+                        <i
+                          className={`text-xs text-gray-400 ${
+                            city.id === "default"
+                              ? "fas fa-minus"
+                              : selectedCity.id === city.id
+                              ? "fas fa-map-marker-alt text-primary-600"
+                              : "fas fa-map-marker-alt"
+                          }`}
+                        ></i>
+                        <p className="text-sm">{city.name}</p>
+                      </button>
+                    )}
+
+                    {city.children && city.children.length > 0 && expandedGroups[city.id] && (
+                      <div className="ml-6 border-l border-gray-100">
+                        {city.children.map((child) => (
+                          <button
+                            key={child.id}
+                            onClick={() => handleCitySelect(child.id)}
+                            className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 transition flex items-center space-x-2 ${
+                              selectedCity.id === child.id ? "bg-gray-50 text-primary-700 font-medium" : "text-gray-700"
+                            }`}
+                          >
+                            <i
+                              className={`text-xs text-gray-400 ${
+                                selectedCity.id === child.id
+                                  ? "fas fa-map-marker-alt text-primary-600"
+                                  : "fas fa-location-dot"
+                              }`}
+                            ></i>
+                            <p className="text-sm">{child.name}</p>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 ))}
               </div>
               <div className="border-t border-gray-100 px-3 py-2 bg-gray-50 rounded-b-lg">
-                <p className="text-2xs text-gray-500 leading-relaxed">
-                  {t('inputs.cityPresetsDescription')}
-                </p>
+                <p className="text-2xs text-gray-500 leading-relaxed">{t("inputs.cityPresetsDescription")}</p>
               </div>
             </div>
           )}
@@ -109,7 +173,7 @@ export default function InputPanel() {
             }`}
           >
             <i className="fas fa-home"></i>
-            <span>{t('inputs.tabs.buy')}</span>
+            <span>{t("inputs.tabs.buy")}</span>
           </button>
           <button
             onClick={() => setActiveTab("rent")}
@@ -118,17 +182,12 @@ export default function InputPanel() {
             }`}
           >
             <i className="fas fa-chart-line"></i>
-            <span>{t('inputs.tabs.rent')}</span>
+            <span>{t("inputs.tabs.rent")}</span>
           </button>
         </div>
       </div>
 
-      {/* Tab Content */}
-      {activeTab === "buy" ? (
-        <BuyInputs onSwitchToRent={() => setActiveTab("rent")} />
-      ) : (
-        <RentInputs onSwitchToBuy={() => setActiveTab("buy")} />
-      )}
+      {activeTab === "buy" ? <BuyInputs /> : <RentInputs />}
     </div>
   );
 }

@@ -205,6 +205,10 @@ The app will be available at `http://localhost:5173`
 - [x] **City Presets**: Refine the city presets numbers and add more cities
 - [ ] **PDF Export**: Generate detailed reports
 
+#### 🙏 Acknowledgments
+
+- Thanks to [@Spectre](https://www.xiaohongshu.com/user/profile/6405a865000000001001f538) for Bay Area housing data support
+
 <br />
 <div align="center">
   <sub>Thank you for reading! If you find rent-or-buy.homes useful, consider giving this repository a <strong>star</strong> ⭐.</sub>
@@ -381,6 +385,10 @@ npm run dev
 - [x] **生成分享链接**: 生成分享链接，与他人分享结果
 - [x] **城市预设**: 完善城市预设数据并添加更多城市
 - [ ] **PDF 导出**: 生成详细报告
+
+#### 🙏 鸣谢
+
+- 感谢 [@Spectre](https://www.xiaohongshu.com/user/profile/6405a865000000001001f538) 提供湾区房价数据支持
 
 <br />
 <div align="center">
