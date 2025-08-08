@@ -76,13 +76,13 @@ export default function InputPanel() {
                 {cityDefaults.map((city) => (
                   <div
                     key={city.id}
-                    onMouseEnter={() => {
-                      if (city.children && city.children.length > 0) {
+                    onPointerEnter={(e) => {
+                      if (e.pointerType === "mouse" && city.children && city.children.length > 0) {
                         setExpandedGroups((prev) => ({ ...prev, [city.id]: true }));
                       }
                     }}
-                    onMouseLeave={() => {
-                      if (city.children && city.children.length > 0) {
+                    onPointerLeave={(e) => {
+                      if (e.pointerType === "mouse" && city.children && city.children.length > 0) {
                         setExpandedGroups((prev) => ({ ...prev, [city.id]: false }));
                       }
                     }}

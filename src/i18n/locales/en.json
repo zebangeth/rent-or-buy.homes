@@ -156,7 +156,7 @@
   },
   "footer": {
     "copyright": "© 2025 Buy vs. Rent Financial Calculator",
-    "dataCreditsPrefix": "Bay Area housing data courtesy of ",
-    "dataCreditsSuffix": ""
+    "dataCreditsPrefix": "Special thanks to ",
+    "dataCreditsSuffix": " for Bay Area housing data support"
   }
 }
