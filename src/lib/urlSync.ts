@@ -35,14 +35,16 @@ export function serializeState(state: AppState): string {
 /**
  * Validate that an object has the expected structure
  */
-function isValidSerializableState(obj: any): obj is SerializableState {
+function isValidSerializableState(obj: unknown): obj is SerializableState {
   if (!obj || typeof obj !== 'object') return false;
+  const state = obj as Record<string, unknown>;
   
   // Check if it has at least one of the expected top-level properties
-  const hasValidProperty = 
-    (obj.buyInputs && typeof obj.buyInputs === 'object') ||
-    (obj.rentInputs && typeof obj.rentInputs === 'object') ||
-    (obj.appSettings && typeof obj.appSettings === 'object');
+  const hasValidProperty = Boolean(
+    (state.buyInputs && typeof state.buyInputs === 'object') ||
+      (state.rentInputs && typeof state.rentInputs === 'object') ||
+      (state.appSettings && typeof state.appSettings === 'object'),
+  );
     
   return hasValidProperty;
 }
