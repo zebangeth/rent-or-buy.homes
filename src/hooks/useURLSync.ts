@@ -1,11 +1,6 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useApp } from '../contexts/AppContext';
-import { 
-  getStateFromURL, 
-  updateURLWithState, 
-  copyShareableURL, 
-  clearURLHash
-} from '../lib/urlSync';
+import { getStateFromURL, updateURLWithState, copyShareableURL, clearURLHash, hasStateInURL } from '../lib/urlSync';
 
 export function useURLSync() {
   const { state, dispatch } = useApp();
@@ -68,6 +63,6 @@ export function useURLSync() {
   return {
     shareCurrentState: () => copyShareableURL(state),
     clearURL: clearURLHash,
-    hasURLState: () => Boolean(window.location.hash),
+    hasURLState: hasStateInURL,
   };
 }
