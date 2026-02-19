@@ -1,5 +1,5 @@
-import CalculatorPageClient from "./CalculatorPageClient";
+import CalculatorClient from "./CalculatorClient";
 
 export default function HomePage() {
-  return <CalculatorPageClient />;
+  return <CalculatorClient />;
 }
