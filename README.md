@@ -7,7 +7,7 @@
    <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
    <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
    <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-   <img src="https://img.shields.io/badge/Vite-4d55e1?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+   <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
    <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
    <img src="https://img.shields.io/badge/Claude_Code-d85d3c?style=for-the-badge&logo=claude&logoColor=white" alt="Claude Code" />
 </p>
@@ -166,13 +166,13 @@ npm install
 npm run dev
 ```
 
-The app will be available at `http://localhost:5173`
+The app will be available at `http://localhost:3000`
 
 #### 🛠️ Tech Stack
 
-**Core Framework**: React 19, TypeScript, Vite
+**Core Framework**: Next.js App Router, React 19, TypeScript
 **UI & Styling**: Tailwind CSS, ApexCharts
-**State Management & Routing**: React Context, React Router v7, LZ-String
+**State Management & URL State**: React Context, URL query/hash sync, LZ-String
 **Internationalization**: i18next, react-i18next
 
 #### 🏗️ Architecture
@@ -196,7 +196,7 @@ The app will be available at `http://localhost:5173`
 - **Financial Engine**: Pure calculation functions in `src/lib/finance/`
 - **Input Components**: Reusable sliders, buttons, and number inputs
 - **Result Visualization**: Charts and summary cards
-- **URL Synchronization**: Automatic state persistence in URLs
+- **URL Synchronization**: Automatic state persistence via `?s=` query parameter (legacy `#...` links are still supported)
 
 #### 🔮 Work in Progress
 
@@ -347,13 +347,13 @@ npm install
 npm run dev
 ```
 
-应用将在`http://localhost:5173`可用
+应用将在`http://localhost:3000`可用
 
 #### 🛠️ 技术栈
 
-**核心框架**: React 19, TypeScript, Vite
+**核心框架**: Next.js App Router, React 19, TypeScript
 **UI 与样式**: Tailwind CSS, ApexCharts
-**状态管理与路由**: React Context, React Router v7, LZ-String
+**状态管理与 URL 状态**: React Context, URL query/hash 同步, LZ-String
 **国际化**: i18next, react-i18next
 
 #### 🏗️ 架构
@@ -377,7 +377,7 @@ npm run dev
 - **Financial Engine**: `src/lib/finance/`中的纯计算函数
 - **Input Components**: 可重用的滑块、按钮和数字输入
 - **Result Visualization**: 图表和摘要卡片
-- **URL Synchronization**: URL 中的自动状态持久化
+- **URL Synchronization**: 通过 `?s=` 参数进行 URL 状态持久化（兼容历史 `#...` 分享链接）
 
 #### 🔮 开发中功能
 
