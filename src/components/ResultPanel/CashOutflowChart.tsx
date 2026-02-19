@@ -1,9 +1,17 @@
+"use client";
+
 import { useState } from "react";
+import type { ComponentType } from "react";
+import dynamic from "next/dynamic";
 import { useTranslation } from "react-i18next";
-import Chart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
+import type { Props as ReactApexChartProps } from "react-apexcharts";
 import { useCalculations } from "../../hooks/useCalculations";
 import { theme } from "../../lib/design-system";
+
+const Chart = dynamic(() => import("react-apexcharts"), {
+  ssr: false,
+}) as ComponentType<ReactApexChartProps>;
 
 interface CashOutflowChartProps {
   className?: string;

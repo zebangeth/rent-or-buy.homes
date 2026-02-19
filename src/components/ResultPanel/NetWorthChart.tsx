@@ -1,9 +1,17 @@
-import Chart from "react-apexcharts";
+"use client";
+
+import type { ComponentType } from "react";
+import dynamic from "next/dynamic";
 import type { ApexOptions } from "apexcharts";
+import type { Props as ReactApexChartProps } from "react-apexcharts";
 import { useTranslation } from "react-i18next";
 import { useCalculations } from "../../hooks/useCalculations";
 import { useApp } from "../../contexts";
 import { theme } from "../../lib/design-system";
+
+const Chart = dynamic(() => import("react-apexcharts"), {
+  ssr: false,
+}) as ComponentType<ReactApexChartProps>;
 
 interface NetWorthChartProps {
   className?: string;
