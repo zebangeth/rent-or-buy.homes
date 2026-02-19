@@ -5,6 +5,8 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import en from "./locales/en.json";
 import zh from "./locales/zh.json";
 
+const isBrowser = typeof window !== "undefined";
+
 const resources = {
   en: {
     translation: en,
@@ -26,11 +28,13 @@ i18n
     react: {
       useSuspense: false, // Disable suspense for better compatibility
     },
-    detection: {
-      order: ["localStorage", "navigator", "htmlTag"],
-      lookupLocalStorage: "i18nextLng",
-      caches: ["localStorage"],
-    },
+    detection: isBrowser
+      ? {
+          order: ["localStorage", "navigator", "htmlTag"],
+          lookupLocalStorage: "i18nextLng",
+          caches: ["localStorage"],
+        }
+      : undefined,
     // Map browser language codes to our supported languages
     supportedLngs: ["en", "zh"],
     load: "languageOnly", // Load 'zh' for 'zh-CN', 'zh-TW', etc.
@@ -38,14 +42,16 @@ i18n
     // Custom language detection function
     preload: false,
     // Override language detection to handle Chinese variants
-    lng: (() => {
-      const browserLang = navigator.language || navigator.languages?.[0] || "en";
-      // Check if browser language starts with 'zh' (Chinese)
-      if (browserLang.toLowerCase().startsWith("zh")) {
-        return "zh";
-      }
-      return "en";
-    })(),
+    lng: isBrowser
+      ? (() => {
+          const browserLang = navigator.language || navigator.languages?.[0] || "en";
+          // Check if browser language starts with 'zh' (Chinese)
+          if (browserLang.toLowerCase().startsWith("zh")) {
+            return "zh";
+          }
+          return "en";
+        })()
+      : "en",
   });
 
 export default i18n;
