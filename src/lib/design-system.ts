@@ -10,11 +10,11 @@
 export const colors = {
   // Scenario Colors
   buy: {
-    primary: "#8b5cf6", // Purple - Buy scenario primary
-    secondary: "#6366f1", // Indigo - Buy scenario investment
-    tertiary: "#c4b5fd", // Purple-300 - Light purple for backgrounds
-    light: "#c4b5fd", // Light purple for backgrounds
-    dark: "#6d28d9", // Dark purple for accents
+    primary: "#3b82f6", // Blue - Buy scenario primary
+    secondary: "#1d4ed8", // Blue-700 - Buy scenario investment
+    tertiary: "#93c5fd", // Blue-300 - Light blue for backgrounds
+    light: "#93c5fd", // Light blue for backgrounds
+    dark: "#1e40af", // Blue-800 for accents
   },
   rent: {
     primary: "#10b981", // Emerald - Rent scenario primary
