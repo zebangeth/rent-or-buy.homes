@@ -18,15 +18,15 @@
 
 @layer components {
   .card {
-    @apply rounded-2xl bg-white shadow-lg border border-gray-100 transition-all duration-300;
+    @apply rounded-2xl bg-white shadow-sm border border-gray-100 transition-all duration-200;
   }
 
   .card:hover {
-    @apply -translate-y-1 shadow-xl;
+    @apply -translate-y-1 shadow-lg;
   }
 
   .glow-primary {
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
   }
 
   .glow-secondary {

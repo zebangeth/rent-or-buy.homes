@@ -25,8 +25,8 @@ const compactPrice = theme.formatters.compactCurrency(1250000);
 ## Color Palette
 
 ### Scenario Colors
-- **Buy Scenario**: `theme.colors.buy.primary` (#8b5cf6 - Purple)
-- **Buy Investment**: `theme.colors.buy.secondary` (#6366f1 - Indigo)
+- **Buy Scenario**: `theme.colors.buy.primary` (#3b82f6 - Blue)
+- **Buy Investment**: `theme.colors.buy.secondary` (#1d4ed8 - Deep Blue)
 - **Rent Scenario**: `theme.colors.rent.primary` (#10b981 - Emerald)
 - **Rent Investment**: `theme.colors.rent.secondary` (#059669 - Dark Emerald)
 
@@ -172,7 +172,7 @@ When updating existing components:
 
 ### Before (Hardcoded)
 ```typescript
-colors: ["#8b5cf6", "#10b981"]
+colors: ["#3b82f6", "#10b981"]
 fontFamily: 'Montserrat, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
 fontSize: "14px"
 const formatted = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value);
