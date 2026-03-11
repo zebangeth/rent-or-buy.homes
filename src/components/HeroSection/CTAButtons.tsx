@@ -20,7 +20,7 @@ export default function CTAButtons() {
     <div className="flex flex-col sm:flex-row gap-3 mt-6 pt-6 border-t border-gray-200">
       <button
         onClick={scrollToInputs}
-        className="flex-1 py-3 px-4 bg-dark-800 hover:bg-dark-700 text-white font-medium rounded-xl transition flex items-center justify-center"
+        className="flex-1 py-3 px-4 bg-dark-800 hover:bg-dark-700 active:bg-dark-900 text-white font-medium rounded-xl transition flex items-center justify-center focus:outline-none"
       >
         <i className="fas fa-sliders-h mr-2"></i> {t('hero.cta.editInputs')}
       </button>

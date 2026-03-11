@@ -25,7 +25,7 @@ export default function NumberInput({
   step,
   disabled = false,
 }: NumberInputProps) {
-  const baseClassName = "px-2 py-1 text-sm font-semibold border rounded-lg focus:outline-none focus:ring-2 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
+  const baseClassName = "px-2 py-1 text-sm font-semibold border rounded-lg focus:outline-none text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
   
   return (
     <div className="flex items-center space-x-2">

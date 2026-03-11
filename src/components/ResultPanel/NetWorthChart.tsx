@@ -365,6 +365,7 @@ export default function NetWorthChart({ className = "" }: NetWorthChartProps) {
               checked={showCashOut}
               onChange={() => dispatch({ type: "TOGGLE_CASH_OUT_MODE" })}
               className="sr-only"
+              aria-label={t('charts.netWorth.cashOut')}
             />
             <div className="relative">
               <div className={`w-11 h-6 rounded-full transition-colors ${showCashOut ? "bg-gray-700" : "bg-gray-300"}`}>

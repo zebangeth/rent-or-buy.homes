@@ -39,7 +39,7 @@ export default function Header({ currentLanguage = "en", onLanguageChange }: Hea
             <select
               value={selectedLanguage}
               onChange={handleLanguageChange}
-              className="appearance-none text-xs sm:text-sm font-medium text-dark-600 bg-gray-100 pl-6 sm:pl-8 pr-6 sm:pr-8 py-1.5 sm:py-2 rounded-full cursor-pointer hover:bg-gray-200 transition focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="appearance-none text-xs sm:text-sm font-medium text-dark-600 bg-gray-100 pl-6 sm:pl-8 pr-6 sm:pr-8 py-1.5 sm:py-2 rounded-full cursor-pointer hover:bg-gray-200 transition focus:outline-none"
             >
               {languages.map((lang) => (
                 <option key={lang.code} value={lang.code}>
@@ -60,10 +60,10 @@ export default function Header({ currentLanguage = "en", onLanguageChange }: Hea
             href="https://github.com/zebangeth/rent-or-buy.homes"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-dark-800 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-dark-700 transition flex items-center"
-            title={t('header.githubTitle')}
+            className="bg-dark-800 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-dark-700 transition flex items-center focus:outline-none"
+            aria-label={t('header.githubTitle')}
           >
-            <i className="fab fa-github mr-1"></i> {t('header.github')}
+            <i className="fab fa-github mr-1" aria-hidden="true"></i> {t('header.github')}
           </a>
         </div>
       </div>

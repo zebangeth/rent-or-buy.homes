@@ -37,7 +37,7 @@ export default function CalculationStatus() {
     <div>
       {isUpdating ? (
         <div className="flex items-center justify-center text-gray-500 transition-all duration-300">
-          <svg className="w-4 h-4 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 mr-2 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
             <path
               className="opacity-75"
@@ -49,7 +49,7 @@ export default function CalculationStatus() {
         </div>
       ) : (
         <div className="flex items-center justify-center text-green-600 transition-all duration-300">
-          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
           </svg>
           <span className="text-sm font-medium">{t('inputs.status.upToDate')}</span>

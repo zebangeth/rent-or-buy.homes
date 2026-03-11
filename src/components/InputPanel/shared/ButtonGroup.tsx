@@ -18,16 +18,17 @@ export default function ButtonGroup<T extends string | number>({
   value,
   onChange,
   className = "grid gap-2",
-  buttonClassName = "p-2 rounded-lg text-sm font-medium transition-colors",
+  buttonClassName = "p-2 rounded-lg text-sm font-medium transition-colors focus:outline-none",
   activeClassName = "bg-primary-500 text-white",
-  inactiveClassName = "bg-gray-100 text-dark-500 hover:bg-gray-200",
+  inactiveClassName = "bg-gray-100 text-dark-500 hover:bg-gray-200 active:bg-gray-300",
 }: ButtonGroupProps<T>) {
   return (
-    <div className={className}>
+    <div className={className} role="group">
       {options.map((option) => (
         <button
           key={String(option.value)}
           onClick={() => onChange(option.value)}
+          aria-pressed={value === option.value}
           className={`${buttonClassName} ${
             value === option.value ? activeClassName : inactiveClassName
           }`}

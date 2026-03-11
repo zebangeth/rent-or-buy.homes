@@ -105,7 +105,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                 handleNumberInputChange("propertyPrice", rawValue, (val) => parseFormattedNumber(val));
               }}
               onBlur={() => handleNumberInputBlur("propertyPrice", (val) => parseFormattedNumber(val))}
-              className="w-28 px-2 py-1 text-sm font-semibold text-primary-700 bg-primary-100 border border-primary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 text-center"
+              className="w-28 px-2 py-1 text-sm font-semibold text-primary-700 bg-primary-100 border border-primary-200 rounded-lg focus:outline-none text-center"
               placeholder="2,500,000"
             />
           </div>
@@ -136,7 +136,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
               value={getDisplayValue("downPaymentPercentage")}
               onChange={(e) => handleNumberInputChange("downPaymentPercentage", e.target.value, (val) => Number(val))}
               onBlur={() => handleNumberInputBlur("downPaymentPercentage", (val) => Number(val))}
-              className="w-16 px-2 py-1 text-sm font-semibold text-primary-700 bg-primary-100 border border-primary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="w-16 px-2 py-1 text-sm font-semibold text-primary-700 bg-primary-100 border border-primary-200 rounded-lg focus:outline-none text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               min="0"
               max="100"
               step="1"
@@ -168,7 +168,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                 handleNumberInputChange("mortgageInterestRateAnnual", e.target.value, (val) => Number(val))
               }
               onBlur={() => handleNumberInputBlur("mortgageInterestRateAnnual", (val) => Number(val))}
-              className="w-16 px-2 py-1 text-sm font-semibold text-primary-700 bg-primary-100 border border-primary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="w-16 px-2 py-1 text-sm font-semibold text-primary-700 bg-primary-100 border border-primary-200 rounded-lg focus:outline-none text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               min="0"
               step="0.25"
             />
@@ -222,7 +222,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                 handleNumberInputChange("homeAppreciationCagr", e.target.value, (val) => Number(val));
               }}
               onBlur={() => handleNumberInputBlur("homeAppreciationCagr", (val) => Number(val))}
-              className="w-16 px-2 py-1 text-sm font-semibold text-primary-700 bg-primary-100 border border-primary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="w-16 px-2 py-1 text-sm font-semibold text-primary-700 bg-primary-100 border border-primary-200 rounded-lg focus:outline-none text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               min="0"
               step="0.5"
             />
@@ -255,15 +255,16 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
       <div className="border-t border-gray-100 pt-4">
         <button
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className="flex w-full items-center justify-between text-dark-600 hover:text-primary-600 transition"
+          aria-expanded={showAdvanced}
+          className="flex w-full items-center justify-between text-dark-600 hover:text-primary-600 transition focus:outline-none rounded px-1"
         >
           <span className="font-medium text-sm">{t("inputs.buy.advancedOptions")}</span>
-          <i className={`fas ${showAdvanced ? "fa-chevron-up" : "fa-chevron-down"} text-xs`}></i>
+          <i className={`fas fa-chevron-down text-xs transition-transform duration-200 ${showAdvanced ? "rotate-180" : ""}`} aria-hidden="true"></i>
         </button>
 
         {/* Advanced Options Content */}
         {showAdvanced && (
-          <div className="mt-4 space-y-4 bg-gray-50 p-4 rounded-xl">
+          <div className="mt-4 space-y-4 bg-gray-50 p-4 rounded-xl animate-fade-slide-in">
             {/* Transaction Costs Section */}
             <div className="text-xs font-semibold text-dark-600 mb-2">{t("inputs.buy.transactionCosts")}</div>
 
@@ -286,7 +287,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                     handleNumberInputChange("closingCostsPercentageBuy", e.target.value, (val) => Number(val))
                   }
                   onBlur={() => handleNumberInputBlur("closingCostsPercentageBuy", (val) => Number(val))}
-                  className="w-14 p-1 text-xs text-center border rounded-lg"
+                  className="w-14 p-1 text-xs text-center border border-gray-200 rounded-lg focus:outline-none bg-white"
                   min="0"
                   max="100"
                 />
@@ -313,7 +314,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                     handleNumberInputChange("sellingCostsPercentageSell", e.target.value, (val) => Number(val))
                   }
                   onBlur={() => handleNumberInputBlur("sellingCostsPercentageSell", (val) => Number(val))}
-                  className="w-14 p-1 text-xs text-center border rounded-lg"
+                  className="w-14 p-1 text-xs text-center border border-gray-200 rounded-lg focus:outline-none bg-white"
                   min="0"
                   max="100"
                 />
@@ -344,7 +345,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                     handleNumberInputChange("propertyTaxRateAnnual", e.target.value, (val) => Number(val))
                   }
                   onBlur={() => handleNumberInputBlur("propertyTaxRateAnnual", (val) => Number(val))}
-                  className="w-14 p-1 text-xs text-center border rounded-lg"
+                  className="w-14 p-1 text-xs text-center border border-gray-200 rounded-lg focus:outline-none bg-white"
                   min="0"
                   max="100"
                 />
@@ -372,7 +373,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                     handleNumberInputChange("insuranceAndMaintenanceRateAnnual", e.target.value, (val) => Number(val))
                   }
                   onBlur={() => handleNumberInputBlur("insuranceAndMaintenanceRateAnnual", (val) => Number(val))}
-                  className="w-14 p-1 text-xs text-center border rounded-lg"
+                  className="w-14 p-1 text-xs text-center border border-gray-200 rounded-lg focus:outline-none bg-white"
                   min="0"
                   max="100"
                 />
@@ -395,7 +396,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                     }
                   }}
                   onBlur={() => handleNumberInputBlur("hoaFeeAnnual", (val) => parseFormattedNumber(val))}
-                  className="w-14 p-1 text-xs text-center border rounded-lg"
+                  className="w-14 p-1 text-xs text-center border border-gray-200 rounded-lg focus:outline-none bg-white"
                   placeholder="5,000"
                 />
               </div>
@@ -421,7 +422,7 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
                   value={getDisplayValue("marginalTaxRate")}
                   onChange={(e) => handleNumberInputChange("marginalTaxRate", e.target.value, (val) => Number(val))}
                   onBlur={() => handleNumberInputBlur("marginalTaxRate", (val) => Number(val))}
-                  className="w-14 p-1 text-xs text-center border rounded-lg"
+                  className="w-14 p-1 text-xs text-center border border-gray-200 rounded-lg focus:outline-none bg-white"
                   min="0"
                   max="100"
                 />

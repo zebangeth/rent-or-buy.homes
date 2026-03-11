@@ -106,6 +106,21 @@
 }
 
 @layer utilities {
+  .animate-fade-slide-in {
+    animation: fadeSlideIn 0.2s ease-out;
+  }
+
+  @keyframes fadeSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .animate-fade-in-out {
     animation: fadeInOut 3.5s ease-in-out;
   }

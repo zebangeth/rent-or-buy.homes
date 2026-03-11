@@ -38,12 +38,12 @@ export function ShareButton({ className = "", variant = "secondary", size = "md"
 
   // Base styles that work with any layout
   const baseStyles =
-    "inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
+    "inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed";
 
   // Variant styles
   const variantStyles = {
-    primary: "bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500",
-    secondary: "bg-gray-100 hover:bg-gray-200 text-gray-700 focus:ring-gray-500 border border-gray-300",
+    primary: "bg-blue-600 hover:bg-blue-700 text-white",
+    secondary: "bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300",
   };
 
   // Size styles (only padding and text size, no width overrides)
@@ -94,7 +94,7 @@ export function ShareButton({ className = "", variant = "secondary", size = "md"
       >
         {isSharing ? (
           <>
-            <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path
                 className="opacity-75"
@@ -106,7 +106,7 @@ export function ShareButton({ className = "", variant = "secondary", size = "md"
           </>
         ) : (
           <>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -124,7 +124,7 @@ export function ShareButton({ className = "", variant = "secondary", size = "md"
         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-50">
           <div className="bg-green-600 text-white text-sm px-3 py-2 rounded-md shadow-lg whitespace-nowrap">
             <div className="flex items-center gap-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               {t('share.copied')}

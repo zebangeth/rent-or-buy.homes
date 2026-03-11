@@ -99,7 +99,7 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
                 handleNumberInputChange("currentMonthlyRentAmount", rawValue, (val) => parseFormattedNumber(val));
               }}
               onBlur={() => handleNumberInputBlur("currentMonthlyRentAmount", (val) => parseFormattedNumber(val))}
-              className="w-24 px-2 py-1 text-sm font-semibold text-secondary-700 bg-secondary-100 border border-secondary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-300 text-center"
+              className="w-24 px-2 py-1 text-sm font-semibold text-secondary-700 bg-secondary-100 border border-secondary-200 rounded-lg focus:outline-none text-center"
               placeholder="6,000"
             />
           </div>
@@ -131,7 +131,7 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
               value={getDisplayValue("rentGrowthRateAnnual")}
               onChange={(e) => handleNumberInputChange("rentGrowthRateAnnual", e.target.value, (val) => Number(val))}
               onBlur={() => handleNumberInputBlur("rentGrowthRateAnnual", (val) => Number(val))}
-              className={`w-16 px-2 py-1 text-sm font-semibold text-secondary-700 bg-secondary-100 border border-secondary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-300 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
+              className={`w-16 px-2 py-1 text-sm font-semibold text-secondary-700 bg-secondary-100 border border-secondary-200 rounded-lg focus:outline-none text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${
                 rentInputs.sameAsHomeAppreciation ? "opacity-50 cursor-not-allowed" : ""
               }`}
               disabled={rentInputs.sameAsHomeAppreciation}
@@ -235,7 +235,7 @@ export default function RentInputs({ onSwitchToBuy }: RentInputsProps) {
                   });
                 }
               }}
-              className="w-16 px-2 py-1 text-sm font-semibold text-secondary-700 bg-secondary-100 border border-secondary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-300 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="w-16 px-2 py-1 text-sm font-semibold text-secondary-700 bg-secondary-100 border border-secondary-200 rounded-lg focus:outline-none text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               min="0"
               max="30"
               step="0.25"

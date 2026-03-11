@@ -436,22 +436,24 @@ export default function CashOutflowChart({ className = "" }: CashOutflowChartPro
 
         <div className="flex items-center mt-4 sm:mt-0">
           {/* View Mode Toggle */}
-          <div className="flex items-center bg-gray-100 rounded-lg p-1">
+          <div className="flex items-center bg-gray-100 rounded-lg p-1" role="group" aria-label="View mode">
             <button
               onClick={() => setViewMode("annual")}
-              className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-                viewMode === "annual" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"
+              aria-pressed={viewMode === "annual"}
+              className={`px-3 py-1 text-sm font-medium rounded-md transition-colors focus:outline-none ${
+                viewMode === "annual" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900 active:bg-gray-200"
               }`}
             >
-{t('charts.cashFlow.viewModes.annual')}
+              {t('charts.cashFlow.viewModes.annual')}
             </button>
             <button
               onClick={() => setViewMode("cumulative")}
-              className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-                viewMode === "cumulative" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"
+              aria-pressed={viewMode === "cumulative"}
+              className={`px-3 py-1 text-sm font-medium rounded-md transition-colors focus:outline-none ${
+                viewMode === "cumulative" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900 active:bg-gray-200"
               }`}
             >
-{t('charts.cashFlow.viewModes.cumulative')}
+              {t('charts.cashFlow.viewModes.cumulative')}
             </button>
           </div>
         </div>

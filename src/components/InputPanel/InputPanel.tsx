@@ -27,9 +27,6 @@ export default function InputPanel() {
       setSelectedCity(cityData);
       loadCityDefaults(cityData.data);
       setIsDropdownOpen(false);
-
-      // Show notification (simple console log for now, can be enhanced later)
-      console.log(`Loaded defaults for ${cityData.name}`);
     }
   };
 
@@ -55,6 +52,8 @@ export default function InputPanel() {
         <div className="relative inline-block" ref={dropdownRef}>
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            aria-expanded={isDropdownOpen}
+            aria-haspopup="listbox"
             className="appearance-none text-xs font-medium text-dark-700 bg-gray-100 pl-7 pr-8 py-1 rounded-full cursor-pointer hover:bg-gray-200 transition focus:outline-none"
           >
             {selectedCity.id === "default" ? t("inputs.cityPresets") : selectedCity.name}
@@ -165,23 +164,27 @@ export default function InputPanel() {
 
       {/* Improved Tabs */}
       <div className="mb-6">
-        <div className="flex bg-gray-100 rounded-xl p-1">
+        <div className="flex bg-gray-100 rounded-xl p-1" role="tablist">
           <button
             onClick={() => setActiveTab("buy")}
-            className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-medium text-sm transition-all duration-200 ${
+            aria-selected={activeTab === "buy"}
+            role="tab"
+            className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-medium text-sm transition-all duration-200 focus:outline-none ${
               activeTab === "buy" ? "bg-white text-primary-700 shadow-sm" : "text-gray-600 hover:text-gray-800"
             }`}
           >
-            <i className="fas fa-home"></i>
+            <i className="fas fa-home" aria-hidden="true"></i>
             <span>{t("inputs.tabs.buy")}</span>
           </button>
           <button
             onClick={() => setActiveTab("rent")}
-            className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-medium text-sm transition-all duration-200 ${
+            aria-selected={activeTab === "rent"}
+            role="tab"
+            className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-medium text-sm transition-all duration-200 focus:outline-none ${
               activeTab === "rent" ? "bg-white text-secondary-700 shadow-sm" : "text-gray-600 hover:text-gray-800"
             }`}
           >
-            <i className="fas fa-chart-line"></i>
+            <i className="fas fa-chart-line" aria-hidden="true"></i>
             <span>{t("inputs.tabs.rent")}</span>
           </button>
         </div>

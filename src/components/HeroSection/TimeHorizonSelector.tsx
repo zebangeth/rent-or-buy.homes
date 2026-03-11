@@ -26,15 +26,16 @@ export default function TimeHorizonSelector() {
     <div className="mb-6">
       <div className="flex items-center space-x-3 mb-3">
         <span className="text-sm font-medium text-dark-600">{t('hero.timeHorizon.label')}</span>
-        <div className="flex bg-gray-100 rounded-lg p-1">
+        <div className="flex bg-gray-100 rounded-lg p-1" role="group" aria-label={t('hero.timeHorizon.label')}>
           {TIME_HORIZON_OPTIONS.map(({ years, key }) => (
             <button
               key={years}
               onClick={() => handleYearChange(years)}
-              className={`px-3 py-1 text-sm font-medium rounded-md transition ${
+              aria-pressed={currentYears === years}
+              className={`px-3 py-1 text-sm font-medium rounded-md transition focus:outline-none ${
                 currentYears === years
                   ? "bg-dark-800 text-white"
-                  : "text-dark-600 hover:bg-gray-200"
+                  : "text-dark-600 hover:bg-gray-200 active:bg-gray-300"
               }`}
             >
               {t(`hero.timeHorizon.options.${key}`)}
