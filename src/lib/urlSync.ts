@@ -1,4 +1,5 @@
 import LZString from "lz-string";
+import { isValidMortgageTerm } from "./constants";
 import type { AppSettings, AppState, BuyInputs, RentInputs } from "../contexts/AppContext";
 
 const STATE_QUERY_PARAM = "s";
@@ -64,6 +65,11 @@ export function deserializeState(value: string): SerializableState | null {
     if (!isValidSerializableState(parsed)) {
       console.warn("Invalid state structure in URL");
       return null;
+    }
+
+    // Ignore invalid terms so loading a shared link keeps the current/default term.
+    if (parsed.buyInputs && !isValidMortgageTerm(parsed.buyInputs.mortgageTermYears)) {
+      delete parsed.buyInputs.mortgageTermYears;
     }
 
     return parsed;

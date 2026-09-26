@@ -13,7 +13,7 @@ export interface BuyInputs {
   propertyPrice: number;
   downPaymentPercentage: number;
   mortgageInterestRateAnnual: number;
-  mortgageTermYears: 15 | 20 | 30;
+  mortgageTermYears: number;
   homeAppreciationCagr: number;
 
   // Advanced inputs - transaction costs
