@@ -144,3 +144,26 @@ test("clearURLHash removes serialized state while keeping unrelated query params
   assert.equal(params.has("s"), false);
   assert.equal(hasStateInURL(), false);
 });
+
+for (const term of [1, 15, 20, 25, 30, 35]) {
+  test(`${term}-year mortgage survives query and legacy hash sharing`, () => {
+    const original = createAppState(1500000);
+    original.buyInputs.mortgageTermYears = term;
+    const serialized = serializeState(original);
+    for (const suffix of [`?s=${serialized}`, `#${serialized}`]) {
+      setWindowURL(`https://rent-or-buy.homes/${suffix}`);
+      assert.equal(getStateFromURL()?.buyInputs?.mortgageTermYears, term);
+    }
+  });
+}
+
+for (const invalid of [0, -1, 25.5, Infinity, NaN, "25", null]) {
+  test(`invalid mortgage term ${String(invalid)} is ignored without losing other inputs`, () => {
+    const original = createAppState(1800000);
+    original.buyInputs.mortgageTermYears = invalid as number;
+    setWindowURL(`https://rent-or-buy.homes/?s=${serializeState(original)}`);
+    const restored = getStateFromURL();
+    assert.equal(restored?.buyInputs?.mortgageTermYears, undefined);
+    assert.equal(restored?.buyInputs?.propertyPrice, 1800000);
+  });
+}

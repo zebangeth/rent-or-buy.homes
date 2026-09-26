@@ -64,3 +64,30 @@ test("financial engine keeps baseline outputs stable for default scenario", () =
     null;
   assert.equal(breakEvenYear, 1);
 });
+
+test("25-year mortgage is repaid before the projection ends", () => {
+  const results = calculateAllScenarios(
+    { ...buyInputs, mortgageTermYears: 25 }, rentInputs,
+    { ...appSettings, projectionYears: 30 },
+  );
+  assert.ok(results.yearlyResults[23].buy.remainingMortgageBalance > 0);
+  assertClose(results.yearlyResults[24].buy.remainingMortgageBalance, 0);
+  for (const { buy } of results.yearlyResults.slice(25)) {
+    assertClose(buy.mortgagePayment, 0);
+    assertClose(buy.mortgageInterest, 0);
+    assertClose(buy.mortgagePrincipal, 0);
+    assertClose(buy.adjustedCashOutflow, buy.totalHoldingCosts);
+  }
+  const principalPaid = results.yearlyResults.reduce((sum, { buy }) => sum + buy.mortgagePrincipal, 0);
+  assertClose(principalPaid, results.preliminary.mortgage.totalLoanAmount);
+});
+
+test("35-year mortgage retains a balance at the end of a 15-year projection", () => {
+  const results = calculateAllScenarios({ ...buyInputs, mortgageTermYears: 35 }, rentInputs, appSettings);
+  const baseline = calculateAllScenarios(buyInputs, rentInputs, appSettings);
+  const lastYear = results.yearlyResults[14].buy;
+  assert.ok(lastYear.remainingMortgageBalance > 0);
+  assert.ok(lastYear.mortgagePayment > 0);
+  assert.ok(results.preliminary.mortgage.monthlyPayment < baseline.preliminary.mortgage.monthlyPayment);
+  assert.ok(lastYear.remainingMortgageBalance > baseline.yearlyResults[14].buy.remainingMortgageBalance);
+});

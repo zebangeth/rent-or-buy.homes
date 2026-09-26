@@ -7,7 +7,7 @@ import {
   parseFormattedNumber,
   type InputValidationConfig,
 } from "../../lib/inputUtils";
-import { SLIDER_LIMITS, MORTGAGE_TERMS, TAX_RATES, VALIDATION_LIMITS } from "../../lib/constants";
+import { SLIDER_LIMITS, MORTGAGE_TERMS, isValidMortgageTerm, TAX_RATES, VALIDATION_LIMITS } from "../../lib/constants";
 import { SliderInput, ButtonGroup } from "./shared";
 import CalculationStatus from "./CalculationStatus";
 
@@ -20,6 +20,9 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
   const { state, updateBuyInput } = useApp();
   const { buyInputs } = state;
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [mortgageTermDraft, setMortgageTermDraft] = useState<string | null>(null);
+  const mortgageTermInvalid = mortgageTermDraft !== null && mortgageTermDraft !== "" &&
+    !isValidMortgageTerm(Number(mortgageTermDraft));
 
   const validationConfig: InputValidationConfig<BuyInputsType> = {
     propertyPrice: VALIDATION_LIMITS.PROPERTY_PRICE,
@@ -199,13 +202,46 @@ export default function BuyInputs({ onSwitchToRent }: BuyInputsProps) {
 
       {/* Mortgage Term */}
       <div>
-        <div className="flex justify-between mb-3">
-          <label className="text-sm font-medium text-dark-700">{t("inputs.buy.mortgageTerm")}</label>
+        <div className="flex justify-between items-center mb-3">
+          <label htmlFor="mortgage-term" className="text-sm font-medium text-dark-700">
+            {t("inputs.buy.mortgageTerm")}
+          </label>
+          <div className="flex items-center space-x-2">
+            <input
+              id="mortgage-term"
+              type="number"
+              min={1}
+              step={1}
+              value={mortgageTermDraft ?? buyInputs.mortgageTermYears}
+              aria-invalid={mortgageTermInvalid}
+              aria-describedby={mortgageTermInvalid ? "mortgage-term-error" : undefined}
+              onChange={(e) => {
+                const value = e.target.value;
+                setMortgageTermDraft(value);
+                if (value !== "" && isValidMortgageTerm(Number(value))) {
+                  updateBuyInput("mortgageTermYears", Number(value));
+                }
+              }}
+              onBlur={() => {
+                if (!mortgageTermInvalid) setMortgageTermDraft(null);
+              }}
+              className="w-20 px-2 py-1 text-sm font-semibold text-primary-700 bg-primary-100 border border-primary-200 rounded-lg focus:outline-none text-center"
+            />
+            <span className="text-xs text-dark-500">{t("inputs.buy.years")}</span>
+          </div>
         </div>
+        {mortgageTermInvalid && (
+          <p id="mortgage-term-error" role="alert" className="mb-2 text-xs text-red-600">
+            {t("inputs.buy.mortgageTermError")}
+          </p>
+        )}
         <ButtonGroup
           options={MORTGAGE_TERMS.map((term) => ({ value: term, label: `${term} ${t("inputs.buy.years")}` }))}
           value={buyInputs.mortgageTermYears}
-          onChange={(value) => handleInputChange("mortgageTermYears", value)}
+          onChange={(value) => {
+            setMortgageTermDraft(null);
+            updateBuyInput("mortgageTermYears", value);
+          }}
           className="grid grid-cols-3 gap-2"
         />
       </div>

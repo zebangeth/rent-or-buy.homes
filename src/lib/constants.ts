@@ -60,6 +60,10 @@ export const TAX_FREE_CAPITAL_GAINS = {
   Married: 500000,
 } as const;
 
+export function isValidMortgageTerm(value: unknown): value is number {
+  return typeof value === "number" && Number.isSafeInteger(value) && value > 0;
+}
+
 export const MORTGAGE_TERMS = [15, 20, 30] as const;
 
 export const VALIDATION_LIMITS = {

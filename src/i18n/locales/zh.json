@@ -141,6 +141,7 @@
       "downPayment": "首付款",
       "mortgageRate": "房贷利率",
       "mortgageTerm": "贷款期限",
+      "mortgageTermError": "请输入大于 0 的整数年数。",
       "homeAppreciation": "年房价涨幅",
       "advancedOptions": "更多选项",
       "transactionCosts": "交易成本",

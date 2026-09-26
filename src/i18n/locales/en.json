@@ -144,6 +144,7 @@
       "downPayment": "Down Payment",
       "mortgageRate": "Mortgage Interest Rate",
       "mortgageTerm": "Mortgage Term",
+      "mortgageTermError": "Enter a whole number of years greater than 0.",
       "homeAppreciation": "Expected Annual Home Appreciation",
       "advancedOptions": "Advanced Options",
       "transactionCosts": "Buying/Selling Transaction Costs",
